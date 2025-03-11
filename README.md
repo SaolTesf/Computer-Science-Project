@@ -26,4 +26,4 @@ dotnet run
 ````
 cd AttendanceSystem
 ````
-7. Open the browser and navigate to `http://localhost:5000`
+7. Open the browser and navigate to `http://localhost:5225`
