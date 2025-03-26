@@ -5,6 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace AttendanceSystem.Controllers {
   [Route("api/[controller]")]
   [ApiController]
-  public class ProfessorsController: ControllerBase {
+  public class ProfessorController: ControllerBase {
   }
 }
