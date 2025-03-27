@@ -1,0 +1,17 @@
+using AttendanceSystem.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace AttendanceSystem.Repositories
+{
+    // This interface defines the contract for data access operations on Attendance records.
+    public interface IAttendanceRepository
+    {
+        Task<IEnumerable<Attendance>> GetAllAsync();
+        Task<Attendance?> GetByIdAsync(int id);
+        Task<IEnumerable<Attendance>> GetPresentAttendancesAsync();
+        Task AddAsync(Attendance attendance);
+        Task UpdateAsync(Attendance attendance);
+        Task DeleteAsync(Attendance attendance);
+    }
+}
