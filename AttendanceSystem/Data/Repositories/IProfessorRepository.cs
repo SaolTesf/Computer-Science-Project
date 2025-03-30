@@ -9,8 +9,8 @@ public interface IProfessorRepository {
   Task<Professor?> GetProfessorByEmailAsync(String email);
   Task AddProfessorAsync(Professor professor);
   Task UpdateProfessorAsync(Professor professor);
-  Task DeleteProfessorAsync(Professor professor);
-  Task<bool> ProfessorExistsAsync(String id);
+  Task DeleteProfessorByIdAsync(String id);
+  Task<bool> ProfessorExistsByIdAsync(String id);
   Task<bool> ProfessorExistsByUsernameAsync(String username);
   Task<bool> ProfessorExistsByEmailAsync(String email);
 }
