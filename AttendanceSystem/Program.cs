@@ -6,9 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add database context
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
+    options.UseMySQL(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add professors repository
