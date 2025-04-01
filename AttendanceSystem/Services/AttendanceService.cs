@@ -5,25 +5,15 @@ using AttendanceSystem.Data.Repositories;
 
 namespace AttendanceSystem.Services
 {
-    public class AttendanceService : IAttendanceService
+    public class AttendanceService(IAttendanceRepository attendanceRepository) : IAttendanceService
     {
-        private readonly IAttendanceRepository _attendanceRepository; // rep instance to get data
+        private readonly IAttendanceRepository _attendanceRepository = attendanceRepository; // rep instance to get data
 
-        public AttendanceService(IAttendanceRepository attendanceRepository)
-        {
-            _attendanceRepository = attendanceRepository; // rep dependency
-
-
-        }
-
-        public async Task<List<Attendance>> GetAllAttendancesAsync()
+    public async Task<List<Attendance>> GetAllAttendancesAsync()
         {
 
             var result = await _attendanceRepository.GetAllAsync(); // get attendance recs fro rep
-            return new List<Attendance>(result);                    // convert to list
-
-            var result = await _attendanceRepository.GetAllAsync();
-            return new List<Attendance>(result);
+            return [.. result];                    // convert to list
 
         }
 
@@ -34,11 +24,9 @@ namespace AttendanceSystem.Services
 
         public async Task<List<Attendance>> GetPresentAttendancesAsync()
         {
-
-
             var result = await _attendanceRepository.GetPresentAttendancesAsync();
 
-            return new List<Attendance>(result);
+            return [.. result];
         }
 
         public async Task CreateAttendanceAsync(Attendance attendance)

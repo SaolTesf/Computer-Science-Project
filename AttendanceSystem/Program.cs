@@ -1,14 +1,16 @@
-using AttendanceSystem.Components;
 using AttendanceSystem.Data;
 using AttendanceSystem.Data.Repositories;
 using AttendanceSystem.Services;
 using Microsoft.EntityFrameworkCore;
+using AttendanceSystem.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#pragma warning disable CS8604
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+#pragma warning restore CS8604
 
 // Add professors repository
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
