@@ -1,7 +1,5 @@
 using AttendanceSystem.Models;
-using AttendanceSystem.Repositories; // Required here as well
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using AttendanceSystem.Repositories;
 
 
 namespace AttendanceSystem.Services
