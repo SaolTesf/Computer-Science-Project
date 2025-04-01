@@ -17,11 +17,14 @@ builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 // Add professors service
 builder.Services.AddScoped<IProfessorService, ProfessorService>();
 
+<<<<<<< HEAD
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
 
+=======
+>>>>>>> dc81ff7998debd8cf4ac143e9ec715b1ae57409e
 // Add professors controller
 builder.Services.AddControllers();
 

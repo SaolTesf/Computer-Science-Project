@@ -3,7 +3,10 @@ using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+<<<<<<< HEAD
 using AttendanceSystem.Repositories;
+=======
+>>>>>>> dc81ff7998debd8cf4ac143e9ec715b1ae57409e
 
 namespace AttendanceSystem.Controllers
 {
