@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 using AttendanceSystem.Models; // Import the Attendance model
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,22 +12,5 @@ namespace AttendanceSystem.Repositories  // This must exactly match what you use
         Task AddAsync(Attendance attendance);          // add a new rec to the data base
         Task UpdateAsync(Attendance attendance);       // update existing rec
         Task DeleteAsync(Attendance attendance);       // delete recs
-=======
-using AttendanceSystem.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace AttendanceSystem.Repositories
-{
-    // This interface defines the contract for data access operations on Attendance records.
-    public interface IAttendanceRepository
-    {
-        Task<IEnumerable<Attendance>> GetAllAsync();
-        Task<Attendance?> GetByIdAsync(int id);
-        Task<IEnumerable<Attendance>> GetPresentAttendancesAsync();
-        Task AddAsync(Attendance attendance);
-        Task UpdateAsync(Attendance attendance);
-        Task DeleteAsync(Attendance attendance);
->>>>>>> dc81ff7998debd8cf4ac143e9ec715b1ae57409e
     }
 }
