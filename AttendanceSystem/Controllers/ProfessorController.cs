@@ -14,7 +14,7 @@ namespace AttendanceSystem.Controllers {
       return Ok(professor);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("id/{id}")]
     public async Task<ActionResult<Professor>> GetProfessorById(String id){
       var professor = await _professorService.GetProfessorByIdAsync(id);
       if(professor == null){
@@ -24,7 +24,7 @@ namespace AttendanceSystem.Controllers {
       return Ok(professor);
     }
 
-    [HttpGet("{username}")]
+    [HttpGet("username/{username}")]
     public async Task<ActionResult<Professor>> GetProfessorByUsername(String username){
       var professor = await _professorService.GetProfessorByEmailAsync(username);
       if(professor == null){
@@ -34,7 +34,7 @@ namespace AttendanceSystem.Controllers {
       return Ok(professor);
     }
 
-    [HttpGet("{email}")]
+    [HttpGet("email/{email}")]
     public async Task<ActionResult<Professor>> GetProfessorByEmail(String email){
       var professor = await _professorService.GetProfessorByEmailAsync(email);
       if(professor == null){
@@ -96,7 +96,7 @@ namespace AttendanceSystem.Controllers {
       return Ok(new { message = "Professor exists." });
     }
 
-    [HttpGet("exist/email/{email}")]
+    [HttpGet("exists/email/{email}")]
     public async Task<IActionResult> ProfessorExistsByEmail(String email){
       var exist = await _professorService.ProfessorExistsByEmailAsync(email);
 
