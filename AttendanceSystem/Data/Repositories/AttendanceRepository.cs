@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace AttendanceSystem.Repositories
 {
-    // This class implements the data access logic using EF Core.
+
     public class AttendanceRepository : IAttendanceRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _context; // database context
 
         public AttendanceRepository(AppDbContext context)
         {
@@ -19,36 +19,36 @@ namespace AttendanceSystem.Repositories
 
         public async Task<IEnumerable<Attendance>> GetAllAsync()
         {
-            return await _context.Attendances.ToListAsync();
+            return await _context.Attendances.ToListAsync();  // get all attendance recs
         }
 
         public async Task<Attendance?> GetByIdAsync(int id)
         {
-            return await _context.Attendances.FindAsync(id);
+            return await _context.Attendances.FindAsync(id); // get a specific rec by ID
         }
 
         public async Task<IEnumerable<Attendance>> GetPresentAttendancesAsync()
         {
             return await _context.Attendances
-                .Where(a => a.AttendanceType == AttendanceType.Present)
+                .Where(a => a.AttendanceType == AttendanceType.Present) // get whose present
                 .ToListAsync();
         }
 
         public async Task AddAsync(Attendance attendance)
         {
-            await _context.Attendances.AddAsync(attendance);
+            await _context.Attendances.AddAsync(attendance); // add a new rec to the db
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Attendance attendance)
         {
-            _context.Attendances.Update(attendance);
+            _context.Attendances.Update(attendance); // update existing rec
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Attendance attendance)
         {
-            _context.Attendances.Remove(attendance);
+            _context.Attendances.Remove(attendance); // delete recs
             await _context.SaveChangesAsync();
         }
     }
