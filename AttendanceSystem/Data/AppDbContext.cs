@@ -6,6 +6,7 @@ namespace AttendanceSystem.Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
   public DbSet<Professor> Professors { get; set; } = null!;
+  public DbSet<Attendance> Attendances { get; set; } = null!;
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
