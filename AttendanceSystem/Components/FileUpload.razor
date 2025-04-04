@@ -1,0 +1,54 @@
+@using Microsoft.AspNetCore.Components.Forms
+
+<h4>Upload Student File</h4>
+
+<InputFile OnChange="HandleFileUpload" accept=".txt,.csv" />
+<p>@statusMessage</p>
+
+@if (fileContentLines.Any())
+{
+    <h5>File Content:</h5>
+    <ul>
+        @foreach (var line in fileContentLines)
+        {
+            <li>@line</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<string> fileContentLines = new();
+    private string statusMessage = "";
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null)
+        {
+            statusMessage = "No file selected.";
+            return;
+        }
+
+        using var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
+
+        fileContentLines.Clear();
+        bool isFirstLine = true;
+
+        while (!reader.EndOfStream)
+        {
+            var line = await reader.ReadLineAsync();
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            if (isFirstLine)
+            {
+                isFirstLine = false; // skip header
+                continue;
+            }
+
+            fileContentLines.Add(line);
+        }
+
+        statusMessage = $"Uploaded '{file.Name}'";
+    }
+}
