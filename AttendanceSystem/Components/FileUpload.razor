@@ -1,8 +1,8 @@
 @using Microsoft.AspNetCore.Components.Forms
 
-<h4>Student File</h4>
+<h4>Upload Student File</h4>
 
-<InputFile OnChange="HandleFileUpload" accept=".txt,.csv" />
+<InputFile OnChange="HandleFileUpload" accept=".txt" />
 <p>@statusMessage</p>
 
 @if (fileContentLines.Any())
@@ -22,36 +22,58 @@
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
     {
-    var file = e.File;
-    if (file == null)
-    {
-        statusMessage = "No file selected.";
-        return;
-    }
-
-    using var stream = file.OpenReadStream();
-    using var reader = new StreamReader(stream);
-
-    fileContentLines.Clear();
-
-    bool isFirstLine = true;
-
-    while (!reader.EndOfStream)
-    {
-        var line = await reader.ReadLineAsync();
-        line = line?.Trim(); // Trim whitespace (important!)
-
-        if (string.IsNullOrWhiteSpace(line)) continue;
-
-        if (isFirstLine)
+        var file = e.File;
+        if (file == null)
         {
-            isFirstLine = false; // Skip header
-            continue;
+            statusMessage = "No file selected.";
+            return;
         }
 
-        fileContentLines.Add(line);
-    }
+        // Ensure the file is a .txt file
+        if (file.Name.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+        {
+            statusMessage = $"Selected file: {file.Name}";  // Debugging message
 
-    statusMessage = $"Uploaded '{file.Name}' with {fileContentLines.Count} student records.";
+            using var stream = file.OpenReadStream();
+            using var reader = new StreamReader(stream);
+
+            fileContentLines.Clear();
+            bool isFirstLine = true;
+
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+
+                // Debug: Log each line to the browser console
+                Console.WriteLine($"Read line: '{line}'");
+
+                line = line?.Trim(); // Trim whitespace (important!)
+
+                // If the line is empty after trimming, skip it
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                // Skip header line
+                if (isFirstLine)
+                {
+                    isFirstLine = false;
+                    continue;
+                }
+
+                // Split the line by tabs (assuming it's a TSV)
+                var fields = line.Split('\t');
+
+                // Assuming there are 4 fields in each line (Last Name, First Name, Username, Student ID)
+                var studentRecord = $"Last Name: {fields[0]}, First Name: {fields[1]}, Username: {fields[2]}, Student ID: {fields[3]}";
+
+                // Add the formatted student record to the list
+                fileContentLines.Add(studentRecord);
+            }
+
+            statusMessage += $" Uploaded {fileContentLines.Count} student records.";
+        }
+        else
+        {
+            statusMessage = "Please upload a .txt file.";
+        }
     }
 }
