@@ -21,34 +21,27 @@
     private string statusMessage = "";
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
+{
+    var file = e.File;
+    if (file == null)
     {
-        var file = e.File;
-        if (file == null)
-        {
-            statusMessage = "No file selected.";
-            return;
-        }
+        statusMessage = "No file selected.";
+        return;
+    }
 
-        using var stream = file.OpenReadStream();
-        using var reader = new StreamReader(stream);
+    using var stream = file.OpenReadStream(); // file is small, no max size needed
+    using var reader = new StreamReader(stream);
 
-        fileContentLines.Clear();
-        bool isFirstLine = true;
+    fileContentLines.Clear();
 
-        while (!reader.EndOfStream)
-        {
-            var line = await reader.ReadLineAsync();
-            if (string.IsNullOrWhiteSpace(line)) continue;
+    while (!reader.EndOfStream)
+    {
+        var line = await reader.ReadLineAsync();
+        if (string.IsNullOrWhiteSpace(line)) continue;
 
-            if (isFirstLine)
-            {
-                isFirstLine = false; // skip header
-                continue;
-            }
+        fileContentLines.Add(line); // Don't skip any lines
+    }
 
-            fileContentLines.Add(line);
-        }
-
-        statusMessage = $"Uploaded '{file.Name}'";
+    statusMessage = $"Uploaded '{file.Name}'";
     }
 }
