@@ -1,13 +1,13 @@
 @using Microsoft.AspNetCore.Components.Forms
 
-<h4>Upload Student File</h4>
+<h4>Student File</h4>
 
 <InputFile OnChange="HandleFileUpload" accept=".txt,.csv" />
 <p>@statusMessage</p>
 
 @if (fileContentLines.Any())
 {
-    <h5>File Content:</h5>
+    <h5>Upload File Content:</h5>
     <ul>
         @foreach (var line in fileContentLines)
         {
@@ -21,7 +21,7 @@
     private string statusMessage = "";
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
-{
+    {
     var file = e.File;
     if (file == null)
     {
@@ -29,19 +29,29 @@
         return;
     }
 
-    using var stream = file.OpenReadStream(); // file is small, no max size needed
+    using var stream = file.OpenReadStream();
     using var reader = new StreamReader(stream);
 
     fileContentLines.Clear();
 
+    bool isFirstLine = true;
+
     while (!reader.EndOfStream)
     {
         var line = await reader.ReadLineAsync();
+        line = line?.Trim(); // Trim whitespace (important!)
+
         if (string.IsNullOrWhiteSpace(line)) continue;
 
-        fileContentLines.Add(line); // Don't skip any lines
+        if (isFirstLine)
+        {
+            isFirstLine = false; // Skip header
+            continue;
+        }
+
+        fileContentLines.Add(line);
     }
 
-    statusMessage = $"Uploaded '{file.Name}'";
+    statusMessage = $"Uploaded '{file.Name}' with {fileContentLines.Count} student records.";
     }
 }
