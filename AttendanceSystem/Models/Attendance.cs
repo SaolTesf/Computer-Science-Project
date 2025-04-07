@@ -14,15 +14,22 @@ namespace AttendanceSystem.Models
     {
         [Key]
         public int AttendanceID { get; set; }
+
         [Required]
-        [StringLength(10, MinimumLength = 1, ErrorMessage = "UserID must be between 1 and 10 characters.")]
-        public string UserID { get; set; } = string.Empty;
+        public int SessionID { get; set; } // Foreign key to ClassSession
+
         [Required]
-        [StringLength(10, MinimumLength = 1, ErrorMessage = "CourseNumber must be between 1 and 10 characters.")]
-        public string CourseNumber { get; set; } = string.Empty;
+        [StringLength(10, MinimumLength = 1, ErrorMessage = "UTDID must be between 1 and 10 characters.")]
+        public string UTDID { get; set; } = string.Empty; // Foreign key to Student
+
         [Required]
-        public DateTime AttendanceDate { get; set; }
+        public DateTime SubmissionTime { get; set; }
+
         [Required]
-        public AttendanceType AttendanceType { get; set; }
+        [StringLength(45, ErrorMessage = "IPAddress must not exceed 45 characters.")]
+        public string IPAddress { get; set; } = string.Empty;
+
+        [Required]
+        public AttendanceType AttendanceType { get; set; } = AttendanceType.Present;
     }
 }

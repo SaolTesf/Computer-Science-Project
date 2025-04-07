@@ -1,5 +1,5 @@
-using AttendanceSystem.Models;
-using AttendanceSystem.Services;
+using AttendanceSystem.Models;         // Import the Attendance model
+using AttendanceSystem.Services;       // Import IAttendanceService
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,14 +10,14 @@ namespace AttendanceSystem.Controllers
     [Route("api/[controller]")]
     public class AttendanceController : ControllerBase
     {
-        private readonly IAttendanceService _attendanceService;
+        private readonly IAttendanceService _attendanceService; // service instance
 
         public AttendanceController(IAttendanceService attendanceService)
         {
-            _attendanceService = attendanceService;
+            _attendanceService = attendanceService; // dependency injection
         }
 
-        // GET: attendance
+        // GET: api/attendance
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Attendance>>> GetAllAttendances()
         {
@@ -25,7 +25,7 @@ namespace AttendanceSystem.Controllers
             return Ok(attendances);
         }
 
-        // GET: id
+        // GET: api/attendance/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Attendance>> GetAttendanceById(int id)
         {
@@ -35,7 +35,7 @@ namespace AttendanceSystem.Controllers
             return Ok(attendance);
         }
 
-        // GET: present students
+        // GET: api/attendance/present
         [HttpGet("present")]
         public async Task<ActionResult<IEnumerable<Attendance>>> GetPresentAttendances()
         {
@@ -43,7 +43,7 @@ namespace AttendanceSystem.Controllers
             return Ok(attendances);
         }
 
-        // POST: attendance
+        // POST: api/attendance
         [HttpPost]
         public async Task<ActionResult> CreateAttendance([FromBody] Attendance attendance)
         {
@@ -54,7 +54,7 @@ namespace AttendanceSystem.Controllers
             return CreatedAtAction(nameof(GetAttendanceById), new { id = attendance.AttendanceID }, attendance);
         }
 
-        // PUT: id
+        // PUT: api/attendance/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAttendance(int id, [FromBody] Attendance attendance)
         {
@@ -65,7 +65,7 @@ namespace AttendanceSystem.Controllers
             return NoContent();
         }
 
-        // DELETE: id
+        // DELETE: api/attendance/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAttendance(int id)
         {
