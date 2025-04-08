@@ -13,9 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AttendanceSystem.Services;
 
-public class AuthService : IAuthService {
-  private readonly IProfessorRepository _professorRepository;
-  private readonly IConfiguration _configuration;
+public class AuthService(IProfessorRepository professorRepository, IConfiguration configuration) : IAuthService {
+  private readonly IProfessorRepository _professorRepository = professorRepository;
+  private readonly IConfiguration _configuration = configuration;
   public async Task<AuthResponseDTO?> RegisterAsync(RegisterDTO registerDTO) {
 
     // Check if username or email already exist
