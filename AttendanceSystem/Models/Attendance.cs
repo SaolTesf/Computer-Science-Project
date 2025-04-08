@@ -19,7 +19,7 @@ namespace AttendanceSystem.Models
         public int SessionID { get; set; } // Foreign key to ClassSession
 
         [Required]
-        [StringLength(10, MinimumLength = 1, ErrorMessage = "UTDID must be between 1 and 10 characters.")]
+        [StringLength(10, ErrorMessage = "UTDID must be 10 characters.")]
         public string UTDID { get; set; } = string.Empty; // Foreign key to Student
 
         [Required]
