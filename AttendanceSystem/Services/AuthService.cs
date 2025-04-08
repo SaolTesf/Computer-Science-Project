@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+AuthService class that implements the IAuthService interface for user authentication and registration in the attendance system.
+*/
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

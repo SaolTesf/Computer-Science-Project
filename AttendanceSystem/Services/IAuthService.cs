@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+AuthService interface that defines the methods for user authentication and registration in the attendance system.
+*/
+
 using AttendanceSystem.Models;
 using AttendanceSystem.Models.DTOs;
 using System.IdentityModel.Tokens.Jwt;

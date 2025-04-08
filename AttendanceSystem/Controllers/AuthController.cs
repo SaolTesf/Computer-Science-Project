@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+AuthController class that handles user authentication and registration in the attendance system.
+*/
+
 using AttendanceSystem.Models.DTOs;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Authentication;

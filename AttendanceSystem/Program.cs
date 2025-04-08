@@ -1,3 +1,9 @@
+/*
+    This is the main entry point for the ASP.NET Core application. It sets up the services, middleware, and routing for the application.
+    It also configures the authentication and authorization for the application using JWT tokens.
+    The application uses Entity Framework Core to connect to a MySQL database and includes a repository and service for managing professors.
+*/
+
 using System.Text;
 using AttendanceSystem.Components;
 using AttendanceSystem.Data;
