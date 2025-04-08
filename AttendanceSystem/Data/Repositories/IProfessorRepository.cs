@@ -1,4 +1,4 @@
-using AttendanceSystem.Models;
+giusing AttendanceSystem.Models;
 
 namespace AttendanceSystem.Data.Repositories;
 
