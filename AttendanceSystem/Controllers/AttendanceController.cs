@@ -8,17 +8,12 @@ namespace AttendanceSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AttendanceController : ControllerBase
+    public class AttendanceController(IAttendanceService attendanceService) : ControllerBase
     {
-        private readonly IAttendanceService _attendanceService; // service instance
+        private readonly IAttendanceService _attendanceService = attendanceService; // service instance
 
-        public AttendanceController(IAttendanceService attendanceService)
-        {
-            _attendanceService = attendanceService; // dependency injection
-        }
-
-        // GET: api/attendance
-        [HttpGet]
+    // GET: api/attendance
+    [HttpGet]
         public async Task<ActionResult<IEnumerable<Attendance>>> GetAllAttendances()
         {
             var attendances = await _attendanceService.GetAllAttendancesAsync();
