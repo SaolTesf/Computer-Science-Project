@@ -6,6 +6,7 @@ namespace AttendanceSystem.Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
   public DbSet<Professor> Professors { get; set; } = null!;
+  public DbSet<Student> Students { get; set; } = null!;
     
   protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -25,6 +26,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       // Set up unique constraints
       entity.HasIndex(e => e.Username).IsUnique();
       entity.HasIndex(e => e.Email).IsUnique();
+    }
+    );
+
+    modelBuilder.Entity<Student>(entity => {
+      entity.ToTable("Student");
+      entity.HasKey(e => e.UTDID);
+      entity.Property(e => e.UTDID).HasMaxLength(10).IsRequired();
+      entity.Property(e => e.FirstName).HasMaxLength(255).IsRequired();
+      entity.Property(e => e.LastName).HasMaxLength(255).IsRequired();
     });
   }
 }

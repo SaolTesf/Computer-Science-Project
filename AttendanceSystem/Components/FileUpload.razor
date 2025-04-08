@@ -5,16 +5,7 @@
 <InputFile OnChange="HandleFileUpload" accept=".txt" />
 <p>@statusMessage</p>
 
-@if (fileContentLines.Any())
-{
-    <h5>Upload File Content:</h5>
-    <ul>
-        @foreach (var line in fileContentLines)
-        {
-            <li>@line</li>
-        }
-    </ul>
-}
+
 
 @code {
     private List<string> fileContentLines = new();
