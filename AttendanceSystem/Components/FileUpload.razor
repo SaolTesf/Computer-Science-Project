@@ -1,14 +1,16 @@
 @using Microsoft.AspNetCore.Components.Forms
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Models 
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
 
 <h4>Upload Student File</h4>
 
 <InputFile OnChange="HandleFileUpload" accept=".txt" />
 <p>@statusMessage</p>
 
-
-
 @code {
-    private List<string> fileContentLines = new();
     private string statusMessage = "";
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
@@ -20,47 +22,87 @@
             return;
         }
 
-        //Ensure the file is a .txt file
-        if (file.Name.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+        if (!file.Name.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
         {
-            using var stream = file.OpenReadStream();
-            using var reader = new StreamReader(stream);
+            statusMessage = "Please upload a .txt file.";
+            return;
+        }
 
-            fileContentLines.Clear();
-            bool isFirstLine = true;
+        var students = new List<Student>();
+        using var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
 
-            while (!reader.EndOfStream)
+        bool isFirstLine = true;
+
+        while (!reader.EndOfStream)
+        {
+            var line = await reader.ReadLineAsync();
+            line = line?.Trim();
+
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            if (isFirstLine)
             {
-                var line = await reader.ReadLineAsync();
-
-                //Trim whitespace
-                line = line?.Trim(); 
-
-                //If the line is empty after trimming, skip it
-                if (string.IsNullOrWhiteSpace(line)) continue;
-
-                //Skip header line
-                if (isFirstLine)
-                {
-                    isFirstLine = false;
-                    continue;
-                }
-
-                //Split the line by tabs (assuming it's a TSV)
-                var fields = line.Split('\t');
-
-                //Assuming there are 4 fields in each line (Last Name, First Name, Username, Student ID)
-                var studentRecord = $"Last Name: {fields[0]}, First Name: {fields[1]}, Username: {fields[2]}, Student ID: {fields[3]}";
-
-                //Add the formatted student record to the list
-                fileContentLines.Add(studentRecord);
+                isFirstLine = false;
+                continue;
             }
 
-            statusMessage += $" Uploaded";
+            var fields = line.Split('\t');
+
+            if (fields.Length < 4) continue; 
+
+            students.Add(new Student
+            {
+                LastName = fields[0],
+                FirstName = fields[1],
+                Username = fields[2],
+                UTDID = fields[3]
+            });
+        }
+
+        if (students.Count > 0)
+        {
+            var success = await InsertStudentsToDatabase(students);
+            if (success)
+            {
+                statusMessage = "File submitted successfully.";
+            }
+            else
+            {
+                statusMessage = "An error occurred while submitting the file.";
+            }
         }
         else
         {
-            statusMessage = "Please upload a .txt file.";
+            statusMessage = "No valid students found in the file.";
+        }
+
+        //Refresh the page
+        await Task.Delay(1000);
+        //Forces page reload 
+        NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+    }
+
+    private async Task<bool> InsertStudentsToDatabase(List<Student> students)
+    {
+        try
+        {
+            foreach (var student in students)
+            {
+                //Post the student data to the API endpoint
+                var response = await HttpClient.PostAsJsonAsync("api/student", student);
+                if (!response.IsSuccessStatusCode)
+                {
+                    statusMessage = $"Error: {response.ReasonPhrase} while adding student {student.UTDID}";
+                    return false;
+                }
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"An error occurred while communicating with the API: {ex.Message}";
+            return false;
         }
     }
 }

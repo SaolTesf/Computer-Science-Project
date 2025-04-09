@@ -15,7 +15,8 @@ CREATE TABLE Professor (
 CREATE TABLE Student (
     UTDID VARCHAR(10) PRIMARY KEY,
     FirstName VARCHAR(255) NOT NULL,
-    LastName VARCHAR(255) NOT NULL
+    LastName VARCHAR(255) NOT NULL,
+    Username VARCHAR(25) UNIQUE NOT NULL
 );
 
 -- Courses Table

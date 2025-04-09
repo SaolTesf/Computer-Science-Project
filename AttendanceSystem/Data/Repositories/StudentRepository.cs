@@ -14,6 +14,9 @@ public class StudentRepository(AppDbContext context) : IStudentRepository {
     return await _context.Students.FindAsync(id);
   }
 
+  public async Task<Student?> GetStudentByUsernameAsync(String username) {
+    return await _context.Students.FirstOrDefaultAsync(p => p.Username == username);
+  }
   public async Task AddStudentAsync(Student student) {
     await _context.Students.AddAsync(student);
     await _context.SaveChangesAsync();

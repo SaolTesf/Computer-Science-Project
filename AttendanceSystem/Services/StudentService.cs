@@ -13,6 +13,10 @@ namespace AttendanceSystem.Services {
       return await _studentRepository.GetStudentByUTDIdAsync(id);
     }
 
+    public async Task<Student?> GetStudentByUsernameAsync(String username) {
+      return await _studentRepository.GetStudentByUsernameAsync(username);
+    }
+
     public async Task<bool> AddStudentAsync(Student student) {
       try{
         await _studentRepository.AddStudentAsync(student);
