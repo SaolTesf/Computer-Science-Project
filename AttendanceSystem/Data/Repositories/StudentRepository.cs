@@ -34,8 +34,4 @@ public class StudentRepository(AppDbContext context) : IStudentRepository {
       await _context.SaveChangesAsync();
     }
   }
-
-  public async Task<bool> StudentExistsByUTDIdAsync(String id) {
-    return await GetStudentByUTDIdAsync(id) != null;
-  }
 }

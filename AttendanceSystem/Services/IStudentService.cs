@@ -8,5 +8,4 @@ public interface IStudentService {
   Task<bool> AddStudentAsync(Student student);
   Task<bool> UpdateStudentAsync(Student student);
   Task<bool> DeleteStudentByUTDIdAsync(String id);
-  Task<bool> StudentExistsByUTDIdAsync(String id);
 }

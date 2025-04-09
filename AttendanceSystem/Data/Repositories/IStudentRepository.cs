@@ -9,5 +9,4 @@ public interface IStudentRepository {
   Task AddStudentAsync(Student student);
   Task UpdateStudentAsync(Student student);
   Task DeleteStudentByUTDIdAsync(String id);
-  Task<bool> StudentExistsByUTDIdAsync(String id);
 }

@@ -75,16 +75,5 @@ namespace AttendanceSystem.Controllers {
             return NoContent();
         }
 
-        //Check if student exists by UTD ID
-        [HttpGet("exists/id/{id}")]
-        public async Task<IActionResult> StudentExistsByUTDId(String id)
-        {
-            var exists = await _studentService.StudentExistsByUTDIdAsync(id);
-            if (!exists)
-            {
-                return NotFound();
-            }
-            return Ok(new { message = "Student exists." });
-        }
     }
 }
