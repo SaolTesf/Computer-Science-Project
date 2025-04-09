@@ -22,6 +22,10 @@ builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddScoped<IStudentService, StudentService>();
+
 
 // Add professors controller
 builder.Services.AddControllers();

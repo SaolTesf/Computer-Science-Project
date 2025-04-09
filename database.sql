@@ -16,7 +16,7 @@ CREATE TABLE Student (
     UTDID VARCHAR(10) PRIMARY KEY,
     FirstName VARCHAR(255) NOT NULL,
     LastName VARCHAR(255) NOT NULL,
-    Username VARCHAR(25) UNIQUE NOT NULL
+    Username VARCHAR(10) UNIQUE NOT NULL
 );
 
 -- Courses Table
@@ -92,13 +92,13 @@ VALUES
    ('5400000003', 'Robert', 'Johnson', 'rjohnson', 'robert.johnson@example.com', 'hashedpassword3');
 
 -- Insert Students (no dependencies)
-INSERT INTO Student (UTDID, FirstName, LastName)
+INSERT INTO Student (UTDID, FirstName, LastName, Username)
 VALUES
-     ('2100000001', 'Alice', 'Williams'),
-     ('2100000002', 'Bob', 'Brown'),
-     ('2100000003', 'Charlie', 'Davis'),
-     ('2100000004', 'Diana', 'Evans'),
-     ('2100000005', 'Ethan', 'Fisher');
+     ('2100000001', 'Alice', 'Williams', 'axw3456432'),
+     ('2100000002', 'Bob', 'Brown', 'bxb3456432'),
+     ('2100000003', 'Charlie', 'Davis', 'cxd3456432'),
+     ('2100000004', 'Diana', 'Evans', 'dxe3456432'),
+     ('2100000005', 'Ethan', 'Fisher', 'exf3456432');
 
 -- Insert Courses (depends on Professor)
 INSERT INTO Course (CourseNumber, CourseName, Section, ProfessorID)

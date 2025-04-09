@@ -2,30 +2,22 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AttendanceSystem.Controllers
-{
-    [Route("api/[controller]")]
-    [ApiController]
-    public class StudentController : ControllerBase
+namespace AttendanceSystem.Controllers {
+  [Route("api/[controller]")]
+  [ApiController]
+  public class StudentController(IStudentService studentService) : ControllerBase {
+    private readonly IStudentService _studentService = studentService;
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
     {
-        private readonly IStudentService _studentService;
-
-        // Constructor injection
-        public StudentController(IStudentService studentService)
-        {
-            _studentService = studentService;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
-        {
-            var students = await _studentService.GetAllStudentsAsync();
-            return Ok(students);
-        }
+        var students = await _studentService.GetAllStudentsAsync();
+        return Ok(students);
+    }
 
         //Get student by UTD ID
         [HttpGet("id/{id}")]
-        public async Task<ActionResult<Student>> GetStudentByUTDId(string id)
+        public async Task<ActionResult<Student>> GetStudentByUTDId(String id)
         {
             var student = await _studentService.GetStudentByUTDIdAsync(id);
             if (student == null)
@@ -37,7 +29,7 @@ namespace AttendanceSystem.Controllers
 
         //Get student by Username
         [HttpGet("username/{username}")]
-        public async Task<ActionResult<Student>> GetStudentByUsername(string username)
+        public async Task<ActionResult<Student>> GetStudentByUsername(String username)
         {
             var student = await _studentService.GetStudentByUsernameAsync(username);
             if (student == null)
@@ -54,7 +46,7 @@ namespace AttendanceSystem.Controllers
             var result = await _studentService.AddStudentAsync(student);
             if (!result)
             {
-                return BadRequest("Failed to add the student.");
+                return BadRequest();
             }
             return CreatedAtAction(nameof(GetStudentByUTDId), new { id = student.UTDID }, student);
         }
@@ -66,31 +58,31 @@ namespace AttendanceSystem.Controllers
             var result = await _studentService.UpdateStudentAsync(student);
             if (!result)
             {
-                return NotFound("Student not found.");
+                return NotFound();
             }
             return NoContent();
         }
 
         //Delete student by UTD ID
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudentByUTDId(string id)
+        public async Task<IActionResult> DeleteStudentByUTDId(String id)
         {
             var result = await _studentService.DeleteStudentByUTDIdAsync(id);
             if (!result)
             {
-                return NotFound("Student not found.");
+                return NotFound();
             }
             return NoContent();
         }
 
         //Check if student exists by UTD ID
         [HttpGet("exists/id/{id}")]
-        public async Task<IActionResult> StudentExistsByUTDId(string id)
+        public async Task<IActionResult> StudentExistsByUTDId(String id)
         {
             var exists = await _studentService.StudentExistsByUTDIdAsync(id);
             if (!exists)
             {
-                return NotFound("Student not found.");
+                return NotFound();
             }
             return Ok(new { message = "Student exists." });
         }
