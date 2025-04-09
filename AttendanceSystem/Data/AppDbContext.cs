@@ -31,19 +31,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.HasIndex(e => e.Username).IsUnique();
       entity.HasIndex(e => e.Email).IsUnique();
     });
- modelBuilder.Entity<Attendance>(entity =>
-            {
-                entity.ToTable("Attendance");
-                entity.HasKey(e => e.AttendanceID);
-                entity.Property(e => e.AttendanceID).ValueGeneratedOnAdd();
-                entity.Property(e => e.SessionID).IsRequired();  // SessionID is required
-                entity.Property(e => e.UTDID).HasMaxLength(10).IsRequired();  // UTDID instead of UserID
-                entity.Property(e => e.SubmissionTime).IsRequired();  // SubmissionTime instead of AttendanceDate
-                entity.Property(e => e.IPAddress).HasMaxLength(45).IsRequired();
-                entity.Property(e => e.AttendanceType)
-                      .HasConversion<string>() // Store enum as string
-                      .HasDefaultValue(AttendanceType.Present)
-                      .IsRequired();
-            });
+    modelBuilder.Entity<Attendance>(entity =>
+               {
+                 entity.ToTable("Attendance");
+                 entity.HasKey(e => e.AttendanceID);
+                 entity.Property(e => e.AttendanceID).ValueGeneratedOnAdd();
+                 entity.Property(e => e.SessionID).IsRequired();  // SessionID is required
+                 entity.Property(e => e.UTDID).HasMaxLength(10).IsRequired();  // UTDID instead of UserID
+                 entity.Property(e => e.SubmissionTime).IsRequired();  // SubmissionTime instead of AttendanceDate
+                 entity.Property(e => e.IPAddress).HasMaxLength(45).IsRequired();
+                 entity.Property(e => e.AttendanceType)
+                    .HasConversion<string>() // Store enum as string
+                    .HasDefaultValue(AttendanceType.Present)
+                    .IsRequired();
+               });
+
   }
 }
