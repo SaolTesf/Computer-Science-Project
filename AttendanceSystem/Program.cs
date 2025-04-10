@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -72,7 +73,7 @@ app.UseAntiforgery();
 app.MapControllers();
 
 app.UseStaticFiles();
-app.MapRazorComponents<App>()
+app.MapRazorComponents<AttendanceSystem.Components.App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
