@@ -26,6 +26,7 @@ builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
 
+builder.Services.AddHttpClient();
 
 // Add professors controller
 builder.Services.AddControllers();
@@ -41,6 +42,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
 }
+
 
 
 app.UseAntiforgery();
