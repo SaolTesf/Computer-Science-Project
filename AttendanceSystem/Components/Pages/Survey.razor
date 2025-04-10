@@ -1,8 +1,10 @@
 @page "/survey"
 @page "/"
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using System.ComponentModel.DataAnnotations;
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <style>
     .container {
@@ -84,30 +86,32 @@
     <div class="form-box">
         <div class="title">Student Attendance Survey</div>
         <div class="content">
-            <EditForm Model="@formData" OnValidSubmit="HandleValidSubmit">
+            <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
 
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
-                <div>
-                    <label>Student ID:</label>
-                    <InputText @bind-Value="formData.StudentID" class="input-field" />
+                <div style="margin-top: 30px; margin-bottom: 20px;">
+                    <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
+                    <InputText id="studentIdInput" @bind-Value="formData.StudentID" class="input-field" />
                     <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
                 </div>
 
-                <div class="question">What is 2 + 2?</div>
-                <div>
-                    <label>Answer:</label>
-                    <InputRadioGroup @bind-Value="formData.Answer">
-                        <label><InputRadio Value="3" /> 3</label>
-                        <label><InputRadio Value="4" /> 4</label>
-                        <label><InputRadio Value="5" /> 5</label>
+                <div style="margin-top: 60px; margin-bottom: 40px;">
+                    <div class="question" style="font-weight: bold; margin-bottom: 10px;">Question? Select one:</div>
+                    <InputRadioGroup @bind-Value="formData.Answer" TValue="string">
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="1" /> a)</label>
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="2" /> b)</label>
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="3" /> c)</label>
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="4" /> d)</label>
                     </InputRadioGroup>
                     <ValidationMessage For="@(() => formData.Answer)" class="error-message" />
                 </div>
 
+
+
                 <!-- Submit Button -->
-                <button type="submit" class="submit-btn" @onclick="ShowConfirmation">Submit</button>
+                <button type="submit" class="submit-btn">Submit</button>
 
             </EditForm>
         </div>
@@ -115,30 +119,42 @@
 </div>
 
 @code {
-    private FormData formData = new FormData();
-    private async Task ShowConfirmation()
+
+    private EditForm editForm;
+
+    private FormData formData = new FormData(){
+        StudentID = string.Empty,
+        Answer = string.Empty
+    };
+    private async Task HandleSubmit(EditContext context)
     {
-        // Show confirmation dialog
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
-        if (confirmed)
+        StateHasChanged();
+        if (context.Validate())
         {
-            // Proceed with submission logic
-            await HandleValidSubmit();
+            bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
+            if (confirmed)
+            {
+                Console.WriteLine($"Submitted: {formData.StudentID}");
+                Console.WriteLine($"Submitted: {formData.Answer}");
+                NavigationManager.NavigateTo("/home");
+            }
+        }
+        else
+        {
+            StateHasChanged();
+            Console.WriteLine("Form validation failed");
+            Console.WriteLine($"Submitted: {formData.StudentID}");
+            Console.WriteLine($"Submitted: {formData.Answer}");
         }
     }
-    private Task HandleValidSubmit()
-    {
-        Console.WriteLine($"Student ID: {formData.StudentID}");
-        Console.WriteLine($"Answer Selected: {formData.Answer}");
-        return Task.CompletedTask;
-    }
+
     public class FormData
-    {
+    {  
         [Required(ErrorMessage = "Student ID is required.")]
         [RegularExpression(@"^\d{1,25}$", ErrorMessage = "Only numbers allowed, max 25 characters.")]
-        public string StudentID { get; set; } = "";
-
+        public string StudentID { get; set; }
+        
         [Required(ErrorMessage = "Please select an answer.")]
-        public string Answer { get; set; } = "";
+        public string Answer { get; set; }
     }
 }

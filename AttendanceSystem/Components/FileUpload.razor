@@ -1,0 +1,108 @@
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Models 
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
+<h4>Upload Student File</h4>
+
+<InputFile OnChange="HandleFileUpload" accept=".txt" />
+<p>@statusMessage</p>
+
+@code {
+    private string statusMessage = "";
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null)
+        {
+            statusMessage = "No file selected.";
+            return;
+        }
+
+        if (!file.Name.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+        {
+            statusMessage = "Please upload a .txt file.";
+            return;
+        }
+
+        var students = new List<Student>();
+        using var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
+
+        bool isFirstLine = true;
+
+        while (!reader.EndOfStream)
+        {
+            var line = await reader.ReadLineAsync();
+            line = line?.Trim();
+
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            if (isFirstLine)
+            {
+                isFirstLine = false;
+                continue;
+            }
+
+            var fields = line.Split('\t');
+
+            if (fields.Length < 4) continue; 
+
+            students.Add(new Student
+            {
+                LastName = fields[0],
+                FirstName = fields[1],
+                Username = fields[2],
+                UTDID = fields[3]
+            });
+        }
+
+        if (students.Count > 0)
+        {
+            var success = await InsertStudentsToDatabase(students);
+            if (success)
+            {
+                statusMessage = "File submitted successfully.";
+            }
+            else
+            {
+                statusMessage = "An error occurred while submitting the file.";
+            }
+        }
+        else
+        {
+            statusMessage = "No valid students found in the file.";
+        }
+
+        //Refresh the page
+        await Task.Delay(1000);
+        //Forces page reload 
+        NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+    }
+
+    private async Task<bool> InsertStudentsToDatabase(List<Student> students)
+    {
+        try
+        {
+            foreach (var student in students)
+            {
+                //Post the student data to the API endpoint
+                var response = await HttpClient.PostAsJsonAsync("api/student", student);
+                if (!response.IsSuccessStatusCode)
+                {
+                    statusMessage = $"Error: {response.ReasonPhrase} while adding student {student.UTDID}";
+                    return false;
+                }
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"An error occurred while communicating with the API: {ex.Message}";
+            return false;
+        }
+    }
+}

@@ -49,6 +49,16 @@ builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 // Add professors service
 builder.Services.AddScoped<IProfessorService, ProfessorService>();
 
+builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddScoped<IStudentService, StudentService>();
+
+builder.Services.AddHttpClient();
+
 // Add professors controller
 builder.Services.AddControllers();
 
@@ -66,6 +76,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 
 app.UseAntiforgery();
