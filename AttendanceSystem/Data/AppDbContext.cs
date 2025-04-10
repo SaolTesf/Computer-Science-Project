@@ -9,7 +9,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
   public DbSet<Attendance> Attendances { get; set; } = null!;
 
-
+  public DbSet<Course> Courses { get; set; } = null!;
+  public DbSet<ClassSession> ClassSessions { get; set; } = null!;
+  public DbSet<QuizQuestionBank> QuizQuestionBanks { get; set; } = null!;
+  public DbSet<QuizQuestion> QuizQuestions { get; set; } = null!;
+  public DbSet<QuizResponse> QuizResponses { get; set; } = null!;
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
 
@@ -45,6 +49,91 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .HasDefaultValue(AttendanceType.Present)
                     .IsRequired();
                });
+    // Configure Course entity
+    modelBuilder.Entity<Course>(entity =>
+    {
+      entity.ToTable("Course");
+      entity.HasKey(e => e.CourseNumber);
+      entity.Property(e => e.CourseNumber).HasMaxLength(10).IsRequired();
+      entity.Property(e => e.CourseName).HasMaxLength(255).IsRequired();
+      entity.Property(e => e.Section).HasMaxLength(10).IsRequired();
+      entity.Property(e => e.ProfessorID).HasMaxLength(10).IsRequired();
+      entity.HasOne(e => e.Professor)
+                    .WithMany(p => p.Courses)
+                    .HasForeignKey(e => e.ProfessorID)
+                    .OnDelete(DeleteBehavior.Cascade);
+    });
+
+    // Configure ClassSession entity
+    modelBuilder.Entity<ClassSession>(entity =>
+    {
+      entity.ToTable("ClassSession");
+      entity.HasKey(e => e.SessionID);
+      entity.Property(e => e.SessionID).ValueGeneratedOnAdd();
+      entity.Property(e => e.CourseNumber).HasMaxLength(10).IsRequired();
+      entity.Property(e => e.SessionDateTime).IsRequired();
+      entity.Property(e => e.Password).HasMaxLength(255).IsRequired();
+      entity.Property(e => e.QuizStartTime).IsRequired();
+      entity.Property(e => e.QuizEndTime).IsRequired();
+      entity.Property(e => e.QuestionBankID).IsRequired();
+      entity.HasOne(e => e.Course)
+                    .WithMany(c => c.ClassSessions)
+                    .HasForeignKey(e => e.CourseNumber)
+                    .OnDelete(DeleteBehavior.Cascade);
+      entity.HasOne(e => e.QuizQuestionBank)
+                    .WithMany(qb => qb.ClassSessions)
+                    .HasForeignKey(e => e.QuestionBankID)
+                    .OnDelete(DeleteBehavior.Cascade);
+    });
+
+    // Configure QuizQuestionBank entity
+    modelBuilder.Entity<QuizQuestionBank>(entity =>
+    {
+      entity.ToTable("QuizQuestionBank");
+      entity.HasKey(e => e.QuestionBankID);
+      entity.Property(e => e.QuestionBankID).ValueGeneratedOnAdd();
+      entity.Property(e => e.BankName).HasMaxLength(255).IsRequired();
+      entity.Property(e => e.CourseNumber).HasMaxLength(10).IsRequired();
+      entity.HasOne(e => e.Course)
+                    .WithMany(c => c.QuizQuestionBanks)
+                    .HasForeignKey(e => e.CourseNumber)
+                    .OnDelete(DeleteBehavior.Cascade);
+    });
+
+    // Configure QuizQuestion entity
+    modelBuilder.Entity<QuizQuestion>(entity =>
+    {
+      entity.ToTable("QuizQuestion");
+      entity.HasKey(e => e.QuestionID);
+      entity.Property(e => e.QuestionID).ValueGeneratedOnAdd();
+      entity.Property(e => e.QuestionText).IsRequired();
+      entity.Property(e => e.Option1).IsRequired();
+      entity.Property(e => e.Option2).IsRequired();
+      // Option3 and Option4 are optional
+      entity.HasOne(e => e.QuizQuestionBank)
+                    .WithMany(qb => qb.QuizQuestions)
+                    .HasForeignKey(e => e.QuestionBankID)
+                    .OnDelete(DeleteBehavior.Cascade);
+    });
+
+    // Configure QuizResponse entity
+    modelBuilder.Entity<QuizResponse>(entity =>
+    {
+      entity.ToTable("QuizResponse");
+      entity.HasKey(e => e.ResponseID);
+      entity.Property(e => e.ResponseID).ValueGeneratedOnAdd();
+      entity.Property(e => e.AttendanceID).IsRequired();
+      entity.Property(e => e.QuestionID).IsRequired();
+      entity.Property(e => e.SelectedOption).IsRequired();
+      entity.HasOne(e => e.Attendance)
+                    .WithMany(a => a.QuizResponses) // Include Attendance navigation if desired
+                    .HasForeignKey(e => e.AttendanceID)
+                    .OnDelete(DeleteBehavior.Cascade);
+      entity.HasOne(e => e.QuizQuestion)
+                    .WithMany(q => q.QuizResponses)
+                    .HasForeignKey(e => e.QuestionID)
+                    .OnDelete(DeleteBehavior.Cascade);
+    });
 
   }
 }

@@ -1,6 +1,7 @@
 namespace AttendanceSystem.Models;
 
-public class Professor {
+public class Professor
+{
 
   // Attributes for Professor entity
   public string ID { get; set; } = null!;
@@ -10,6 +11,7 @@ public class Professor {
   public string Email { get; set; } = null!;
   public string PasswordHash { get; set; } = null!;
 
-  //public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
+
+  public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 
 }

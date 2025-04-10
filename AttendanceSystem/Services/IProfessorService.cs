@@ -1,8 +1,11 @@
 using AttendanceSystem.Models;
 
+using AttendanceSystem.Data.Repositories;
+
 namespace AttendanceSystem.Services;
 
-public interface IProfessorService {
+public interface IProfessorService
+{
   Task<IEnumerable<Professor>> GetAllProfessorsAsync();
   Task<Professor?> GetProfessorByIdAsync(String id);
   Task<Professor?> GetProfessorByUsernameAsync(String username);

@@ -22,6 +22,26 @@ builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+
+builder.Services.AddScoped<IClassSessionRepository, ClassSessionRepository>();
+
+builder.Services.AddScoped<IQuizQuestionBankRepository, QuizQuestionBankRepository>();
+
+builder.Services.AddScoped<IQuizQuestionRepository, QuizQuestionRepository>();
+
+builder.Services.AddScoped<IQuizResponseRepository, QuizResponseRepository>();
+
+builder.Services.AddScoped<ICourseService, CourseService>();
+
+builder.Services.AddScoped<IClassSessionService, ClassSessionService>();
+
+builder.Services.AddScoped<IQuizQuestionBankService, QuizQuestionBankService>();
+
+builder.Services.AddScoped<IQuizQuestionService, QuizQuestionService>();
+
+builder.Services.AddScoped<IQuizResponseService, QuizResponseService>();
+
 
 // Add professors controller
 builder.Services.AddControllers();
