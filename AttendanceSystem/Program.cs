@@ -15,9 +15,11 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#pragma warning disable CS8604 // Possible null reference argument.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+#pragma warning restore CS8604 // Possible null reference argument.
 
 builder.Services.AddAuthentication(options =>
 {
@@ -69,7 +71,7 @@ app.UseAntiforgery();
 
 app.MapControllers();
 
-app.MapStaticAssets();
+app.UseStaticFiles();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
