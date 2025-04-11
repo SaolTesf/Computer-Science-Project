@@ -2,22 +2,31 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AttendanceSystem.Controllers {
-  [Route("api/[controller]")]
-  [ApiController]
-  public class StudentController(IStudentService studentService) : ControllerBase {
-    private readonly IStudentService _studentService = studentService;
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+namespace AttendanceSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class StudentController : ControllerBase
     {
-        var students = await _studentService.GetAllStudentsAsync();
-        return Ok(students);
-    }
+        private readonly IStudentService _studentService;
 
-        //Get student by UTD ID
+        // Correct constructor injection
+        public StudentController(IStudentService studentService)
+        {
+            _studentService = studentService;
+        }
+
+        // Get all students
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+        {
+            var students = await _studentService.GetAllStudentsAsync();
+            return Ok(students);
+        }
+
+        // Get student by UTD ID
         [HttpGet("id/{id}")]
-        public async Task<ActionResult<Student>> GetStudentByUTDId(String id)
+        public async Task<ActionResult<Student>> GetStudentByUTDId(string id)
         {
             var student = await _studentService.GetStudentByUTDIdAsync(id);
             if (student == null)
@@ -27,9 +36,9 @@ namespace AttendanceSystem.Controllers {
             return Ok(student);
         }
 
-        //Get student by Username
+        // Get student by Username
         [HttpGet("username/{username}")]
-        public async Task<ActionResult<Student>> GetStudentByUsername(String username)
+        public async Task<ActionResult<Student>> GetStudentByUsername(string username)
         {
             var student = await _studentService.GetStudentByUsernameAsync(username);
             if (student == null)
@@ -39,7 +48,7 @@ namespace AttendanceSystem.Controllers {
             return Ok(student);
         }
 
-        //Add a new student
+        // Add a new student
         [HttpPost]
         public async Task<ActionResult<Student>> AddStudent(Student student)
         {
@@ -51,7 +60,7 @@ namespace AttendanceSystem.Controllers {
             return CreatedAtAction(nameof(GetStudentByUTDId), new { id = student.UTDID }, student);
         }
 
-        //Update an existing student
+        // Update an existing student
         [HttpPut]
         public async Task<IActionResult> UpdateStudent(Student student)
         {
@@ -63,9 +72,9 @@ namespace AttendanceSystem.Controllers {
             return NoContent();
         }
 
-        //Delete student by UTD ID
+        // Delete student by UTD ID
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudentByUTDId(String id)
+        public async Task<IActionResult> DeleteStudentByUTDId(string id)
         {
             var result = await _studentService.DeleteStudentByUTDIdAsync(id);
             if (!result)
@@ -74,6 +83,5 @@ namespace AttendanceSystem.Controllers {
             }
             return NoContent();
         }
-
     }
 }
