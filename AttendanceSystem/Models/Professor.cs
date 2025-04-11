@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+Professor model class that represents a professor entity in the attendance system.
+*/
+
 namespace AttendanceSystem.Models;
 
 public class Professor {

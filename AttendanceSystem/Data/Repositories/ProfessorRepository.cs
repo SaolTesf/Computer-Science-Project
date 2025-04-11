@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+Professor Repository class that implements the IProfessorRepository interface for managing professor data in the attendance system.
+*/
+
 using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
 

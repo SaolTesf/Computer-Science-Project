@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+AuthDTOs class that contains data transfer objects for user authentication and registration in the attendance system.
+*/
+
 namespace AttendanceSystem.Models.DTOs;
 
 public class RegisterDTO {

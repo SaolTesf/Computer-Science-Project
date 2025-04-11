@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+Professor Repository that defines the methods for managing professor data in the attendance system.
+*/
+
 using AttendanceSystem.Models;
 
 namespace AttendanceSystem.Data.Repositories;
