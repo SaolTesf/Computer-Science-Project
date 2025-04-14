@@ -72,16 +72,26 @@ namespace AttendanceSystem.Controllers
             return NoContent();
         }
 
-        // Delete student by UTD ID
+        //Delete student by UTD ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudentByUTDId(string id)
         {
-            var result = await _studentService.DeleteStudentByUTDIdAsync(id);
-            if (!result)
+            //Get the student before deleting
+            var student = await _studentService.GetStudentByUTDIdAsync(id);
+            if (student == null)
             {
                 return NotFound();
             }
-            return NoContent();
+
+            var result = await _studentService.DeleteStudentByUTDIdAsync(id);
+            if (!result)
+            {
+                return StatusCode(500, "Error deleting student.");
+            }
+
+            //Return a message with the student's name
+            return Ok($"{student.FirstName} {student.LastName} has been removed.");
         }
+
     }
 }
