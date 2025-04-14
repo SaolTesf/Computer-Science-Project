@@ -13,9 +13,9 @@ namespace ProfessorApp.Services
       _httpClient = httpClient;
     }
 
-    public async Task<AuthResponseDTO?> LoginAsync(string username, string password)
+    public async Task<AuthResponseDTO?> LoginAsync(string identifier, string password)
     {
-        var loginDto = new LoginDTO { Username = username, Password = password };
+        var loginDto = new LoginDTO { Identifier = identifier, Password = password };
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", loginDto);
         if(response.IsSuccessStatusCode)
         {

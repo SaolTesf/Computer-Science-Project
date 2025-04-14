@@ -44,7 +44,11 @@ public class AuthService(IProfessorRepository professorRepository, IConfiguratio
   }
 
   public async Task<AuthResponseDTO?> LoginAsync(LoginDTO loginDTO) {
-    var professor = await _professorRepository.GetProfessorByUsernameAsync(loginDTO.Username);
+    // check if professor exists by id, email or username
+    var professor = await _professorRepository.GetProfessorByIdAsync(loginDTO.Identifier);
+    professor ??= await _professorRepository.GetProfessorByEmailAsync(loginDTO.Identifier);
+    professor ??= await _professorRepository.GetProfessorByUsernameAsync(loginDTO.Identifier);
+    
     if(professor == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, professor.PasswordHash)) {
       return null;
     }

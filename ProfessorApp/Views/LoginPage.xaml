@@ -11,7 +11,7 @@
         
         <Frame Padding="20" BorderColor="{DynamicResource PrimaryColor}" CornerRadius="10" HasShadow="True">
             <StackLayout Spacing="20">
-                <Entry x:Name="usernameEntry" Placeholder="Username" />
+                <Entry x:Name="identifierEntry" Placeholder="ID, Email or Username" />
                 <Entry x:Name="passwordEntry" Placeholder="Password" IsPassword="True" />
                 <Button Text="Login" Clicked="OnLoginClicked" Margin="0,10,0,0" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" />
                 <Label x:Name="statusLabel" TextColor="Red" HorizontalOptions="Center" />
