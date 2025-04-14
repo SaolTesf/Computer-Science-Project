@@ -25,11 +25,12 @@ namespace ProfessorApp.Services
         return null;
     }
 
+    // gets register address and waits for a response
     public async Task<AuthResponseDTO?> RegisterAsync(string id, string firstName, string lastName, string username, string email, string password)
         {
             var registerDto = new RegisterDTO { ID = id, FirstName = firstName, LastName = lastName, Username = username, Email = email, Password = password };
             var response = await _httpClient.PostAsJsonAsync("api/auth/register", registerDto);
-            Debug.WriteLine(response);
+
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<AuthResponseDTO>();

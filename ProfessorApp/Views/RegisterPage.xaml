@@ -10,7 +10,7 @@
 
         <Frame Padding="10" BorderColor="{DynamicResource PrimaryColor}" MaximumWidthRequest="600" CornerRadius="10" HasShadow="True">
             <StackLayout Spacing="10">
-                <Entry x:Name="idEntry" Placeholder="ID" />
+                <Entry x:Name="idEntry" MaxLength="10" Placeholder="ID" TextChanged="IDTextChanged" Keyboard="Numeric" />
                 <Entry x:Name="firstNameEntry" Placeholder="First Name" />
                 <Entry x:Name="lastNameEntry" Placeholder="Last Name" />
                 <Entry x:Name="usernameEntry" Placeholder="Username" />

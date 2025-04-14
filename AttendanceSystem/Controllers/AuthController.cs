@@ -3,10 +3,12 @@ Saol Tesfaghebriel
 AuthController class that handles user authentication and registration in the attendance system.
 */
 
+using AttendanceSystem.Models;
 using AttendanceSystem.Models.DTOs;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace AttendanceSystem.Controllers;
 
@@ -18,11 +20,8 @@ public class AuthController(IAuthService authService) : ControllerBase {
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponseDTO>> Register(RegisterDTO registerDTO) {
         var response = await _authService.RegisterAsync(registerDTO);
-        if (response != null && response.Token == "")
-        {
-            return BadRequest("ID, username, or email already exist.");
-        } else if (response == null) {
-            return BadRequest("Failed to register.");
+        if (response == null) {
+            return BadRequest(response);
         }
         return Ok(response);
     }

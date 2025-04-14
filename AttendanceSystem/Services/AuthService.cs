@@ -3,6 +3,7 @@ Saol Tesfaghebriel
 AuthService class that implements the IAuthService interface for user authentication and registration in the attendance system.
 */
 
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -17,7 +18,6 @@ public class AuthService(IProfessorRepository professorRepository, IConfiguratio
   private readonly IProfessorRepository _professorRepository = professorRepository;
   private readonly IConfiguration _configuration = configuration;
   public async Task<AuthResponseDTO?> RegisterAsync(RegisterDTO registerDTO) {
-
     // create new professor
     var professor = new Professor {
       ID = registerDTO.ID,
@@ -30,14 +30,10 @@ public class AuthService(IProfessorRepository professorRepository, IConfiguratio
 
     // Check if username or email or ID already exist
     if (await _professorRepository.ProfessorExistsByUsernameAsync(registerDTO.Username)
-        || await _professorRepository.ProfessorExistsByEmailAsync(registerDTO.Email)
-        || await _professorRepository.ProfessorExistsByIdAsync(registerDTO.ID))
+    || await _professorRepository.ProfessorExistsByEmailAsync(registerDTO.Email)
+    || await _professorRepository.ProfessorExistsByIdAsync(registerDTO.ID))
     {
-        return new AuthResponseDTO
-        {
-            Token = "",
-            User = professor
-        };
+        return null;
     }
 
     await _professorRepository.AddProfessorAsync(professor);
