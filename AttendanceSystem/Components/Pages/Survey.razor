@@ -1,0 +1,160 @@
+@page "/survey"
+@page "/"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations;
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .form-box {
+        width: 90%;
+        max-width: 600px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    .title {
+        background-color: #ff9800;
+        color: white;
+        padding: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+    }
+
+    .question {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+        margin-top: 5px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background-color: #ff9800;
+        color: white;
+        border: none;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+        background-color: #e68900;
+    }
+</style>
+
+
+
+<div class="container">
+    <div class="form-box">
+        <div class="title">Student Attendance Survey</div>
+        <div class="content">
+            <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
+
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div style="margin-top: 30px; margin-bottom: 20px;">
+                    <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
+                    <InputText id="studentIdInput" @bind-Value="formData.StudentID" class="input-field" />
+                    <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
+                </div>
+
+                <div style="margin-top: 60px; margin-bottom: 40px;">
+                    <div class="question" style="font-weight: bold; margin-bottom: 10px;">Question? Select one:</div>
+                    <InputRadioGroup @bind-Value="formData.Answer" TValue="string">
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="1" /> a)</label>
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="2" /> b)</label>
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="3" /> c)</label>
+                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="4" /> d)</label>
+                    </InputRadioGroup>
+                    <ValidationMessage For="@(() => formData.Answer)" class="error-message" />
+                </div>
+
+
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Submit</button>
+
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private EditForm editForm;
+
+    private FormData formData = new FormData(){
+        StudentID = string.Empty,
+        Answer = string.Empty
+    };
+    private async Task HandleSubmit(EditContext context)
+    {
+        StateHasChanged();
+        if (context.Validate())
+        {
+            bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
+            if (confirmed)
+            {
+                Console.WriteLine($"Submitted: {formData.StudentID}");
+                Console.WriteLine($"Submitted: {formData.Answer}");
+                NavigationManager.NavigateTo("/home");
+            }
+        }
+        else
+        {
+            StateHasChanged();
+            Console.WriteLine("Form validation failed");
+            Console.WriteLine($"Submitted: {formData.StudentID}");
+            Console.WriteLine($"Submitted: {formData.Answer}");
+        }
+    }
+
+    public class FormData
+    {  
+        [Required(ErrorMessage = "Student ID is required.")]
+        [RegularExpression(@"^\d{1,25}$", ErrorMessage = "Only numbers allowed, max 25 characters.")]
+        public string StudentID { get; set; }
+        
+        [Required(ErrorMessage = "Please select an answer.")]
+        public string Answer { get; set; }
+    }
+}

@@ -1,3 +1,7 @@
+/*
+AppDbContext class that represents the database context for the attendance system, including the Professor entity configuration.
+*/
+
 using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +10,6 @@ namespace AttendanceSystem.Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
   public DbSet<Professor> Professors { get; set; } = null!;
-
   public DbSet<Attendance> Attendances { get; set; } = null!;
 
   public DbSet<Course> Courses { get; set; } = null!;
@@ -14,9 +17,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
   public DbSet<QuizQuestionBank> QuizQuestionBanks { get; set; } = null!;
   public DbSet<QuizQuestion> QuizQuestions { get; set; } = null!;
   public DbSet<QuizResponse> QuizResponses { get; set; } = null!;
+  public DbSet<Student> Students { get; set; } = null!;
+    
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
-
     base.OnModelCreating(modelBuilder);
 
     // Configure Professor entity
@@ -34,6 +38,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       // Set up unique constraints
       entity.HasIndex(e => e.Username).IsUnique();
       entity.HasIndex(e => e.Email).IsUnique();
+    }
+    );
+
+    modelBuilder.Entity<Student>(entity => {
+      entity.ToTable("Student");
+      entity.HasKey(e => e.UTDID);
+      entity.Property(e => e.UTDID).HasMaxLength(10).IsRequired();
+      entity.Property(e => e.FirstName).HasMaxLength(255).IsRequired();
+      entity.Property(e => e.LastName).HasMaxLength(255).IsRequired();
     });
     modelBuilder.Entity<Attendance>(entity =>
                {
