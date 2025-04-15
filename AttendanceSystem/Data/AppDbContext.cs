@@ -18,7 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
   public DbSet<QuizQuestion> QuizQuestions { get; set; } = null!;
   public DbSet<QuizResponse> QuizResponses { get; set; } = null!;
   public DbSet<Student> Students { get; set; } = null!;
-    
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
@@ -41,7 +41,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     }
     );
 
-    modelBuilder.Entity<Student>(entity => {
+    modelBuilder.Entity<Student>(entity =>
+    {
       entity.ToTable("Student");
       entity.HasKey(e => e.UTDID);
       entity.Property(e => e.UTDID).HasMaxLength(10).IsRequired();
@@ -62,7 +63,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .HasDefaultValue(AttendanceType.Present)
                     .IsRequired();
                  entity.HasOne(a => a.ClassSession)
-                      .WithMany(cs => cs.Attendances)
+                      .WithMany(cs => cs.Attendance)
                       .HasForeignKey(a => a.SessionID)
                       .OnDelete(DeleteBehavior.Cascade);
                });
