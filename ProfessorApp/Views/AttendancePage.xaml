@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProfessorApp.Pages.AttendancePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    BackgroundColor="Black">
+
+    <!--  Main Content  -->
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+        <Label
+            Margin="0,20,0,10"
+            FontAttributes="Bold"
+            FontSize="24"
+            HorizontalOptions="Center"
+            Text="Attendance Page"
+            TextColor="White"
+            VerticalOptions="Start" />
+
+        <!--  Entry to input UTDID for deletion  -->
+        <Entry
+            x:Name="AttendanceUTDIDEntry"
+            Keyboard="Numeric"
+            Placeholder="Enter Student UTDID" />
+
+        <!--  Delete Student Button  -->
+        <Button
+            BackgroundColor="Orange"
+            Clicked="OngetAttendanceClicked"
+            Text="Get Student Attendance"
+            TextColor="White" />
+
+    </VerticalStackLayout>
+</ContentPage>

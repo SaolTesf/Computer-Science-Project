@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+Professor Service class that implements the IProfessorService interface for managing professor data in the attendance system.
+*/
+
 using AttendanceSystem.Data.Repositories;
 using AttendanceSystem.Models;
 

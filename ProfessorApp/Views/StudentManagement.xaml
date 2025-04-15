@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProfessorApp.Pages.StudentManagement"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    BackgroundColor="Black">
+
+    <Grid>
+
+        <!--  Main Content  -->
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <Label
+                Margin="0,20,0,10"
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Student Management"
+                TextColor="White"
+                VerticalOptions="Start" />
+
+            <!--  Button to Choose Files  -->
+            <Button
+                BackgroundColor="Orange"
+                Clicked="OnSelectFileClicked"
+                Text="Choose File"
+                TextColor="White" />
+
+            <Label
+                x:Name="SelectedFilesLabel"
+                Text="No files selected."
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Orange"
+                Clicked="OnSubmitFilesClicked"
+                Text="Submit"
+                TextColor="White"
+                WidthRequest="100" />
+
+
+            <!--  Button to trigger Add Student Form  -->
+            <Button
+                Margin="0,30,0,30"
+                BackgroundColor="Green"
+                Clicked="OnAddStudentClicked"
+                Text="Add Student"
+                TextColor="White" />
+
+            <!--  Delete Student Button  -->
+            <Button
+                BackgroundColor="Red"
+                Clicked="OnDeleteStudentClicked"
+                Text="Delete Student"
+                TextColor="White" />
+
+        </VerticalStackLayout>
+
+        <!--  Modal-style Add Student Popup  -->
+        <Frame
+            x:Name="AddStudentPopup"
+            Padding="15"
+            BackgroundColor="White"
+            BorderColor="Green"
+            CornerRadius="12"
+            HeightRequest="400"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="400">
+
+            <StackLayout Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Add Student" />
+
+                <Entry
+                    x:Name="FirstNameEntry"
+                    Placeholder="First Name"
+                    TextColor="Black" />
+
+                <Entry
+                    x:Name="LastNameEntry"
+                    Placeholder="Last Name"
+                    TextColor="Black" />
+                <Entry
+                    x:Name="UsernameEntry"
+                    MaxLength="9"
+                    Placeholder="NETID"
+                    TextColor="Black" />
+                <Entry
+                    x:Name="AddStudentUTDIDEntry"
+                    MaxLength="10"
+                    Placeholder="UTDID"
+                    TextColor="Black" />
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button
+                        BackgroundColor="Green"
+                        Clicked="OnSubmitStudentClicked"
+                        Text="Submit"
+                        TextColor="White" />
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnCancelClicked"
+                        Text="Cancel"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </Frame>
+
+        <Frame
+            x:Name="DeleteStudentPopup"
+            Padding="15"
+            BackgroundColor="White"
+            BorderColor="Red"
+            CornerRadius="12"
+            HeightRequest="200"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="200">
+
+            <StackLayout Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Add Student" />
+
+                <Entry
+                    x:Name="DeleteUTDIDEntry"
+                    Placeholder="UTDID"
+                    TextColor="Black" />
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button
+                        BackgroundColor="Green"
+                        Clicked="OnSubmitDeleteClicked"
+                        Text="Confirm"
+                        TextColor="White" />
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnCancelDeleteClicked"
+                        Text="Cancel"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </Frame>
+
+    </Grid>
+</ContentPage>
