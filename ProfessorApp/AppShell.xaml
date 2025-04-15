@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ProfessorApp"
+    xmlns:pages="clr-namespace:ProfessorApp.Pages"
     Title="ProfessorApp"
     Shell.FlyoutBehavior="Disabled">
 
@@ -12,4 +13,15 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
+
+    <ShellContent
+        Title="Home Page"
+        ContentTemplate="{DataTemplate pages:HomePage}"
+        Route="HomePage" />
+
+
+    <ShellContent
+        Title="Student Management"
+        ContentTemplate="{DataTemplate pages:StudentManagement}"
+        Route="StudentManagement" />
 </Shell>
