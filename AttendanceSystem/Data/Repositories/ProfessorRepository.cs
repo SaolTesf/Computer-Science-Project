@@ -5,6 +5,7 @@ Professor Repository class that implements the IProfessorRepository interface fo
 
 using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace AttendanceSystem.Data.Repositories;
 
@@ -52,7 +53,7 @@ public class ProfessorRepository(AppDbContext context) : IProfessorRepository {
   public async Task<bool> ProfessorExistsByUsernameAsync(String username) {
     return await GetProfessorByUsernameAsync(username) != null;
   }
-
+    
   public async Task<bool> ProfessorExistsByEmailAsync(String email) {
     return await GetProfessorByEmailAsync(email) != null;
   }

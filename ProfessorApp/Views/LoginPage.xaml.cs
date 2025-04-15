@@ -14,17 +14,17 @@ namespace ProfessorApp.Views
 
         private async void OnLoginClicked(object sender, EventArgs e)
         {
-            string username = usernameEntry.Text ?? "";
+            string identifier = identifierEntry.Text ?? "";
             string password = passwordEntry.Text ?? "";
             
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(password))
             {
-                statusLabel.Text = "Please enter both username and password";
+                statusLabel.Text = "Please enter both identifier and password";
                 return;
             }     
             try 
             {
-                var response = await _clientService.LoginAsync(username, password);
+                var response = await _clientService.LoginAsync(identifier, password);
                 if (response != null)
                 {
                     statusLabel.TextColor = Colors.Green;
@@ -40,8 +40,12 @@ namespace ProfessorApp.Views
             catch (Exception ex)
             {
                 statusLabel.TextColor = Colors.Red;
-                statusLabel.Text = $"Error: {ex.Message}";
+                statusLabel.Text = $"{ex.Message}";
             }
+        }
+        private async void GoToRegister(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new RegisterPage(_clientService));
         }
     }
 }

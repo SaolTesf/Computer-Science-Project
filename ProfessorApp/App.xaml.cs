@@ -1,5 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using ProfessorApp.Pages;
+﻿﻿using Microsoft.Maui.Controls;
 using ProfessorApp.Services;
 using ProfessorApp.Views;
 
@@ -10,9 +9,9 @@ namespace ProfessorApp
         public App(ClientService clientService)
         {
             InitializeComponent();
-
-            // Set StudentManagement page wrapped in NavigationPage as the initial page
-            MainPage = new NavigationPage(new StudentManagement());
+            
+            // Set LoginPage as the initial page
+            MainPage = new NavigationPage(new LoginPage(clientService));
         }
     }
 }
