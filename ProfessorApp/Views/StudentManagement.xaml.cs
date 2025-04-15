@@ -1,16 +1,12 @@
 ﻿/*Diego Cabanas
  Functions to Manage students, Add through file, Add manually, or Delete
 Delete also deletes any attendance statistics/facts that are associated with the student*/
-using AttendanceSystem.Models;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Storage;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using AttendanceShared.DTOs;
+
+
+
 
 namespace ProfessorApp.Pages
 {
@@ -169,9 +165,9 @@ namespace ProfessorApp.Pages
         }
 
         //Parse the txt file into student object
-        private List<Student> ParseStudentFile(string filePath)
+        private List<StudentDTO> ParseStudentFile(string filePath)
         {
-            var students = new List<Student>();
+            var students = new List<StudentDTO>();
 
             var lines = File.ReadAllLines(filePath);
             //Skip first line as it is header
@@ -184,7 +180,7 @@ namespace ProfessorApp.Pages
 
                 if (parts.Length == 4)
                 {
-                    var student = new Student
+                    var student = new StudentDTO
                     {
                         LastName = parts[0],
                         FirstName = parts[1],
@@ -199,7 +195,7 @@ namespace ProfessorApp.Pages
         }
 
         //Method to add student to database through API
-        private async Task<HttpResponseMessage> AddStudentToDatabase(Student student)
+        private async Task<HttpResponseMessage> AddStudentToDatabase(StudentDTO student)
         {
             var studentJson = JsonConvert.SerializeObject(student);
             var content = new StringContent(studentJson, Encoding.UTF8, "application/json");
@@ -251,7 +247,7 @@ namespace ProfessorApp.Pages
             }
 
             //Create new student object
-            var student = new Student
+            var student = new StudentDTO
             {
                 FirstName = firstName,
                 LastName = lastName,

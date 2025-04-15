@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -63,25 +64,21 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\AttendanceShared\AttendanceShared.csproj" />
-        <ProjectReference Include="..\AttendanceSystem\AttendanceSystem.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <Compile Update="Views\StudentManagement.xaml.cs">
-	    <DependentUpon>StudentManagement.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Views\RegisterPage.xaml.cs">
+			<DependentUpon>RegisterPage.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <MauiXaml Update="Views\AttendancePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\StudentManagement.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="Views\RegisterPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 </Project>

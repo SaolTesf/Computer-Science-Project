@@ -1,7 +1,5 @@
-﻿using AttendanceSystem.Models;
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
