@@ -16,31 +16,31 @@ namespace AttendanceSystem.Services
 
         public async Task<List<QuizQuestion>> GetAllQuestionsAsync()
         {
-            var questions = await _questionRepository.GetAllAsync();
+            var questions = await _questionRepository.GetAllQuestionsAsync();
             return new List<QuizQuestion>(questions);
         }
 
         public async Task<QuizQuestion?> GetQuestionByIdAsync(int questionId)
         {
-            return await _questionRepository.GetByIdAsync(questionId);
+            return await _questionRepository.GetQuestionByIdAsync(questionId);
         }
 
         public async Task CreateQuestionAsync(QuizQuestion question)
         {
-            await _questionRepository.AddAsync(question);
+            await _questionRepository.AddQuestionAsync(question);
         }
 
         public async Task UpdateQuestionAsync(QuizQuestion question)
         {
-            await _questionRepository.UpdateAsync(question);
+            await _questionRepository.UpdateQuestionAsync(question);
         }
 
         public async Task DeleteQuestionAsync(int questionId)
         {
-            var question = await _questionRepository.GetByIdAsync(questionId);
+            var question = await _questionRepository.GetQuestionByIdAsync(questionId);
             if (question != null)
             {
-                await _questionRepository.DeleteAsync(question);
+                await _questionRepository.DeleteQuestionAsync(question);
             }
         }
     }

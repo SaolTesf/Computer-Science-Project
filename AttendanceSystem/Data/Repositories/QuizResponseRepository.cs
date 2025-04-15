@@ -15,29 +15,29 @@ namespace AttendanceSystem.Data.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<QuizResponse>> GetAllAsync()
+        public async Task<IEnumerable<QuizResponse>> GetAllResponsesAsync()
         {
             return await _context.QuizResponses.ToListAsync();
         }
 
-        public async Task<QuizResponse?> GetByIdAsync(int responseId)
+        public async Task<QuizResponse?> GetResponseByIdAsync(int responseId)
         {
             return await _context.QuizResponses.FindAsync(responseId);
         }
 
-        public async Task AddAsync(QuizResponse response)
+        public async Task AddResponseAsync(QuizResponse response)
         {
             await _context.QuizResponses.AddAsync(response);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(QuizResponse response)
+        public async Task UpdateResponseAsync(QuizResponse response)
         {
             _context.QuizResponses.Update(response);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(QuizResponse response)
+        public async Task DeleteResponseAsync(QuizResponse response)
         {
             _context.QuizResponses.Remove(response);
             await _context.SaveChangesAsync();

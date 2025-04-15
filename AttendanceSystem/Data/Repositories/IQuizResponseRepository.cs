@@ -7,10 +7,10 @@ namespace AttendanceSystem.Data.Repositories
     // Interface defining CRUD operations for QuizResponse.
     public interface IQuizResponseRepository
     {
-        Task<IEnumerable<QuizResponse>> GetAllAsync(); // Retrieve all quiz responses.
-        Task<QuizResponse?> GetByIdAsync(int responseId); // Retrieve a quiz response by ID.
-        Task AddAsync(QuizResponse response); // Add a new quiz response.
-        Task UpdateAsync(QuizResponse response); // Update an existing quiz response.
-        Task DeleteAsync(QuizResponse response); // Delete a quiz response.
+        Task<IEnumerable<QuizResponse>> GetAllResponsesAsync(); // Retrieve all quiz responses.
+        Task<QuizResponse?> GetResponseByIdAsync(int responseId); // Retrieve a quiz response by ID.
+        Task AddResponseAsync(QuizResponse response); // Add a new quiz response.
+        Task UpdateResponseAsync(QuizResponse response); // Update an existing quiz response.
+        Task DeleteResponseAsync(QuizResponse response); // Delete a quiz response.
     }
 }

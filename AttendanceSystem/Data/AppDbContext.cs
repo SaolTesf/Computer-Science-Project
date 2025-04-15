@@ -48,6 +48,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .HasConversion<string>() // Store enum as string
                     .HasDefaultValue(AttendanceType.Present)
                     .IsRequired();
+                 entity.HasOne(a => a.ClassSession)
+                      .WithMany(cs => cs.Attendances)
+                      .HasForeignKey(a => a.SessionID)
+                      .OnDelete(DeleteBehavior.Cascade);
                });
     // Configure Course entity
     modelBuilder.Entity<Course>(entity =>
@@ -80,10 +84,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .WithMany(c => c.ClassSessions)
                     .HasForeignKey(e => e.CourseNumber)
                     .OnDelete(DeleteBehavior.Cascade);
-      entity.HasOne(e => e.QuizQuestionBank)
-                    .WithMany(qb => qb.ClassSessions)
-                    .HasForeignKey(e => e.QuestionBankID)
-                    .OnDelete(DeleteBehavior.Cascade);
+
     });
 
     // Configure QuizQuestionBank entity

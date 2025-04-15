@@ -16,31 +16,31 @@ namespace AttendanceSystem.Services
 
         public async Task<List<QuizQuestionBank>> GetAllBanksAsync()
         {
-            var banks = await _bankRepository.GetAllAsync();
+            var banks = await _bankRepository.GetAllBanksAsync();
             return new List<QuizQuestionBank>(banks);
         }
 
         public async Task<QuizQuestionBank?> GetBankByIdAsync(int bankId)
         {
-            return await _bankRepository.GetByIdAsync(bankId);
+            return await _bankRepository.GetBankByIdAsync(bankId);
         }
 
         public async Task CreateBankAsync(QuizQuestionBank bank)
         {
-            await _bankRepository.AddAsync(bank);
+            await _bankRepository.AddBankAsync(bank);
         }
 
         public async Task UpdateBankAsync(QuizQuestionBank bank)
         {
-            await _bankRepository.UpdateAsync(bank);
+            await _bankRepository.UpdateBankAsync(bank);
         }
 
         public async Task DeleteBankAsync(int bankId)
         {
-            var bank = await _bankRepository.GetByIdAsync(bankId);
+            var bank = await _bankRepository.GetBankByIdAsync(bankId);
             if (bank != null)
             {
-                await _bankRepository.DeleteAsync(bank);
+                await _bankRepository.DeleteBankAsync(bank);
             }
         }
     }

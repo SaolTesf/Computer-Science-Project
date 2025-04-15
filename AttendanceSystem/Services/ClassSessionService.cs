@@ -16,31 +16,31 @@ namespace AttendanceSystem.Services
 
         public async Task<List<ClassSession>> GetAllSessionsAsync()
         {
-            var sessions = await _sessionRepository.GetAllAsync();
+            var sessions = await _sessionRepository.GetAllSessionsAsync();
             return new List<ClassSession>(sessions);
         }
 
         public async Task<ClassSession?> GetSessionByIdAsync(int sessionId)
         {
-            return await _sessionRepository.GetByIdAsync(sessionId);
+            return await _sessionRepository.GetSessionByIdAsync(sessionId);
         }
 
         public async Task CreateSessionAsync(ClassSession session)
         {
-            await _sessionRepository.AddAsync(session);
+            await _sessionRepository.AddSessionAsync(session);
         }
 
         public async Task UpdateSessionAsync(ClassSession session)
         {
-            await _sessionRepository.UpdateAsync(session);
+            await _sessionRepository.UpdateSessionAsync(session);
         }
 
         public async Task DeleteSessionAsync(int sessionId)
         {
-            var session = await _sessionRepository.GetByIdAsync(sessionId);
+            var session = await _sessionRepository.GetSessionByIdAsync(sessionId);
             if (session != null)
             {
-                await _sessionRepository.DeleteAsync(session);
+                await _sessionRepository.DeleteSessionAsync(session);
             }
         }
     }

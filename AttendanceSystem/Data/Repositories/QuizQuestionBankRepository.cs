@@ -15,29 +15,29 @@ namespace AttendanceSystem.Data.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<QuizQuestionBank>> GetAllAsync()
+        public async Task<IEnumerable<QuizQuestionBank>> GetAllBanksAsync()
         {
             return await _context.QuizQuestionBanks.ToListAsync();
         }
 
-        public async Task<QuizQuestionBank?> GetByIdAsync(int bankId)
+        public async Task<QuizQuestionBank?> GetBankByIdAsync(int bankId)
         {
             return await _context.QuizQuestionBanks.FindAsync(bankId);
         }
 
-        public async Task AddAsync(QuizQuestionBank bank)
+        public async Task AddBankAsync(QuizQuestionBank bank)
         {
             await _context.QuizQuestionBanks.AddAsync(bank);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(QuizQuestionBank bank)
+        public async Task UpdateBankAsync(QuizQuestionBank bank)
         {
             _context.QuizQuestionBanks.Update(bank);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(QuizQuestionBank bank)
+        public async Task DeleteBankAsync(QuizQuestionBank bank)
         {
             _context.QuizQuestionBanks.Remove(bank);
             await _context.SaveChangesAsync();

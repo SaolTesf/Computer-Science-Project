@@ -16,31 +16,31 @@ namespace AttendanceSystem.Services
 
         public async Task<List<QuizResponse>> GetAllResponsesAsync()
         {
-            var responses = await _responseRepository.GetAllAsync();
+            var responses = await _responseRepository.GetAllResponsesAsync();
             return new List<QuizResponse>(responses);
         }
 
         public async Task<QuizResponse?> GetResponseByIdAsync(int responseId)
         {
-            return await _responseRepository.GetByIdAsync(responseId);
+            return await _responseRepository.GetResponseByIdAsync(responseId);
         }
 
         public async Task CreateResponseAsync(QuizResponse response)
         {
-            await _responseRepository.AddAsync(response);
+            await _responseRepository.AddResponseAsync(response);
         }
 
         public async Task UpdateResponseAsync(QuizResponse response)
         {
-            await _responseRepository.UpdateAsync(response);
+            await _responseRepository.UpdateResponseAsync(response);
         }
 
         public async Task DeleteResponseAsync(int responseId)
         {
-            var response = await _responseRepository.GetByIdAsync(responseId);
+            var response = await _responseRepository.GetResponseByIdAsync(responseId);
             if (response != null)
             {
-                await _responseRepository.DeleteAsync(response);
+                await _responseRepository.DeleteResponseAsync(response);
             }
         }
     }

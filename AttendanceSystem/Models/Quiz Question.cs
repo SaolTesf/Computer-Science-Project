@@ -28,6 +28,6 @@ namespace AttendanceSystem.Models
         public QuizQuestionBank QuizQuestionBank { get; set; } = null!;
 
         // Navigation property to QuizResponses for this question
-        public ICollection<QuizResponse> QuizResponses { get; set; } = new List<QuizResponse>();
+        //public ICollection<QuizResponse> QuizResponses { get; set; } = new List<QuizResponse>();
     }
 }

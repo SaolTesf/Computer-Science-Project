@@ -25,9 +25,9 @@ namespace AttendanceSystem.Models
         public Professor Professor { get; set; } = null!;
 
         // Navigation property to ClassSessions for this Course
-        public ICollection<ClassSession> ClassSessions { get; set; } = new List<ClassSession>();
+        //public ICollection<ClassSession> ClassSessions { get; set; } = new List<ClassSession>();
 
         // Navigation property to QuizQuestionBanks for this Course
-        public ICollection<QuizQuestionBank> QuizQuestionBanks { get; set; } = new List<QuizQuestionBank>();
+        //public ICollection<QuizQuestionBank> QuizQuestionBanks { get; set; } = new List<QuizQuestionBank>();
     }
 }

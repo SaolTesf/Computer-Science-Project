@@ -16,7 +16,7 @@ namespace AttendanceSystem.Services
 
         public async Task<List<Course>> GetAllCoursesAsync()
         {
-            var courses = await _courseRepository.GetAllAsync();
+            var courses = await _courseRepository.GetAllCoursesAsync();
             return new List<Course>(courses);
         }
 
@@ -27,12 +27,12 @@ namespace AttendanceSystem.Services
 
         public async Task CreateCourseAsync(Course course)
         {
-            await _courseRepository.AddAsync(course);
+            await _courseRepository.AddCourseAsync(course);
         }
 
         public async Task UpdateCourseAsync(Course course)
         {
-            await _courseRepository.UpdateAsync(course);
+            await _courseRepository.UpdateCourseAsync(course);
         }
 
         public async Task DeleteCourseAsync(string courseNumber)
@@ -40,7 +40,7 @@ namespace AttendanceSystem.Services
             var course = await _courseRepository.GetByCourseNumberAsync(courseNumber);
             if (course != null)
             {
-                await _courseRepository.DeleteAsync(course);
+                await _courseRepository.DeleteCourseAsync(course);
             }
         }
     }

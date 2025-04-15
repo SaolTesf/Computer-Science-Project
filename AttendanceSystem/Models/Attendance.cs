@@ -32,5 +32,7 @@ namespace AttendanceSystem.Models
         [Required]
         public AttendanceType AttendanceType { get; set; } = AttendanceType.Present;
         public ICollection<QuizResponse> QuizResponses { get; set; } = new List<QuizResponse>();
+
+        public ClassSession ClassSession { get; set; } = null!;
     }
 }

@@ -33,9 +33,9 @@ namespace AttendanceSystem.Models
         public Course Course { get; set; } = null!;
 
         // Navigation property to the associated QuizQuestionBank
-        public QuizQuestionBank QuizQuestionBank { get; set; } = null!;
+        // public QuizQuestionBank QuizQuestionBank { get; set; } = null!;
 
         // Optionally: Navigation property for Attendance records for this session
-        public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+        //public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
     }
 }

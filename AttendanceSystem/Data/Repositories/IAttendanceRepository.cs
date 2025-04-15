@@ -6,10 +6,10 @@ namespace AttendanceSystem.Data.Repositories;
 
 public interface IAttendanceRepository
 {
-    Task<IEnumerable<Attendance>> GetAllAsync();
-    Task<Attendance?> GetByIdAsync(int id);
+    Task<IEnumerable<Attendance>> GetAllAttendancesAsync();
+    Task<Attendance?> GetAttendanceByIdAsync(int id);
     Task<IEnumerable<Attendance>> GetPresentAttendancesAsync();
-    Task AddAsync(Attendance attendance);
-    Task UpdateAsync(Attendance attendance);
-    Task DeleteAsync(Attendance attendance);
+    Task AddAttendanceAsync(Attendance attendance);
+    Task UpdateAttendanceAsync(Attendance attendance);
+    Task DeleteAttendanceAsync(Attendance attendance);
 }
