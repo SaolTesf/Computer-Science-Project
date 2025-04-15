@@ -1,4 +1,4 @@
-﻿namespace AttendanceShared.DTOs;
+﻿﻿namespace AttendanceShared.DTOs;
 
 public class RegisterDTO {
   public string ID { get; set; } = null!;

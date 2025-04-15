@@ -40,8 +40,12 @@ namespace ProfessorApp.Views
             catch (Exception ex)
             {
                 statusLabel.TextColor = Colors.Red;
-                statusLabel.Text = $"Error: {ex.Message}";
+                statusLabel.Text = $"{ex.Message}";
             }
+        }
+        private async void GoToRegister(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new RegisterPage(_clientService));
         }
     }
 }
