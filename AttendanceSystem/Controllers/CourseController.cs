@@ -37,8 +37,7 @@ namespace AttendanceSystem.Controllers
 
         // POST: api/course
         [HttpPost]
-        public async Task<ActionResult> CreateCourse([FromBody] Course course)
-        {
+        public async Task<ActionResult> CreateCourse([FromBody] Course course) {
             if (course == null)
                 return BadRequest();
             await _courseService.CreateCourseAsync(course);

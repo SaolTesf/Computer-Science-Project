@@ -21,9 +21,6 @@ namespace AttendanceSystem.Models
         [StringLength(10)]
         public string ProfessorID { get; set; } = string.Empty; // Foreign key to Professor
 
-        // Navigation property to the Professor entity
-        public Professor Professor { get; set; } = null!;
-
         // Navigation property to ClassSessions for this Course
         public ICollection<ClassSession> ClassSessions { get; set; } = new List<ClassSession>();
 

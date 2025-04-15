@@ -76,10 +76,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.Property(e => e.CourseName).HasMaxLength(255).IsRequired();
       entity.Property(e => e.Section).HasMaxLength(10).IsRequired();
       entity.Property(e => e.ProfessorID).HasMaxLength(10).IsRequired();
-      entity.HasOne(e => e.Professor)
-                    .WithMany(p => p.Courses)
-                    .HasForeignKey(e => e.ProfessorID)
-                    .OnDelete(DeleteBehavior.Cascade);
     });
 
     // Configure ClassSession entity
