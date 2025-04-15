@@ -31,6 +31,14 @@
                 Text="No files selected."
                 TextColor="White" />
 
+            <Button
+                BackgroundColor="Orange"
+                Clicked="OnSubmitFilesClicked"
+                Text="Submit"
+                TextColor="White"
+                WidthRequest="100" />
+
+
             <!--  Button to trigger Add Student Form  -->
             <Button
                 Margin="0,30,0,30"

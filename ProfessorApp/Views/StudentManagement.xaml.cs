@@ -1,4 +1,7 @@
-﻿using AttendanceSystem.Models;
+﻿/*Diego Cabanas
+ Functions to Manage students, Add through file, Add manually, or Delete
+Delete also deletes any attendance statistics/facts that are associated with the student*/
+using AttendanceSystem.Models;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using Newtonsoft.Json;
@@ -25,6 +28,7 @@ namespace ProfessorApp.Pages
             _httpClient = new HttpClient();
             _selectedFiles = new List<FileResult>();
         }
+
         //Event handler for selecting file
         private async void OnSelectFileClicked(object sender, EventArgs e)
         {
@@ -32,9 +36,27 @@ namespace ProfessorApp.Pages
             var file = await FilePicker.PickAsync();
             if (file != null)
             {
-                _selectedFiles.Add(file);
-                UpdateSelectedFilesLabel(); // Update the label to show file names
-                await UploadStudentData(file.FullPath);
+                try
+                {
+                    //Validate file content to see if it is the correct format
+                    var isValidFile = await ValidateFileHeader(file.FullPath);
+                    if (isValidFile)
+                    {
+                        //If valid, proceed with the file upload
+                        _selectedFiles.Add(file);
+                        //Update the label to show file names
+                        UpdateSelectedFilesLabel(); 
+                    }
+                    else
+                    {
+                        //If invalid, show error and cancel further processing
+                        await DisplayAlert("Invalid File", "Make sure the file is in the correct format", "OK");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error", $"Error reading the file: {ex.Message}", "OK");
+                }
             }
             else
             {
@@ -42,10 +64,38 @@ namespace ProfessorApp.Pages
             }
         }
 
+        //Mathod to see if the file has the correct header
+        private async Task<bool> ValidateFileHeader(string filePath)
+        {
+            try
+            {
+                var lines = await File.ReadAllLinesAsync(filePath);
+
+                //Check if the first line matches the required header
+                var header = lines[0].Trim();
+                if (header == "Last Name\tFirst Name\tUsername\tStudent ID")
+                {
+                    return true; 
+                }
+                else
+                {
+                    return false; 
+                }
+            }
+            catch (Exception ex)
+            {
+                //Handle errors 
+                Console.WriteLine($"Error reading file header: {ex.Message}");
+                return false;
+            }
+        }
+
+        //Update the label below the upload files button to show files that are going to be uploaded
         private void UpdateSelectedFilesLabel()
         {
             if (_selectedFiles.Count == 0)
             {
+                //Default Message
                 SelectedFilesLabel.Text = "No files selected.";
             }
             else
@@ -60,15 +110,47 @@ namespace ProfessorApp.Pages
             }
         }
 
+        //Event handler for submitting the selected files (Submit button)
+        private async void OnSubmitFilesClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_selectedFiles.Count == 0)
+                {
+                    await DisplayAlert("No Files", "Please select at least one file before submitting.", "OK");
+                    return;
+                }
+
+                //Loop through the selected files and process them
+                foreach (var file in _selectedFiles)
+                {
+                    await UploadStudentData(file.FullPath);
+                }
+
+                //Clear the files selected label after submission
+                SelectedFilesLabel.Text = "No files selected.";
+
+                //Clear the selected files list
+                _selectedFiles.Clear();
+
+                await DisplayAlert("Success", "Files submitted successfully.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"An error occurred while submitting the files: {ex.Message}", "OK");
+            }
+        }
 
         //Method called to read and upload the txt file
         public async Task UploadStudentData(string filePath)
         {
             try
             {
+                //Parse txt into student object
                 var students = ParseStudentFile(filePath);
                 foreach (var student in students)
                 {
+                    //Add student object to database
                     var response = await AddStudentToDatabase(student);
                     if (response.IsSuccessStatusCode)
                     {
@@ -86,7 +168,7 @@ namespace ProfessorApp.Pages
             }
         }
 
-        //Parse the txt file into student data
+        //Parse the txt file into student object
         private List<Student> ParseStudentFile(string filePath)
         {
             var students = new List<Student>();
@@ -126,7 +208,7 @@ namespace ProfessorApp.Pages
             return response;
         }
 
-        // Event handler for adding student through form
+        //Event handler for adding student through form (Add Student button)
         private void OnAddStudentClicked(object sender, EventArgs e)
         {
             // Toggle the Add Student form visibility
@@ -141,7 +223,7 @@ namespace ProfessorApp.Pages
             }
         }
 
-        // Submit student data to database
+        //Submit student data to database based on manual
         private async void OnSubmitStudentClicked(object sender, EventArgs e)
         {
             var firstName = FirstNameEntry.Text?.Trim();
@@ -149,7 +231,7 @@ namespace ProfessorApp.Pages
             var username = UsernameEntry.Text?.Trim();
             var utdid = AddStudentUTDIDEntry.Text?.Trim();
 
-            // Check if Username and UTDID are the correct amount of characters
+            //Check if Username and UTDID are the correct amount of characters
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) ||
                 string.IsNullOrEmpty(username) || string.IsNullOrEmpty(utdid))
             {
@@ -168,7 +250,7 @@ namespace ProfessorApp.Pages
                 return;
             }
 
-            // Create new student object
+            //Create new student object
             var student = new Student
             {
                 FirstName = firstName,
@@ -187,13 +269,13 @@ namespace ProfessorApp.Pages
                 {
                     await DisplayAlert("Success", "Student added successfully.", "OK");
 
-                    // Clear the fields for adding another student
+                    //Clear the fields for adding another student
                     FirstNameEntry.Text = string.Empty;
                     LastNameEntry.Text = string.Empty;
                     UsernameEntry.Text = string.Empty;
                     AddStudentUTDIDEntry.Text = string.Empty;
 
-                    // Hide form after submission
+                    //Hide form after submission
                     AddStudentPopup.IsVisible = false;
                 }
                 else
@@ -207,23 +289,23 @@ namespace ProfessorApp.Pages
             }
         }
 
-        // Cancel adding student
+        //Cancel adding student button
         private void OnCancelClicked(object sender, EventArgs e)
         {
-            // Clear all fields
+            //Clear all fields
             FirstNameEntry.Text = string.Empty;
             LastNameEntry.Text = string.Empty;
             UsernameEntry.Text = string.Empty;
             AddStudentUTDIDEntry.Text = string.Empty;
 
-            // Hide the form
+            //Hide the form
             AddStudentPopup.IsVisible = false;
         }
 
-        // Method to delete a student by UTDID
+        //Method to delete a student by UTDID
         private async void OnDeleteStudentClicked(object sender, EventArgs e)
         {
-            // Toggle the Delete Student form visibility
+            //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;
 
             if (DeleteStudentPopup.IsVisible)
@@ -232,7 +314,7 @@ namespace ProfessorApp.Pages
             }
         }
 
-        // Submit Deletion
+        //Submit Deletion form
         private async void OnSubmitDeleteClicked(object sender, EventArgs e)
         {
             var utdid = DeleteUTDIDEntry.Text?.Trim();
@@ -257,10 +339,10 @@ namespace ProfessorApp.Pages
 
                         await DisplayAlert("Success", resultMessage, "OK");
 
-                        // Clear form fields
+                        //Clear form fields
                         DeleteUTDIDEntry.Text = string.Empty;
 
-                        // Hide the delete popup
+                        //Hide the delete popup
                         DeleteStudentPopup.IsVisible = false;
                     }
                     else
@@ -279,13 +361,13 @@ namespace ProfessorApp.Pages
             }
         }
 
-        // Cancel Deleting a student
+        //Cancel Deleting a student
         private void OnCancelDeleteClicked(object sender, EventArgs e)
         {
-            // Clear the text field
+            //Clear the text field
             DeleteUTDIDEntry.Text = string.Empty;
 
-            // Hide delete student form
+            //Hide delete student form
             DeleteStudentPopup.IsVisible = false;
         }
     }

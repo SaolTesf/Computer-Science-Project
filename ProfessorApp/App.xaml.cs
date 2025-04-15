@@ -12,7 +12,7 @@ namespace ProfessorApp
             InitializeComponent();
             
             // Set LoginPage as the initial page
-            MainPage = new NavigationPage(new UploadPage());
+            MainPage = new NavigationPage(new LoginPage());
         }
     }
 }
