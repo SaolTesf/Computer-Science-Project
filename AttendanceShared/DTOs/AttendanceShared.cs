@@ -1,4 +1,4 @@
-﻿﻿namespace AttendanceShared.DTOs;
+﻿namespace AttendanceShared.DTOs;
 
 public class RegisterDTO {
   public string ID { get; set; } = null!;
@@ -26,4 +26,11 @@ public class ProfessorDTO {
   public string LastName { get; set; } = null!;
   public string Username { get; set; } = null!;
   public string Email { get; set; } = null!;
+}
+
+public class StudentDTO{
+    public string UTDID { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
+    public string LastName { get; set; } = null!;
+    public string Username { get; set; } = null!;
 }
