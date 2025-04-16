@@ -8,16 +8,20 @@ namespace ProfessorApp.Pages
 {
     public partial class HomePage : ContentPage
     {
-        private readonly ClientService _clientService;
 
-        public HomePage(ClientService clientService)
+        public HomePage(object bindingContext)
         {
             InitializeComponent();
-            _clientService = clientService;
+            BindingContext = bindingContext;
         }
         private async void GoToSMPage(object sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync(nameof(StudentManagement));
+            Navigation.PushAsync(new StudentManagement());
+        }
+
+        private async void GoToAttPage(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new AttendancePage());
         }
 
     }

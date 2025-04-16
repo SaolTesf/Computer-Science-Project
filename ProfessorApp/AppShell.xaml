@@ -8,11 +8,6 @@
     Title="ProfessorApp"
     Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
 
     <ShellContent
         Title="Home Page"
@@ -24,4 +19,9 @@
         Title="Student Management"
         ContentTemplate="{DataTemplate pages:StudentManagement}"
         Route="StudentManagement" />
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
 </Shell>

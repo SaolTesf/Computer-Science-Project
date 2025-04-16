@@ -35,6 +35,12 @@
                 Text="Student Management"
                 TextColor="White" />
 
+            <Button
+                BackgroundColor="Orange"
+                Clicked="GoToAttPage"
+                Text="Attendance"
+                TextColor="White" />
+
 
         </VerticalStackLayout>
     </Grid>
