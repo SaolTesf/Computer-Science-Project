@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AttendanceSystem.Models
 {
@@ -17,7 +18,8 @@ namespace AttendanceSystem.Models
         public string CourseNumber { get; set; } = string.Empty; // Foreign key to Course
 
         // Navigation property to the associated Course
-        public Course Course { get; set; } = null!;
+        [JsonIgnore]
+        public Course? Course { get; set; } = null!;
 
         // Navigation property to QuizQuestions in this bank
         public ICollection<QuizQuestion> QuizQuestions { get; set; } = new List<QuizQuestion>();

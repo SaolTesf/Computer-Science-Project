@@ -26,8 +26,9 @@ namespace AttendanceSystem.Models
         public string? Option4 { get; set; }
 
         // Navigation property to the associated QuizQuestionBank
-      
-        public QuizQuestionBank QuizQuestionBank { get; set; } = null!;
+
+        [JsonIgnore]
+        public QuizQuestionBank? QuizQuestionBank { get; set; } = null!;
 
         // Navigation property to QuizResponses for this question
         public ICollection<QuizResponse> QuizResponses { get; set; } = new List<QuizResponse>();
