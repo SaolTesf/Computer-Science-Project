@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AttendanceSystem.Models
 {
@@ -17,9 +18,11 @@ namespace AttendanceSystem.Models
         public int SelectedOption { get; set; }
 
         // Navigation property to Attendance
-        public Attendance Attendance { get; set; } = null!;
+        [JsonIgnore]
+        public Attendance? Attendance { get; set; } = null!;
 
         // Navigation property to QuizQuestion
-        public QuizQuestion QuizQuestion { get; set; } = null!;
+        [JsonIgnore]
+        public QuizQuestion? QuizQuestion { get; set; } = null!;
     }
 }
