@@ -13,6 +13,7 @@ namespace AttendanceSystem.Services
         Task UpdateAttendanceAsync(Attendance attendance); // update attendance
         Task DeleteAttendanceAsync(int id); //deete 
 
+        Task<bool> RecordExistsAsync(string ipAddress, DateTime date);
 
 
     }

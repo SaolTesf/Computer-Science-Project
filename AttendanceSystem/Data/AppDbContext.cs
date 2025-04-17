@@ -94,7 +94,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .WithMany(c => c.ClassSessions)
                     .HasForeignKey(e => e.CourseNumber)
                     .OnDelete(DeleteBehavior.Cascade);
-
+       
     });
 
     // Configure QuizQuestionBank entity
@@ -125,6 +125,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .WithMany(qb => qb.QuizQuestions)
                     .HasForeignKey(e => e.QuestionBankID)
                     .OnDelete(DeleteBehavior.Cascade);
+      
     });
 
     // Configure QuizResponse entity

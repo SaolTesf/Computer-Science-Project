@@ -1,5 +1,6 @@
 using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace AttendanceSystem.Services
 {
@@ -46,6 +47,22 @@ namespace AttendanceSystem.Services
             {
                 await _attendanceRepository.DeleteAttendanceAsync(attendance);       // delete rec if found
             }
+
         }
+
+        public async Task<bool> RecordExistsAsync(string ipAddress, DateTime date)
+        {
+            var exists = await _attendanceRepository.ExistsAsync(ipAddress, date);
+
+            if (exists)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }

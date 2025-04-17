@@ -29,6 +29,9 @@ namespace AttendanceSystem.Models
         [Required]
         public int QuestionBankID { get; set; } // Foreign key to QuizQuestionBank
 
+      
+
+
         // Navigation property to the associated Course
         public Course Course { get; set; } = null!;
 

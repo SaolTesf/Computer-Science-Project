@@ -45,4 +45,21 @@ public class AttendanceRepository : IAttendanceRepository
         _context.Attendances.Remove(attendance);         // delete rec
         await _context.SaveChangesAsync();               // save changes
     }
+
+    public async Task<bool> ExistsAsync(string ipAddress, DateTime date)
+    {
+        // check if any record matches both IP and the date portion
+        bool exists = await _context.Attendances
+            .AnyAsync(a => a.IPAddress == ipAddress && a.SubmissionTime.Date == date.Date );  
+        if (exists)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
 }

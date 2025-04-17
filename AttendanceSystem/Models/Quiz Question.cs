@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AttendanceSystem.Models
 {
@@ -25,6 +26,7 @@ namespace AttendanceSystem.Models
         public string? Option4 { get; set; }
 
         // Navigation property to the associated QuizQuestionBank
+      
         public QuizQuestionBank QuizQuestionBank { get; set; } = null!;
 
         // Navigation property to QuizResponses for this question
