@@ -78,41 +78,60 @@
     .submit-btn:hover {
         background-color: #e68900;
     }
+
+    input[type="radio"] {
+        appearance: auto;
+        margin-right: 8px;
+    }
 </style>
-
-
 
 <div class="container">
     <div class="form-box">
         <div class="title">Student Attendance Survey</div>
         <div class="content">
             <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
-
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-
-                <div style="margin-top: 30px; margin-bottom: 20px;">
+                
+                <!-- student ID  -->
+                <div style="margin-top: 30px; margin-bottom: 40px;">
                     <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
-                    <InputText id="studentIdInput" @bind-Value="formData.StudentID" class="input-field" />
+                    <InputText id="studentIdInput"
+                        @bind-Value="formData.StudentID"
+                        class="input-field"
+                        maxlength="10"
+                        pattern="\d*"
+                        inputmode="numeric" />
                     <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
                 </div>
 
-                <div style="margin-top: 60px; margin-bottom: 40px;">
-                    <div class="question" style="font-weight: bold; margin-bottom: 10px;">Question? Select one:</div>
-                    <InputRadioGroup @bind-Value="formData.Answer" TValue="string">
-                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="1" /> a)</label>
-                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="2" /> b)</label>
-                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="3" /> c)</label>
-                        <label style="display: block; margin-bottom: 5px;"><InputRadio Value="4" /> d)</label>
+                @if (showValidationError)
+                {
+                    <div class="error-message" style="margin-bottom: 10px;">
+                        Please answer all questions before submitting.
+                    </div>
+                }
+
+                <!-- MC choices part  -->
+                @for (int qIndex = 0; qIndex < questions.Count; qIndex++)
+                {
+                    var q = questions[qIndex];
+                    <div class="question" style="font-weight: bold; margin-bottom: 10px;">
+                        @($"{qIndex + 1}. {q.QuestionText}")
+                    </div>
+                    <InputRadioGroup @bind-Value="q.SelectedAnswer" TValue="string" Name=@($"question-{qIndex}")>
+                        @for (int i = 0; i < q.Choices.Count; i++)
+                        {
+                            <label style="display: block; margin-bottom: 5px;">
+                                <InputRadio Value="@q.Choices[i]" @key="@q.Choices[i]" />
+                                @($"{(char)('a' + i)}) {q.Choices[i]}")
+                            </label>
+                        }
                     </InputRadioGroup>
-                    <ValidationMessage For="@(() => formData.Answer)" class="error-message" />
-                </div>
+                    <br />
+                }
 
-
-
-                <!-- Submit Button -->
                 <button type="submit" class="submit-btn">Submit</button>
-
             </EditForm>
         </div>
     </div>
@@ -120,33 +139,85 @@
 
 @code {
 
+
     private EditForm? editForm;
 
-    private FormData formData = new FormData(){
-        StudentID = string.Empty,
-        Answer = string.Empty
+    private EditForm editForm;
+
+
+    // temp example question box
+    private List<string> rawQuestions = new List<string>
+    {
+        "What is the region of diagram that consist of an operator or label?\tGRASP\tFrame\tUML\tCRC",
+        "True or False: Obligations can and do vary significantly by context.\tTrue\tFalse",
+        "What are Benefits of Design by Contract?\t SOLID’s “single responsibility” principle at method level\t“Pseudocode Programming Process\tBasis for “Programming by Intent”\tunit testing\tAll of the above"
     };
+
+    private List<SurveyQuestion> questions = new();
+
+    private FormData formData = new FormData()
+    {
+        StudentID = string.Empty
+    };
+
+    private bool showValidationError = false;
+
+   // parse question bank - split question bank into parts
+    protected override void OnInitialized()
+    {
+        questions = rawQuestions.Select(q =>
+        {
+            var parts = q.Split('\t');
+            return new SurveyQuestion
+            {
+                QuestionText = parts[0],
+                Choices = parts.Skip(1).ToList(),
+                SelectedAnswer = null
+            };
+        }).ToList();
+    }
+
+    // initializing varibales for question
+    public class SurveyQuestion
+    {
+        public string QuestionText { get; set; }
+        public List<string> Choices { get; set; }
+        public string SelectedAnswer { get; set; }
+    }
+
+    public class FormData
+    {
+        [Required(ErrorMessage = "Student ID is required.")]
+        [RegularExpression(@"^\d{10,10}$", ErrorMessage = "Only numbers allowed, exactly 10 characters.")]
+        public string StudentID { get; set; }
+    }
+
     private async Task HandleSubmit(EditContext context)
     {
+        showValidationError = false;
         StateHasChanged();
-        if (context.Validate())
+
+        // validate StudentID and that all questions are answered
+        if (context.Validate() && questions.All(q => !string.IsNullOrEmpty(q.SelectedAnswer)))
         {
             bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
             if (confirmed)
             {
                 Console.WriteLine($"Submitted: {formData.StudentID}");
-                Console.WriteLine($"Submitted: {formData.Answer}");
+                foreach (var q in questions)
+                {
+                    Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
+                }
                 NavigationManager.NavigateTo("/home");
             }
         }
         else
         {
-            StateHasChanged();
+            showValidationError = true;
             Console.WriteLine("Form validation failed");
-            Console.WriteLine($"Submitted: {formData.StudentID}");
-            Console.WriteLine($"Submitted: {formData.Answer}");
         }
     }
+
 
     public class FormData
     {  
@@ -157,4 +228,5 @@
         [Required(ErrorMessage = "Please select an answer.")]
         public string? Answer { get; set; }
     }
+
 }
