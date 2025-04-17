@@ -96,7 +96,12 @@
                 <!-- student ID  -->
                 <div style="margin-top: 30px; margin-bottom: 40px;">
                     <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
-                    <InputText id="studentIdInput" @bind-Value="formData.StudentID" class="input-field" />
+                    <InputText id="studentIdInput"
+                        @bind-Value="formData.StudentID"
+                        class="input-field"
+                        maxlength="10"
+                        pattern="\d*"
+                        inputmode="numeric" />
                     <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
                 </div>
 
