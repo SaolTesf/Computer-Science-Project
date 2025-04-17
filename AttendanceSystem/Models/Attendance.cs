@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AttendanceSystem.Models
 {
@@ -31,5 +32,9 @@ namespace AttendanceSystem.Models
 
         [Required]
         public AttendanceType AttendanceType { get; set; } = AttendanceType.Present;
+        public ICollection<QuizResponse> QuizResponses { get; set; } = new List<QuizResponse>();
+
+        [JsonIgnore]
+        public ClassSession? ClassSession { get; set; } = null!;
     }
 }

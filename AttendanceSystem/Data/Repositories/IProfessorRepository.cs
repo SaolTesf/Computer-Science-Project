@@ -1,8 +1,14 @@
+/*
+Saol Tesfaghebriel
+Professor Repository that defines the methods for managing professor data in the attendance system.
+*/
+
 using AttendanceSystem.Models;
 
 namespace AttendanceSystem.Data.Repositories;
 
-public interface IProfessorRepository {
+public interface IProfessorRepository
+{
   Task<IEnumerable<Professor>> GetAllProfessorsAsync();
   Task<Professor?> GetProfessorByIdAsync(String id);
   Task<Professor?> GetProfessorByUsernameAsync(String username);

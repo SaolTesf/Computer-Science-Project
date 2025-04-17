@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+Professor Controller that handles HTTP requests related to professor data in the attendance system.
+*/
+
 using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
