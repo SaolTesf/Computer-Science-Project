@@ -95,7 +95,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .HasForeignKey(e => e.CourseNumber)
                     .OnDelete(DeleteBehavior.Cascade);
 
-      // mapp QuizQuestionBank to ClassSession               
+      // map QuizQuestionBank to ClassSession               
       entity.HasOne(e => e.QuizQuestionBank)
         .WithMany(qb => qb.ClassSessions)
         .HasForeignKey(e => e.QuestionBankID)
