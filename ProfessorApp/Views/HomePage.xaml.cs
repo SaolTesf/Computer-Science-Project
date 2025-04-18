@@ -14,9 +14,10 @@ namespace ProfessorApp.Pages
             InitializeComponent();
             BindingContext = bindingContext;
         }
-        private async void GoToSMPage(object sender, EventArgs e)
+        private async void GoToCoursePage(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new StudentManagement());
+            var bindingContext = BindingContext;  
+            Navigation.PushAsync(new CoursePage());
         }
 
         private async void GoToAttPage(object sender, EventArgs e)

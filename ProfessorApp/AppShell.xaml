@@ -21,6 +21,11 @@
         Route="StudentManagement" />
 
     <ShellContent
+        Title="Student Management"
+        ContentTemplate="{DataTemplate pages:CoursePage}"
+        Route="StudentManagement" />
+
+    <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
