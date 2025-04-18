@@ -1,8 +1,13 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttendanceSystem", "AttendanceSystem\AttendanceSystem.csproj", "{73BA815E-9121-6666-727F-20296AE082C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfessorApp", "ProfessorApp\ProfessorApp.csproj", "{A73BADFF-7198-49B6-B32D-5B1981ECF435}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttendanceShared", "AttendanceShared\AttendanceShared.csproj", "{27F703A2-D518-4514-9CD4-0C19E36B4FAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +19,15 @@ Global
 		{73BA815E-9121-6666-727F-20296AE082C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73BA815E-9121-6666-727F-20296AE082C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73BA815E-9121-6666-727F-20296AE082C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A73BADFF-7198-49B6-B32D-5B1981ECF435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73BADFF-7198-49B6-B32D-5B1981ECF435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73BADFF-7198-49B6-B32D-5B1981ECF435}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A73BADFF-7198-49B6-B32D-5B1981ECF435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73BADFF-7198-49B6-B32D-5B1981ECF435}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27F703A2-D518-4514-9CD4-0C19E36B4FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27F703A2-D518-4514-9CD4-0C19E36B4FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27F703A2-D518-4514-9CD4-0C19E36B4FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27F703A2-D518-4514-9CD4-0C19E36B4FAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
