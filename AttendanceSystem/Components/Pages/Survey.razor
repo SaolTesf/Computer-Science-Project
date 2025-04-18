@@ -138,16 +138,7 @@
 </div>
 
 @code {
-
-
-
-    private EditForm? editForm;
-
     private EditForm editForm;
-
-    private EditForm? editForm;
-
-
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -221,16 +212,4 @@
             Console.WriteLine("Form validation failed");
         }
     }
-
-
-    public class FormData
-    {  
-        [Required(ErrorMessage = "Student ID is required.")]
-        [RegularExpression(@"^\d{1,25}$", ErrorMessage = "Only numbers allowed, max 25 characters.")]
-        public string? StudentID { get; set; }
-        
-        [Required(ErrorMessage = "Please select an answer.")]
-        public string? Answer { get; set; }
-    }
-
 }
