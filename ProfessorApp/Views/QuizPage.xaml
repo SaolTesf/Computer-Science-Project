@@ -1,0 +1,26 @@
+<ContentPage
+    x:Class="ProfessorApp.Pages.QuizPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    BackgroundColor="Black">
+
+    <!--  Main Content  -->
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+        <Label
+            Margin="0,20,0,10"
+            FontAttributes="Bold"
+            FontSize="24"
+            HorizontalOptions="Center"
+            Text="Quizzes"
+            TextColor="White"
+            VerticalOptions="Start" />
+
+        <Button
+            BackgroundColor="Orange"
+            Clicked="OngetAttendanceClicked"
+            Text="Add Quiz Question"
+            TextColor="White" />
+
+    </VerticalStackLayout>
+</ContentPage>
