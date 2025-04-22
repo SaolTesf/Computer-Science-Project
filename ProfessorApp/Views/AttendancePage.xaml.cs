@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProfessorApp.Pages
 {
-    public partial class AttendancePage :ContentPage
+    public partial class AttendancePage : ContentPage
     {
         public AttendancePage()
         {

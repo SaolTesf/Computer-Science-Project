@@ -14,13 +14,12 @@ namespace ProfessorApp.Pages
             InitializeComponent();
             BindingContext = bindingContext;
         }
-        private async void GoToCoursePage(object sender, EventArgs e)
+        private void GoToCoursePage(object sender, EventArgs e)
         {
-            var bindingContext = BindingContext;  
-            Navigation.PushAsync(new CoursePage());
+            Navigation.PushAsync(new CoursesPage());
         }
 
-        private async void GoToAttPage(object sender, EventArgs e)
+        private void GoToAttPage(object sender, EventArgs e)
         {
             Navigation.PushAsync(new AttendancePage());
         }

@@ -1,23 +1,24 @@
-﻿using System.Text;
+// Sawyer Kamman
+// course management page for independent courses
+using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
-using ProfessorApp.Services;
-using Microsoft.Maui.Controls;
-
 
 namespace ProfessorApp.Pages
 {
     public partial class CoursePage : ContentPage
     {
-        public CoursePage()
+        private readonly HttpClient _httpClient;
+        private string _id = "";
+        public CoursePage(HttpClient httpClient)
         {
             InitializeComponent();
+            _httpClient = httpClient;
         }
 
-        private void GoToC1Page(object sender, EventArgs e)
+        private void GoToManagement(object sender, EventArgs e)
         {
-            // Add your navigation logic here
-            Navigation.PushAsync(new StudentManagement());
+            
         }
     }
 }

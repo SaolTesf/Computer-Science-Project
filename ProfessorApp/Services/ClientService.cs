@@ -38,6 +38,5 @@ namespace ProfessorApp.Services
             return null;
         }
     }
-
     // Additional methods to be added later
 }
