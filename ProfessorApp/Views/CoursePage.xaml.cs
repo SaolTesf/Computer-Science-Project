@@ -9,15 +9,17 @@ namespace ProfessorApp.Pages
 {
     public partial class CoursePage : ContentPage
     {
-        public CoursePage()
+        ClientService _clientService;
+        public CoursePage(ClientService clientService)
         {
+            _clientService = clientService;
             InitializeComponent();
         }
 
         private void GoToC1Page(object sender, EventArgs e)
         {
             // Add your navigation logic here
-            Navigation.PushAsync(new StudentManagement());
+            Navigation.PushAsync(new StudentManagement(_clientService));
         }
     }
 }

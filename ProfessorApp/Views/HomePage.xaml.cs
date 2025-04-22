@@ -2,28 +2,28 @@
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
-
+using Microsoft.Maui.Controls;
 
 namespace ProfessorApp.Pages
 {
     public partial class HomePage : ContentPage
     {
+        private readonly ClientService _clientService;
 
-        public HomePage(object bindingContext)
+        public HomePage(ClientService clientService)
         {
+            _clientService = clientService;
             InitializeComponent();
-            BindingContext = bindingContext;
         }
+
         private async void GoToCoursePage(object sender, EventArgs e)
         {
-            var bindingContext = BindingContext;  
-            Navigation.PushAsync(new CoursePage());
+            await Navigation.PushAsync(new CoursePage(_clientService));
         }
 
         private async void GoToAttPage(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new AttendancePage());
+            await Navigation.PushAsync(new AttendancePage());
         }
-
     }
 }
