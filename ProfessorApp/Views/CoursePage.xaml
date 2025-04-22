@@ -19,15 +19,19 @@
                 TextColor="White"
                 VerticalOptions="Start" />
 
-            <!--  Button to Choose Files  -->
-            <Button
-                BackgroundColor="Orange"
-                Clicked="GoToC1Page"
-                Text="Course1"
-                TextColor="White" />
-
-
-
+            <!-- Courses List -->
+            <CollectionView x:Name="CourseCollectionView" SelectionMode="Single" SelectionChanged="OnCourseSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="Orange" CornerRadius="8" Padding="10" Margin="0,5">
+                            <StackLayout>
+                                <Label Text="{Binding CourseName}" TextColor="White" FontAttributes="Bold" />
+                                <Label Text="{Binding CourseNumber}" TextColor="White" />
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
         </VerticalStackLayout>
     </Grid>
