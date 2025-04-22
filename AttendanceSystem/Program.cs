@@ -77,6 +77,10 @@ builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<GetIPService>();
+
 builder.Services.AddHttpClient();
 
 // Add professors controller
@@ -85,6 +89,7 @@ builder.Services.AddControllers();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
