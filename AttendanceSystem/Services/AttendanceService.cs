@@ -1,5 +1,6 @@
 using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace AttendanceSystem.Services
 {
@@ -14,13 +15,13 @@ namespace AttendanceSystem.Services
 
         public async Task<List<Attendance>> GetAllAttendancesAsync()
         {
-            var result = await _attendanceRepository.GetAllAsync(); // get recs from repository
+            var result = await _attendanceRepository.GetAllAttendancesAsync(); // get recs from repository
             return new List<Attendance>(result);                    // convert to list and return
         }
 
         public async Task<Attendance?> GetAttendanceByIdAsync(int id)
         {
-            return await _attendanceRepository.GetByIdAsync(id);   // get rec by ID
+            return await _attendanceRepository.GetAttendanceByIdAsync(id);   // get rec by ID
         }
 
         public async Task<List<Attendance>> GetPresentAttendancesAsync()
@@ -31,21 +32,42 @@ namespace AttendanceSystem.Services
 
         public async Task CreateAttendanceAsync(Attendance attendance)
         {
-            await _attendanceRepository.AddAsync(attendance);       // add a new rec via repository
+            await _attendanceRepository.AddAttendanceAsync(attendance);       // add a new rec via repository
         }
 
         public async Task UpdateAttendanceAsync(Attendance attendance)
         {
-            await _attendanceRepository.UpdateAsync(attendance);    // update an existing rec via repository
+            await _attendanceRepository.UpdateAttendanceAsync(attendance);    // update an existing rec via repository
         }
 
         public async Task DeleteAttendanceAsync(int id)
         {
-            var attendance = await _attendanceRepository.GetByIdAsync(id); // get rec to delete
+            var attendance = await _attendanceRepository.GetAttendanceByIdAsync(id); // get rec to delete
             if (attendance != null)
             {
-                await _attendanceRepository.DeleteAsync(attendance);       // delete rec if found
+                await _attendanceRepository.DeleteAttendanceAsync(attendance);       // delete rec if found
+            }
+
+        }
+
+        public async Task<bool> RecordExistsAsync(string ipAddress, DateTime date)
+        {
+            var exists = await _attendanceRepository.ExistsAsync(ipAddress, date);
+
+            if (exists)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
+
+        public async Task<bool> DateExistsAsync(DateTime date)
+        {
+            return await _attendanceRepository.DateExistsAsync(date);
+        }
+
     }
 }

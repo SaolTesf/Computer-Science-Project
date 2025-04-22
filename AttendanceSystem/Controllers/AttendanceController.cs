@@ -38,6 +38,8 @@ namespace AttendanceSystem.Controllers
             return Ok(attendances);
         }
 
+
+
         // POST: api/attendance
         [HttpPost]
         public async Task<ActionResult> CreateAttendance([FromBody] Attendance attendance)
@@ -67,5 +69,30 @@ namespace AttendanceSystem.Controllers
             await _attendanceService.DeleteAttendanceAsync(id);
             return NoContent();
         }
+
+        /// GET /api/attendance/exists?ipAddress={numbers}/date={numbers}
+        [HttpGet("exists")]
+        public async Task<ActionResult<bool>> Exists(string ipAddress,DateTime date)
+        {
+            var exists = await _attendanceService.RecordExistsAsync(ipAddress, date.Date);
+
+            if (exists)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
+        }
+
+        // GET: api/attendance/date-exists?date=2025-04-21
+        [HttpGet("date-exists")]
+        public async Task<ActionResult<bool>> CheckDateExists([FromQuery] DateTime date)
+        {
+            var exists = await _attendanceService.DateExistsAsync(date.Date);
+            return Ok(exists);
+        }
+
     }
 }
