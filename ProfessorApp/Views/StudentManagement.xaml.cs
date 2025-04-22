@@ -4,21 +4,49 @@ Delete also deletes any attendance statistics/facts that are associated with the
 using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
-using ProfessorApp.Services;  
+using ProfessorApp.Services;
+using System.IO;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Controls;
 
 namespace ProfessorApp.Pages
 {
     public partial class StudentManagement : ContentPage
     {
         private readonly ClientService _clientService;
+        private readonly string _courseNumber;
         private List<FileResult> _selectedFiles;
 
-        // Constructor now accepts ClientService as a parameter
-        public StudentManagement(ClientService clientService)
+        public StudentManagement(ClientService clientService, string courseNumber)
         {
             InitializeComponent();
             _clientService = clientService;
+            _courseNumber = courseNumber;
             _selectedFiles = new List<FileResult>();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await LoadEnrollmentsAsync();
+        }
+
+        private async Task LoadEnrollmentsAsync()
+        {
+            var enrollments = await _clientService.GetEnrollmentsAsync(_courseNumber);
+            EnrollmentCollectionView.ItemsSource = enrollments;
+        }
+
+        private async void OnUnenrollClicked(object sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.CommandParameter is int enrollmentId)
+            {
+                var success = await _clientService.UnenrollStudentAsync(enrollmentId);
+                if (success)
+                    await LoadEnrollmentsAsync();
+                else
+                    await DisplayAlert("Error", "Failed to remove student.", "OK");
+            }
         }
 
         //Event handler for selecting file
@@ -136,28 +164,16 @@ namespace ProfessorApp.Pages
         //Method called to read and upload the txt file
         public async Task UploadStudentData(string filePath)
         {
-            try
+            var students = ParseStudentFile(filePath);
+            foreach (var student in students)
             {
-                //Parse txt into student object
-                var students = ParseStudentFile(filePath);
-                foreach (var student in students)
+                if (await _clientService.AddStudentAsync(student))
                 {
-                    //Add student object to database
-                    bool success = await _clientService.AddStudentAsync(student);
-                    if (success)
-                    {
-                        Console.WriteLine($"Student {student.Username} added successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Failed to add student {student.Username}.");
-                    }
+                    var dto = new CourseEnrollmentDTO { CourseNumber = _courseNumber, UTDID = student.UTDID };
+                    await _clientService.EnrollStudentToCourseAsync(dto);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+            await LoadEnrollmentsAsync();
         }
 
         //Parse the txt file into student object
@@ -239,30 +255,17 @@ namespace ProfessorApp.Pages
                 UTDID = utdid
             };
 
-            try
+            if (await _clientService.AddStudentAsync(student))
             {
-                bool response = await _clientService.AddStudentAsync(student);
-                if (response)
-                {
-                    await DisplayAlert("Success", "Student added successfully.", "OK");
-
-                    FirstNameEntry.Text = string.Empty;
-                    LastNameEntry.Text = string.Empty;
-                    UsernameEntry.Text = string.Empty;
-                    AddStudentUTDIDEntry.Text = string.Empty;
-                    AddStudentPopup.IsVisible = false;
-                }
-                else
-                {
-                    await DisplayAlert("Error", "Failed to add student. Please try again.", "OK");
-                }
+                var dto = new CourseEnrollmentDTO { CourseNumber = _courseNumber, UTDID = student.UTDID };
+                await _clientService.EnrollStudentToCourseAsync(dto);
+                await DisplayAlert("Success", "Student added and enrolled.", "OK");
+                AddStudentPopup.IsVisible = false;
+                await LoadEnrollmentsAsync();
             }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
-            }
+            else
+                await DisplayAlert("Error", "Failed to add student.", "OK");
         }
-
 
         //Cancel adding student button
         private void OnCancelClicked(object sender, EventArgs e)
@@ -278,7 +281,7 @@ namespace ProfessorApp.Pages
         }
 
         //Method to delete a student by UTDID
-        private async void OnDeleteStudentClicked(object sender, EventArgs e)
+        private void OnDeleteStudentClicked(object sender, EventArgs e)
         {
             //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;
@@ -331,7 +334,6 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
-
 
         //Cancel Deleting a student
         private void OnCancelDeleteClicked(object sender, EventArgs e)
