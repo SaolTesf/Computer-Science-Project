@@ -2,6 +2,7 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AttendanceSystem.Controllers
@@ -33,6 +34,15 @@ namespace AttendanceSystem.Controllers
             if (course == null)
                 return NotFound();
             return Ok(course);
+        }
+
+        // GET: api/course/professor/{professorId}
+        [HttpGet("professor/{professorId}")]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByProfessor(string professorId)
+        {
+            var allCourses = await _courseService.GetAllCoursesAsync();
+            var filtered = allCourses.Where(c => c.ProfessorID == professorId);
+            return Ok(filtered);
         }
 
         // POST: api/course
