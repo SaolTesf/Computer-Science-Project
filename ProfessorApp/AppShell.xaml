@@ -10,23 +10,20 @@
 
 
     <ShellContent
-        Title="Home Page"
+        Title="Home"
         ContentTemplate="{DataTemplate pages:HomePage}"
-        Route="HomePage" />
+        Route="Home" />
 
 
     <ShellContent
-        Title="Student Management"
+        Title="Courses"
+        ContentTemplate="{DataTemplate pages:CoursePage}"
+        Route="Courses" />
+    
+    <ShellContent
+        Title="Students"
         ContentTemplate="{DataTemplate pages:StudentManagement}"
         Route="StudentManagement" />
 
-    <ShellContent
-        Title="Student Management"
-        ContentTemplate="{DataTemplate pages:CoursePage}"
-        Route="StudentManagement" />
-
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <!-- MainPage is only for template/demo; navigation uses explicit PushAsync -->
 </Shell>
