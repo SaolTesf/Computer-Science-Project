@@ -11,8 +11,6 @@ namespace ProfessorApp.Pages
     public partial class StudentManagement : ContentPage
     {
         private readonly ClientService _clientService;
-        private const string StudentApiBaseUrl = "/api/student";
-        private const string AttendanceApiBaseUrl = "/api/attendance";
         private List<FileResult> _selectedFiles;
 
         // Constructor now accepts ClientService as a parameter
@@ -190,12 +188,6 @@ namespace ProfessorApp.Pages
             }
 
             return students;
-        }
-
-        //Method to add student to database through API
-        private async Task<bool> AddStudentToDatabase(StudentDTO student)
-        {
-            return await _clientService.AddStudentAsync(student);
         }
 
         //Event handler for adding student through form (Add Student button)
