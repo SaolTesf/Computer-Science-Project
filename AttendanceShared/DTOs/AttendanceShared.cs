@@ -47,3 +47,8 @@ public class CourseEnrollmentDTO {
   public string CourseNumber { get; set; } = null!;
   public string UTDID { get; set; } = null!;
 }
+
+public class CourseEnrollmentDetailDTO {
+  public int EnrollmentID { get; set; }
+  public StudentDTO Student { get; set; } = null!;
+}

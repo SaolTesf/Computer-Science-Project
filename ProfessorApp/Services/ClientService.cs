@@ -76,5 +76,31 @@ namespace ProfessorApp.Services
             }
             return null;
         }
+
+        // Courses
+        public async Task<List<CourseDTO>?> GetAllCoursesAsync()
+            => await _httpClient.GetFromJsonAsync<List<CourseDTO>>("api/course");
+
+        public async Task<bool> AddCourseAsync(CourseDTO course)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/course", course);
+            return response.IsSuccessStatusCode;
+        }
+
+        // Enrollments
+        public async Task<List<CourseEnrollmentDetailDTO>?> GetEnrollmentsAsync(string courseNumber)
+            => await _httpClient.GetFromJsonAsync<List<CourseEnrollmentDetailDTO>>($"api/courseenrollment/course/{courseNumber}");
+
+        public async Task<bool> EnrollStudentToCourseAsync(CourseEnrollmentDTO dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/courseenrollment", dto);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UnenrollStudentAsync(int enrollmentId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/courseenrollment/{enrollmentId}");
+            return response.IsSuccessStatusCode;
+        }
     }
 }
