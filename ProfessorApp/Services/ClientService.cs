@@ -10,6 +10,7 @@ namespace ProfessorApp.Services
     {
         private readonly HttpClient _httpClient;
         public string? ProfessorId { get; private set; }
+        public ProfessorDTO? CurrentProfessor { get; private set; }
 
         public ClientService(HttpClient httpClient)
         {
@@ -27,6 +28,7 @@ namespace ProfessorApp.Services
                 {
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth.Token);
                     ProfessorId = auth.User.ID;
+                    CurrentProfessor = auth.User;
                 }
                 return auth;
             }
