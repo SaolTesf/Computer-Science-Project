@@ -6,97 +6,101 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using System.ComponentModel.DataAnnotations;
-@using AttendanceSystem.Models;
 @inject IJSRuntime JSRuntime
 <!-- to move to home page -->
 @inject NavigationManager NavigationManager
+<!--Injecting Services for API calls-->
+@using AttendanceSystem.Models;
+@using AttendanceSystem.Services;
+@inject IAttendanceService AttendanceService;
+@inject IStudentService StudentService;
 
 <!-- CSS  -->
 <style>
     /* background */
     .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
     }
 
     /* middle box */
     .form-box {
-        width: 90%;
-        max-width: 600px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
+    width: 90%;
+    max-width: 600px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
     }
 
     /* title  */
     .title {
-        background-color: #ff9800;
-        color: white;
-        padding: 15px;
-        font-size: 20px;
-        font-weight: bold;
-        text-align: center;
+    background-color: #ff9800;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
     }
 
     .content {
-        padding: 20px;
+    padding: 20px;
     }
 
     /* Student ID */
     .input-field {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
     }
 
     /* format for red text */
     .error-message {
-        color: red;
-        font-size: 14px;
+    color: red;
+    font-size: 14px;
     }
 
     /* format for each question prompt */
     .question {
-        margin-top: 15px;
-        font-weight: bold;
+    margin-top: 15px;
+    font-weight: bold;
     }
 
     /* format for each answer choice */
     .options {
-        display: flex;
-        flex-direction: column;
-        margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
     }
 
     /* submit button  */
     .submit-btn {
-        width: 100%;
-        background-color: #ff9800;
-        color: white;
-        border: none;
-        padding: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
+    width: 100%;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
     }
 
-        .submit-btn:hover {
-            background-color: #e68900;
-        }
+    .submit-btn:hover {
+    background-color: #e68900;
+    }
 
     /* debugging + spacing out radio buttons */
     input[type="radio"] {
-        appearance: auto;
-        margin-right: 8px;
+    appearance: auto;
+    margin-right: 8px;
     }
 </style>
 
@@ -117,11 +121,11 @@
                     <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
                     <!-- binding input text to StudentID variable, limiting input to 10 chars -->
                     <InputText id="studentIdInput"
-                               @bind-Value="formData.StudentID"
-                               class="input-field"
-                               maxlength="10"
-                               pattern="\d*"
-                               inputmode="numeric" />
+                    @bind-Value="formData.StudentID"
+                    class="input-field"
+                    maxlength="10"
+                    pattern="\d*"
+                    inputmode="numeric" />
                     <!-- validation here, based on validation in formData class below -->
                     <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
                 </div>
@@ -131,7 +135,14 @@
                 @if (showValidationError)
                 {
                     <div class="error-message" style="margin-bottom: 10px;">
-                        Please answer all questions before submitting.
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            @errorMessage
+                        }
+                        else
+                        {
+                            <span>Please answer all questions before submitting.</span>
+                        }
                     </div>
                 }
 
@@ -161,11 +172,7 @@
 </div>
 
 @code {
-    private readonly HttpClient _httpClient;
-    private const string StudentApiBaseUrl = "/api/student";
-    private const string AttendanceApiBaseUrl = "/api/attendance";
-
-
+    private string errorMessage = string.Empty;
     private EditForm editForm;
 
     // temp example question box
@@ -228,12 +235,22 @@
             bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
             if (confirmed)
             {
+                var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
+                if (student == null)
+                {
+                    errorMessage = $"No student found with UTDID {formData.StudentID}.";
+                    showValidationError = true;
+                    StateHasChanged();
+                }
+                else
+                { 
                 Console.WriteLine($"Submitted: {formData.StudentID}");
                 foreach (var q in questions)
                 {
                     Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
                 }
                 NavigationManager.NavigateTo("/home");
+                }
             }
         }
         else
