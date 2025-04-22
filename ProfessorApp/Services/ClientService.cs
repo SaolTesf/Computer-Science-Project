@@ -72,7 +72,7 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/student/{utdId}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync(); // returns "<Name> has been removed."
+                return await response.Content.ReadAsStringAsync(); 
             }
             return null;
         }

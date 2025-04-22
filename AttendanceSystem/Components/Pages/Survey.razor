@@ -5,83 +5,88 @@
 @using System.ComponentModel.DataAnnotations;
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+<!--Injecting Services for API calls-->
+ @using AttendanceSystem.Models;
+ @using AttendanceSystem.Services;
+ @inject IAttendanceService AttendanceService;
+ @inject IStudentService StudentService;
 
 <style>
     .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
     }
 
     .form-box {
-        width: 90%;
-        max-width: 600px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
+    width: 90%;
+    max-width: 600px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
     }
 
     .title {
-        background-color: #ff9800;
-        color: white;
-        padding: 15px;
-        font-size: 20px;
-        font-weight: bold;
-        text-align: center;
+    background-color: #ff9800;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
     }
 
     .content {
-        padding: 20px;
+    padding: 20px;
     }
 
     .input-field {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
     }
 
     .error-message {
-        color: red;
-        font-size: 14px;
+    color: red;
+    font-size: 14px;
     }
 
     .question {
-        margin-top: 15px;
-        font-weight: bold;
+    margin-top: 15px;
+    font-weight: bold;
     }
 
     .options {
-        display: flex;
-        flex-direction: column;
-        margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
     }
 
     .submit-btn {
-        width: 100%;
-        background-color: #ff9800;
-        color: white;
-        border: none;
-        padding: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
+    width: 100%;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
     }
 
     .submit-btn:hover {
-        background-color: #e68900;
+    background-color: #e68900;
     }
 
     input[type="radio"] {
-        appearance: auto;
-        margin-right: 8px;
+    appearance: auto;
+    margin-right: 8px;
     }
 </style>
 
@@ -92,16 +97,16 @@
             <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                
+
                 <!-- student ID  -->
                 <div style="margin-top: 30px; margin-bottom: 40px;">
                     <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
                     <InputText id="studentIdInput"
-                        @bind-Value="formData.StudentID"
-                        class="input-field"
-                        maxlength="10"
-                        pattern="\d*"
-                        inputmode="numeric" />
+                    @bind-Value="formData.StudentID"
+                    class="input-field"
+                    maxlength="10"
+                    pattern="\d*"
+                    inputmode="numeric" />
                     <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
                 </div>
 
@@ -109,6 +114,14 @@
                 {
                     <div class="error-message" style="margin-bottom: 10px;">
                         Please answer all questions before submitting.
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            @errorMessage
+                        }
+                        else
+                        {
+                            <span>Please answer all questions before submitting.</span>
+                        }
                     </div>
                 }
 
@@ -138,7 +151,7 @@
 </div>
 
 @code {
-
+    private string errorMessage = string.Empty;
     private EditForm? editForm;
 
 
@@ -159,7 +172,7 @@
 
     private bool showValidationError = false;
 
-   // parse question bank - split question bank into parts
+    // parse question bank - split question bank into parts
     protected override void OnInitialized()
     {
         questions = rawQuestions.Select(q =>
@@ -200,18 +213,28 @@
             bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
             if (confirmed)
             {
-                Console.WriteLine($"Submitted: {formData.StudentID}");
-                foreach (var q in questions)
+                var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
+                if (student == null)
                 {
-                    Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
+                    errorMessage = $"No student found with UTDID {formData.StudentID}.";
+                    showValidationError = true;
+                    StateHasChanged();
                 }
-                NavigationManager.NavigateTo("/home");
+                else
+                {
+                    Console.WriteLine($"Submitted: {formData.StudentID}");
+                    foreach (var q in questions)
+                    {
+                        Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
+                    }
+                    NavigationManager.NavigateTo("/home");
+                }
             }
-        }
-        else
-        {
-            showValidationError = true;
-            Console.WriteLine("Form validation failed");
+            else
+            {
+                showValidationError = true;
+                Console.WriteLine("Form validation failed");
+            }
         }
     }
 }
