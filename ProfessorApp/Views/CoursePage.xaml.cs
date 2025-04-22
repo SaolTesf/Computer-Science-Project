@@ -8,17 +8,17 @@ namespace ProfessorApp.Pages
 {
     public partial class CoursePage : ContentPage
     {
-        private readonly HttpClient _httpClient;
-        private string _id = "";
-        public CoursePage(HttpClient httpClient)
+        ClientService _clientService;
+        public CoursePage(ClientService clientService)
         {
+            _clientService = clientService;
             InitializeComponent();
-            _httpClient = httpClient;
         }
 
         private void GoToManagement(object sender, EventArgs e)
         {
-            
+            // Add your navigation logic here
+            Navigation.PushAsync(new StudentManagement(_clientService));
         }
     }
 }

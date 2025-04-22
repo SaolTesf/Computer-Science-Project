@@ -160,7 +160,9 @@
 </div>
 
 @code {
-    private EditForm editForm;
+
+    private EditForm? editForm;
+
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -197,9 +199,9 @@
     // initializing varibales for question
     public class SurveyQuestion
     {
-        public string QuestionText { get; set; }
-        public List<string> Choices { get; set; }
-        public string SelectedAnswer { get; set; }
+        public string? QuestionText { get; set; }
+        public List<string> Choices { get; set; } = new List<string>();
+        public string? SelectedAnswer { get; set; }
     }
 
     // fordata class + validation
@@ -207,7 +209,7 @@
     {
         [Required(ErrorMessage = "Student ID is required.")]
         [RegularExpression(@"^\d{10,10}$", ErrorMessage = "Only numbers allowed, exactly 10 characters.")]
-        public string StudentID { get; set; }
+        public string? StudentID { get; set; }
     }
 
     // submission code + input validation

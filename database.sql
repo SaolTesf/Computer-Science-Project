@@ -28,6 +28,16 @@ CREATE TABLE Course (
     FOREIGN KEY (ProfessorID) REFERENCES Professor(ID) ON DELETE CASCADE
 );
 
+CREATE TABLE CourseEnrollment (
+    EnrollmentID INT AUTO_INCREMENT PRIMARY KEY,
+    CourseNumber VARCHAR(10) NOT NULL,
+    UTDID VARCHAR(10) NOT NULL,
+    EnrollmentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (CourseNumber) REFERENCES Course(CourseNumber) ON DELETE CASCADE,
+    FOREIGN KEY (UTDID) REFERENCES Student(UTDID) ON DELETE CASCADE,
+    UNIQUE KEY (CourseNumber, UTDID) -- Prevent duplicate enrollments
+);
+
 -- Each class meeting with password/quiz config
 CREATE TABLE ClassSession (
     SessionID INT AUTO_INCREMENT PRIMARY KEY,

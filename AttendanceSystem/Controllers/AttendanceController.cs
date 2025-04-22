@@ -85,5 +85,14 @@ namespace AttendanceSystem.Controllers
                 return Ok(false);
             }
         }
+
+        // GET: api/attendance/date-exists?date=2025-04-21
+        [HttpGet("date-exists")]
+        public async Task<ActionResult<bool>> CheckDateExists([FromQuery] DateTime date)
+        {
+            var exists = await _attendanceService.DateExistsAsync(date.Date);
+            return Ok(exists);
+        }
+
     }
 }

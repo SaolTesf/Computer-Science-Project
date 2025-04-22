@@ -61,5 +61,10 @@ public class AttendanceRepository : IAttendanceRepository
         }
     }
 
+    public async Task<bool> DateExistsAsync(DateTime date)
+    {
+        return await _context.Attendances
+            .AnyAsync(a => a.SubmissionTime.Date == date.Date);
+    }
 
 }
