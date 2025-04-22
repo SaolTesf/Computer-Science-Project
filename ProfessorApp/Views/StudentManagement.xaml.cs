@@ -4,20 +4,24 @@ Delete also deletes any attendance statistics/facts that are associated with the
 using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
-using ProfessorApp.Services;  
+
+
+
 
 namespace ProfessorApp.Pages
 {
     public partial class StudentManagement : ContentPage
     {
-        private readonly ClientService _clientService;
+        private readonly HttpClient _httpClient;
+        private const string StudentApiBaseUrl = "http://localhost:5225/api/student";
+        private const string AttendanceApiBaseUrl = "http://localhost:5225/api/attendance";
+        // List to hold selected files
         private List<FileResult> _selectedFiles;
 
-        // Constructor now accepts ClientService as a parameter
-        public StudentManagement(ClientService clientService)
+        public StudentManagement()
         {
             InitializeComponent();
-            _clientService = clientService;
+            _httpClient = new HttpClient();
             _selectedFiles = new List<FileResult>();
         }
 
@@ -143,8 +147,8 @@ namespace ProfessorApp.Pages
                 foreach (var student in students)
                 {
                     //Add student object to database
-                    bool success = await _clientService.AddStudentAsync(student);
-                    if (success)
+                    var response = await AddStudentToDatabase(student);
+                    if (response.IsSuccessStatusCode)
                     {
                         Console.WriteLine($"Student {student.Username} added successfully.");
                     }
@@ -190,6 +194,16 @@ namespace ProfessorApp.Pages
             return students;
         }
 
+        //Method to add student to database through API
+        private async Task<HttpResponseMessage> AddStudentToDatabase(StudentDTO student)
+        {
+            var studentJson = JsonConvert.SerializeObject(student);
+            var content = new StringContent(studentJson, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(StudentApiBaseUrl, content);
+            return response;
+        }
+
         //Event handler for adding student through form (Add Student button)
         private void OnAddStudentClicked(object sender, EventArgs e)
         {
@@ -213,6 +227,7 @@ namespace ProfessorApp.Pages
             var username = UsernameEntry.Text?.Trim();
             var utdid = AddStudentUTDIDEntry.Text?.Trim();
 
+            //Check if Username and UTDID are the correct amount of characters
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) ||
                 string.IsNullOrEmpty(username) || string.IsNullOrEmpty(utdid))
             {
@@ -231,6 +246,7 @@ namespace ProfessorApp.Pages
                 return;
             }
 
+            //Create new student object
             var student = new StudentDTO
             {
                 FirstName = firstName,
@@ -241,15 +257,21 @@ namespace ProfessorApp.Pages
 
             try
             {
-                bool response = await _clientService.AddStudentAsync(student);
-                if (response)
+                var studentJson = JsonConvert.SerializeObject(student);
+                var content = new StringContent(studentJson, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(StudentApiBaseUrl, content);
+                if (response.IsSuccessStatusCode)
                 {
                     await DisplayAlert("Success", "Student added successfully.", "OK");
 
+                    //Clear the fields for adding another student
                     FirstNameEntry.Text = string.Empty;
                     LastNameEntry.Text = string.Empty;
                     UsernameEntry.Text = string.Empty;
                     AddStudentUTDIDEntry.Text = string.Empty;
+
+                    //Hide form after submission
                     AddStudentPopup.IsVisible = false;
                 }
                 else
@@ -262,7 +284,6 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
-
 
         //Cancel adding student button
         private void OnCancelClicked(object sender, EventArgs e)
@@ -302,18 +323,22 @@ namespace ProfessorApp.Pages
 
             try
             {
-                var student = await _clientService.GetStudentByUTDIdAsync(utdid);
-                if (student != null)
+                var checkResponse = await _httpClient.GetAsync($"{StudentApiBaseUrl}/id/{utdid}");
+                if (checkResponse.IsSuccessStatusCode)
                 {
-                    var deleteStudentResponse = await _clientService.DeleteStudentByUTDIdAsync(utdid);
-                    var deleteAttendanceResponse = await _clientService.DeleteStudentByUTDIdAsync(utdid);
+                    var deleteResponse = await _httpClient.DeleteAsync($"{StudentApiBaseUrl}/{utdid}");
+                    var attdeleteResponse = await _httpClient.DeleteAsync($"{AttendanceApiBaseUrl}/{utdid}");
 
-                    if (!string.IsNullOrEmpty(deleteStudentResponse))
+                    if (deleteResponse.IsSuccessStatusCode)
                     {
-                        string resultMessage = deleteStudentResponse;
+                        string resultMessage = await deleteResponse.Content.ReadAsStringAsync();
+
                         await DisplayAlert("Success", resultMessage, "OK");
 
+                        //Clear form fields
                         DeleteUTDIDEntry.Text = string.Empty;
+
+                        //Hide the delete popup
                         DeleteStudentPopup.IsVisible = false;
                     }
                     else
@@ -331,7 +356,6 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
-
 
         //Cancel Deleting a student
         private void OnCancelDeleteClicked(object sender, EventArgs e)
