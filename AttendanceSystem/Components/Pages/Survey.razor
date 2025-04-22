@@ -154,7 +154,8 @@
 
     private FormData formData = new FormData()
     {
-        StudentID = string.Empty
+        StudentID = string.Empty,
+        Answer = string.Empty
     };
 
     private bool showValidationError = false;
@@ -187,6 +188,7 @@
         [Required(ErrorMessage = "Student ID is required.")]
         [RegularExpression(@"^\d{10,10}$", ErrorMessage = "Only numbers allowed, exactly 10 characters.")]
         public string? StudentID { get; set; }
+        public string? Answer { get; set; }
     }
 
     private async Task HandleSubmit(EditContext context)
@@ -215,15 +217,5 @@
             Console.WriteLine($"Submitted: {formData.StudentID}");
             Console.WriteLine($"Submitted: {formData.Answer}");
         }
-    }
-
-    public class FormData
-    {  
-        [Required(ErrorMessage = "Student ID is required.")]
-        [RegularExpression(@"^\d{1,25}$", ErrorMessage = "Only numbers allowed, max 25 characters.")]
-        public string? StudentID { get; set; }
-        
-        [Required(ErrorMessage = "Please select an answer.")]
-        public string? Answer { get; set; }
     }
 }
