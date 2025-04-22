@@ -189,6 +189,10 @@
         {
             StudentID = string.Empty
         };
+    {
+        StudentID = string.Empty,
+        Answer = string.Empty
+    };
 
     private bool showValidationError = false;
 
@@ -221,6 +225,8 @@
         [Required(ErrorMessage = "Student ID is required.")]
         [RegularExpression(@"^\d{10,10}$", ErrorMessage = "Only numbers allowed, exactly 10 characters.")]
         public string StudentID { get; set; }
+        public string? StudentID { get; set; }
+        public string? Answer { get; set; }
     }
 
     // submission code + input validation
@@ -258,6 +264,8 @@
         {
             showValidationError = true;
             Console.WriteLine("Form validation failed");
+            Console.WriteLine($"Submitted: {formData.StudentID}");
+            Console.WriteLine($"Submitted: {formData.Answer}");
         }
     }
 }
