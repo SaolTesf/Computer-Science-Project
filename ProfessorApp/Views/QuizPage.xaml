@@ -21,6 +21,19 @@
         <Picker
             x:Name="BankPicker"
             Title="Select a Question Bank"
+            BackgroundColor="Orange"
+            TextColor="Black"
+            ItemsSource="{Binding BankList}"
+            SelectedItem="{Binding SelectedBank, Mode=TwoWay}" />
+
+
+       
+        
+        <Picker
+            x:Name="QuestionPicker"
+            Title="Select a Question "
+            BackgroundColor="Orange"
+            TextColor="Black"
             ItemsSource="{Binding BankList}"
             SelectedItem="{Binding SelectedBank, Mode=TwoWay}" />
 

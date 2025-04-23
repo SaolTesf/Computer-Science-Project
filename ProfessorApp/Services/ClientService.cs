@@ -84,6 +84,12 @@ namespace ProfessorApp.Services
             return response;
         }
 
+        public async Task<List<QuizQuestionBankDTO>?> GetQuizQuestionBankByIDAsync(int bankId)
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionBankDTO>>($"api/quizquestionbank/{bankId}");
+            return response;
+        }
+
         public async Task<bool> CreateQuizQuestionBankAsync(QuizQuestionBankDTO bank)
         {
             var response = await _httpClient.PostAsJsonAsync("api/quizquestionbank", bank);
@@ -107,5 +113,37 @@ namespace ProfessorApp.Services
             var response = await _httpClient.GetFromJsonAsync<List<string>>("api/quizquestionbank/banknames");
             return response;
         }
+
+
+        // Quizquestion Methods
+        public async Task<List<QuizQuestionDTO>?> GetAllQuizQuestionAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionDTO>>("api/quizquestion");
+            return response;
+        }
+
+       public async Task<List<QuizQuestionDTO>?> GetQuizQuestionByIdAsync(int questionId)
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionDTO>>($"api/quizquestion/{questionId}");
+            return response;
+        }
+        public async Task<bool> CreateQuizQuestionAsync(QuizQuestionDTO question)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/quizquestionbank", question);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateQuizQuestionAsync(QuizQuestionDTO question)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/quizquestion/{question.QuestionID}", question);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteQuizQuestionAsync(int questionId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/quizquestion/{questionId}");
+            return response.IsSuccessStatusCode;
+        }
+
     }
 }
