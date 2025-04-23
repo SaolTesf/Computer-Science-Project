@@ -1,29 +1,37 @@
-﻿using System.Text;
-using Newtonsoft.Json;
-using AttendanceShared.DTOs;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Storage;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AttendanceShared.DTOs;
+using ProfessorApp.Services;
+using Microsoft.Maui.Controls;
 
 namespace ProfessorApp.Pages
 {
     public partial class QuizPage : ContentPage
     {
-        public QuizPage()
+        private readonly ClientService _clientService;
+        public List<string> BankList { get; set; } = new List<string>();
+        public string? SelectedBank { get; set; }
+
+        public QuizPage(ClientService clientService)
         {
             InitializeComponent();
-            _httpClient = new HttpClient();
+            _clientService = clientService;
+            BindingContext = this;
+            LoadBankNamesAsync();
         }
 
-        private readonly HttpClient _httpClient;
-        private const string AttendanceApiBaseUrl = "http://localhost:5225/api/attendance";
-        private async void OngetAttendanceClicked(object sender, EventArgs e)
+        private async void LoadBankNamesAsync()
         {
-            await DisplayAlert("Success", "Student added successfully.", "OK");
+            var bankNames = await _clientService.GetAllQuizBankNamesAsync();
+
+            BankList = bankNames ?? new List<string>();
+
+            if (BankList.Count > 0)
+            {
+                SelectedBank = BankList[0]; 
+            }
+            OnPropertyChanged(nameof(BankList));
+            OnPropertyChanged(nameof(SelectedBank));
         }
     }
 }

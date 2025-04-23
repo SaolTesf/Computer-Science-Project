@@ -12,5 +12,6 @@ namespace AttendanceSystem.Data.Repositories
         Task AddBankAsync(QuizQuestionBank bank); // Add a new quiz bank.
         Task UpdateBankAsync(QuizQuestionBank bank); // Update an existing quiz bank.
         Task DeleteBankAsync(QuizQuestionBank bank); // Delete a quiz bank.
+        Task<List<string>> GetAllBankNamesAsync();
     }
 }

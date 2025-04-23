@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="ProfessorApp.Pages.QuizPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -16,11 +17,12 @@
             TextColor="White"
             VerticalOptions="Start" />
 
-        <Button
-            BackgroundColor="Orange"
-            Clicked="OngetAttendanceClicked"
-            Text="Add Quiz Question"
-            TextColor="White" />
+        <!--  Picker for Quiz Banks  -->
+        <Picker
+            x:Name="BankPicker"
+            Title="Select a Question Bank"
+            ItemsSource="{Binding BankList}"
+            SelectedItem="{Binding SelectedBank, Mode=TwoWay}" />
 
     </VerticalStackLayout>
 </ContentPage>

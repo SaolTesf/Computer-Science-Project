@@ -39,7 +39,7 @@ namespace ProfessorApp.Services
         }
 
 
-        // Additional methods to be added later
+        // Student Methods
         public async Task<List<StudentDTO>?> GetAllStudentsAsync()
         {
             return await _httpClient.GetFromJsonAsync<List<StudentDTO>>("api/student");
@@ -75,6 +75,37 @@ namespace ProfessorApp.Services
                 return await response.Content.ReadAsStringAsync(); 
             }
             return null;
+        }
+
+        // QuizBank Methods
+        public async Task<List<QuizQuestionBankDTO>?> GetAllQuizQuestionBanksAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionBankDTO>>("api/quizquestionbank");
+            return response;
+        }
+
+        public async Task<bool> CreateQuizQuestionBankAsync(QuizQuestionBankDTO bank)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/quizquestionbank", bank);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateQuizQuestionBankAsync(QuizQuestionBankDTO bank)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/quizquestionbank/{bank.QuestionBankID}", bank);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteQuizQuestionBankAsync(int bankId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/quizquestionbank/{bankId}");
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<List<string>?> GetAllQuizBankNamesAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<string>>("api/quizquestionbank/banknames");
+            return response;
         }
     }
 }

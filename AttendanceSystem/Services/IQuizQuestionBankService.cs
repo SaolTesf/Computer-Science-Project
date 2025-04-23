@@ -13,5 +13,6 @@ namespace AttendanceSystem.Services
         Task CreateBankAsync(QuizQuestionBank bank);                // Create a new quiz bank
         Task UpdateBankAsync(QuizQuestionBank bank);                // Update an existing quiz bank
         Task DeleteBankAsync(int bankId);                           // Delete a quiz bank by ID
+        Task<IEnumerable<string>> GetAllBankNamesAsync();
     }
 }

@@ -62,5 +62,13 @@ namespace AttendanceSystem.Controllers
             await _quizQuestionBankService.DeleteBankAsync(bankId);
             return NoContent();
         }
+
+        // GET: api/quizquestionbank/banknames
+        [HttpGet("banknames")]
+        public async Task<ActionResult<IEnumerable<string>>> GetAllBankNames()
+        {
+            var bankNames = await _quizQuestionBankService.GetAllBankNamesAsync();
+            return Ok(bankNames);
+        }
     }
 }
