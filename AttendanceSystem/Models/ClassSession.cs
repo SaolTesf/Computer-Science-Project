@@ -11,8 +11,7 @@ namespace AttendanceSystem.Models
         public int SessionID { get; set; }
 
         [Required]
-        [StringLength(10)]
-        public string CourseNumber { get; set; } = string.Empty; // Foreign key to Course
+        public int? CourseID { get; set; } // foreign key to course ID
 
         [Required]
         public DateTime SessionDateTime { get; set; }

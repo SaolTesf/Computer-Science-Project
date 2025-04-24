@@ -6,6 +6,9 @@ namespace AttendanceSystem.Models
     public class Course
     {
         [Key]
+        public int? CourseID { get; set; } // auto incremented PK
+
+        [Required]
         [StringLength(10)]
         public string CourseNumber { get; set; } = string.Empty;
 
@@ -26,5 +29,7 @@ namespace AttendanceSystem.Models
 
         // Navigation property to QuizQuestionBanks for this Course
         public ICollection<QuizQuestionBank> QuizQuestionBanks { get; set; } = new List<QuizQuestionBank>();
+
+        public ICollection<CourseEnrollment>? CourseEnrollments { get; set; } = new List<CourseEnrollment>();    
     }
 }

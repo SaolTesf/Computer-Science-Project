@@ -14,8 +14,7 @@ namespace AttendanceSystem.Models
         public string BankName { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(10)]
-        public string CourseNumber { get; set; } = string.Empty; // Foreign key to Course
+        public int? CourseID { get; set; } // foreign key to course ID
 
         // Navigation property to the associated Course
         [JsonIgnore]

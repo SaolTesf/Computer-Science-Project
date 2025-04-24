@@ -77,6 +77,10 @@ builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
 
+// Register course enrollment repository & service
+builder.Services.AddScoped<ICourseEnrollmentRepository, CourseEnrollmentRepository>();
+builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<GetIPService>();

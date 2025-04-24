@@ -2,9 +2,8 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
-using AttendanceSystem.Models.DTOs;
 
 namespace AttendanceSystem.Controllers
 {
@@ -27,41 +26,50 @@ namespace AttendanceSystem.Controllers
             return Ok(courses);
         }
 
-        // GET: api/course/{courseNumber}
-        [HttpGet("{courseNumber}")]
-        public async Task<ActionResult<Course>> GetCourseByNumber(string courseNumber)
+        // GET: api/course/{courseID}
+        [HttpGet("{courseID}")]
+        public async Task<ActionResult<Course>> GetCourseByNumber(int courseID)
         {
-            var course = await _courseService.GetCourseByNumberAsync(courseNumber);
+            var course = await _courseService.GetCourseByIDAsync(courseID);
             if (course == null)
                 return NotFound();
             return Ok(course);
         }
 
+        // GET: api/course/professor/{professorId}
+        [HttpGet("professor/{professorId}")]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByProfessor(string professorId)
+        {
+            var allCourses = await _courseService.GetAllCoursesAsync();
+            var filtered = allCourses.Where(c => c.ProfessorID == professorId);
+            return Ok(filtered);
+        }
+
         // POST: api/course
         [HttpPost]
-        public async Task<ActionResult> CreateCourse([FromBody] Course course) {
-            Debug.WriteLine("posting in controller");
+        public async Task<ActionResult> CreateCourse([FromBody] Course course)
+        {
             if (course == null)
                 return BadRequest();
             await _courseService.CreateCourseAsync(course);
-            return CreatedAtAction(nameof(GetCourseByNumber), new { courseNumber = course.CourseNumber }, course);
+            return CreatedAtAction(nameof(GetCourseByNumber), new { courseID = course.CourseID }, course);
         }
 
-        // PUT: api/course/{courseNumber}
-        [HttpPut("{courseNumber}")]
-        public async Task<ActionResult> UpdateCourse(string courseNumber, [FromBody] Course course)
+        // PUT: api/course/{courseID}
+        [HttpPut("{courseID}")]
+        public async Task<ActionResult> UpdateCourse(int courseID, [FromBody] Course course)
         {
-            if (courseNumber != course.CourseNumber)
-                return BadRequest("CourseNumber mismatch.");
+            if (courseID != course.CourseID)
+                return BadRequest("CourseID mismatch.");
             await _courseService.UpdateCourseAsync(course);
             return NoContent();
         }
 
-        // DELETE: api/course/{courseNumber}
-        [HttpDelete("{courseNumber}")]
-        public async Task<ActionResult> DeleteCourse(string courseNumber)
+        // DELETE: api/course/{courseID}
+        [HttpDelete("{courseID}")]
+        public async Task<ActionResult> DeleteCourse(int courseID)
         {
-            await _courseService.DeleteCourseAsync(courseNumber);
+            await _courseService.DeleteCourseAsync(courseID);
             return NoContent();
         }
     }

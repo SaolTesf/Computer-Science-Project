@@ -2,36 +2,40 @@
 <ContentPage
     x:Class="ProfessorApp.Pages.CoursePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    BackgroundColor="{DynamicResource SecondaryColor}">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    BackgroundColor="Black">
 
     <Grid>
 
         <!--  Main Content  -->
-        <StackLayout 
-            Padding="20" 
-            Spacing="20">
-            <StackLayout Spacing="20">
-                <Label
-                    Margin="0,20,0,10"
-                    FontAttributes="Bold"
-                    FontSize="24"
-                    HorizontalOptions="Center"
-                    Text="Courses"
-                    TextColor="White" />
-            </StackLayout>
-            <Frame Padding="20" 
-                   BorderColor="{DynamicResource PrimaryColor}" 
-                   MaximumWidthRequest="600" 
-                   MinimumHeightRequest="300" 
-                   MaximumHeightRequest="450" 
-                   CornerRadius="10" 
-                   HasShadow="True">
-                <ScrollView VerticalScrollBarVisibility="Always" Padding="30,0">
-                    <StackLayout x:Name="CourseButtonContainer" Spacing="8">
-                    </StackLayout>
-                </ScrollView>
-            </Frame>
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <Label
+                Margin="0,20,0,10"
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Courses"
+                TextColor="White"
+                VerticalOptions="Start" />
+
+            <!-- Courses List -->
+            <CollectionView x:Name="CourseCollectionView" SelectionMode="Single" SelectionChanged="OnCourseSelected" HeightRequest="400">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="DarkOrange" CornerRadius="8" Padding="10" Margin="0,5" MaximumWidthRequest="600">
+                            <StackLayout>
+                                <HorizontalStackLayout Spacing="0">
+                                    <Label FontSize="20" Text="{Binding CourseNumber}" TextColor="White" FontAttributes="Bold" />
+                                    <Label FontSize="20" Text="." TextColor="White" FontAttributes="Bold" />
+                                    <Label FontSize="20" Text="{Binding Section}" TextColor="White" FontAttributes="Bold" />
+                                </HorizontalStackLayout>
+                                <Label FontSize="15" Text="{Binding CourseName}" TextColor="White"  />
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
             <StackLayout Spacing="20">
                 <Button
                     Margin="0,10,0,10"
@@ -41,6 +45,30 @@
                     TextColor="White" 
                     MaximumWidthRequest="400" />
             </StackLayout>
-        </StackLayout>
+
+        </VerticalStackLayout>
+        
+        <!--modal for adding course-->
+        <Frame 
+            x:Name="AddCoursePopUp"
+            Padding="10" 
+            BorderColor="{DynamicResource PrimaryColor}" 
+            HeightRequest="400"
+            WidthRequest="500"
+            MaximumWidthRequest="1200" 
+            CornerRadius="10" 
+            HasShadow="True"
+            HorizontalOptions="Center"
+            IsVisible="False">
+            <StackLayout Spacing="10">
+                <Entry x:Name="courseSubjectEntry" MaxLength="4" TextChanged="SubjectTextChanged" Placeholder="Course Subject" />
+                <Entry x:Name="courseNumberEntry" MaxLength="4" TextChanged="NumberTextChanged" Placeholder="Course Number" />
+                <Entry x:Name="courseNameEntry" Placeholder="Course" />
+                <Entry x:Name="sectionEntry" TextChanged="NumberTextChanged" MaxLength="3" Placeholder="Section" />
+                <Button Text="Add Course" Clicked="AddCourse" Margin="0,10,0,0" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" />
+                <Button Text="Back To Courses" Clicked="GoToCourses" Margin="0,10,0,0" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" />
+                <Label x:Name="statusLabel" TextColor="Red" HorizontalOptions="Center" />
+            </StackLayout>
+        </Frame>
     </Grid>
 </ContentPage>
