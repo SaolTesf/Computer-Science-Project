@@ -6,6 +6,9 @@ namespace AttendanceSystem.Models
     public class Course
     {
         [Key]
+        public int? CourseID { get; set; } // auto incremented PK
+
+        [Required]
         [StringLength(10)]
         public string CourseNumber { get; set; } = string.Empty;
 

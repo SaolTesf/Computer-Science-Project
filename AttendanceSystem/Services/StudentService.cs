@@ -1,3 +1,4 @@
+using AttendanceShared.DTOs;
 using AttendanceSystem.Data.Repositories;
 using AttendanceSystem.Models;
 
@@ -23,6 +24,10 @@ namespace AttendanceSystem.Services {
         return true;
       }
       catch{
+        Student? existingStudent = await _studentRepository.GetStudentByUTDIdAsync(student.UTDID);
+        if (existingStudent != null) {
+          return true;
+        }
         return false;
       }
     }

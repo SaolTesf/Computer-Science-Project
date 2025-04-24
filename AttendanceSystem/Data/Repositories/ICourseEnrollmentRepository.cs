@@ -12,7 +12,7 @@ namespace AttendanceSystem.Data.Repositories
 
   public interface ICourseEnrollmentRepository
   {
-    Task<IEnumerable<CourseEnrollment>> GetByCourseNumberAsync(string courseNumber);
+    Task<IEnumerable<CourseEnrollment>> GetByCourseNumberAsync(int courseID);
     Task AddAsync(CourseEnrollment enrollment);
     Task DeleteAsync(int enrollmentId);
   }

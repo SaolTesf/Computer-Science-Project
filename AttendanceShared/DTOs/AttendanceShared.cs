@@ -40,12 +40,13 @@ public class CourseDTO {
   public string CourseName { get; set; } = null!;
   public string Section { get; set; } = null!;
   public string ProfessorID { get; set; } = null!;
+  public int? CourseID { get; set; }
 }
 
 public class CourseEnrollmentDTO {
   public int EnrollmentID { get; set; }
-  public string CourseNumber { get; set; } = null!;
   public string UTDID { get; set; } = null!;
+  public int? CourseID { get; set; }
 }
 
 public class CourseEnrollmentDetailDTO {

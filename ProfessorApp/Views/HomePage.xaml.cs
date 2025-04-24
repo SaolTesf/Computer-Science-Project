@@ -26,7 +26,7 @@ namespace ProfessorApp.Pages
             base.OnAppearing();
             var prof = _clientService.CurrentProfessor;
             if (prof != null)
-                WelcomeLabel.Text = $"Welcome Professor {prof.LastName}";
+                WelcomeLabel.Text = $"Welcome, Professor {prof.LastName}!";
         }
 
         private async void GoToCoursePage(object sender, EventArgs e)

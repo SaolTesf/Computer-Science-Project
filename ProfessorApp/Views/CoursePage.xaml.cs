@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
 using Microsoft.Maui.Controls;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace ProfessorApp.Pages
 {
@@ -33,7 +35,7 @@ namespace ProfessorApp.Pages
         {
             var course = e.CurrentSelection.FirstOrDefault() as CourseDTO;
             if (course == null) return;
-            await Navigation.PushAsync(new StudentManagement(_clientService, course.CourseNumber));
+            await Navigation.PushAsync(new StudentManagement(_clientService, course.CourseID));
             CourseCollectionView.SelectedItem = null; // clear selection
         }
 
@@ -41,16 +43,60 @@ namespace ProfessorApp.Pages
         * Adding courses
         */
 
+        // fires when subject field changes, forces alphanumeric
+        public void SubjectTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var entry = sender as Entry;
+            string regex = e.NewTextValue;
+            if (String.IsNullOrEmpty(regex))
+                return;
+            if (!Regex.Match(regex, "^[a-zA-Z]+$").Success)
+            {
+                if (entry != null)
+                {
+                    entry.Text = (string.IsNullOrEmpty(e.OldTextValue)) ?
+                    string.Empty : e.OldTextValue;
+                }
+            }
+            if (entry != null && entry.Text != entry.Text.ToUpper())
+            {
+                entry.Text = entry.Text.ToUpper();
+            }
+        }
+
+        // fires when number or section field changes, forces alphanumeric
+        public void NumberTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var entry = sender as Entry;
+            string regex = e.NewTextValue;
+            if (String.IsNullOrEmpty(regex))
+                return;
+            if (!Regex.Match(regex, "^[a-zA-Z0-9]+$").Success)
+            {
+                if (entry != null)
+                {
+                    entry.Text = (string.IsNullOrEmpty(e.OldTextValue)) ?
+                    string.Empty : e.OldTextValue;
+                }
+            }
+            if (entry != null && entry.Text != entry.Text.ToUpper())
+            {
+                entry.Text = entry.Text.ToUpper();
+            }
+        }
+
         // fires when add course button is clicked
         private async void AddCourse(object sender, EventArgs e)
         {
             // get fields
-            string courseNumber = courseIdEntry.Text ?? "";
+            string courseSubject = courseSubjectEntry.Text ?? "";
+            string courseNumber = courseNumberEntry.Text ?? "";
             string courseName = courseNameEntry.Text ?? "";
             string section = sectionEntry.Text ?? "";
 
             // check if any empty fields
-            if (string.IsNullOrEmpty(courseNumber)
+            if (string.IsNullOrEmpty(courseSubject)
+                || string.IsNullOrEmpty(courseNumber)
                 || string.IsNullOrEmpty(courseName)
                 || string.IsNullOrEmpty(section))
             {
@@ -59,13 +105,29 @@ namespace ProfessorApp.Pages
                 return;
             }
 
+            // validate course (length of 4)
+            if (courseNumber.Length != 4)
+            {
+                statusLabel.TextColor = Colors.Red;
+                statusLabel.Text = "Course must be 4 characters.";
+                return;
+            }
+
+            // validate section (length of 3)
+            if (section.Length != 3)
+            {
+                statusLabel.TextColor = Colors.Red;
+                statusLabel.Text = "Section must be 3 characters.";
+                return;
+            }
 
             var prof = _clientService.CurrentProfessor;
             if (prof != null)
             {
+                string courseCode = courseSubject + " " + courseNumber;
                 CourseDTO courseDto = new CourseDTO
                 {
-                    CourseNumber = courseNumber,
+                    CourseNumber = courseCode,
                     CourseName = courseName,
                     Section = section,
                     ProfessorID = prof.ID
@@ -75,11 +137,25 @@ namespace ProfessorApp.Pages
                 {
                     var course = courseDto;
 
+                    var courses = await _clientService.GetAllCoursesAsync();
+                    if (courses != null)
+                    {
+                        foreach (CourseDTO c in courses)
+                        {
+                            if (c.CourseNumber.Equals(courseCode) && c.Section.Equals(section))
+                            {
+                                statusLabel.TextColor = Colors.Red;
+                                statusLabel.Text = "Course section already exists.";
+                                return;
+                            }
+                        }
+                    }
+
                     bool response = await _clientService.AddCourseAsync(course);
                     if (!response)
                     {
                         statusLabel.TextColor = Colors.Red;
-                        statusLabel.Text = "Course section already exists.";
+                        statusLabel.Text = "Failed to add course.";
                         return;
                     }
                     statusLabel.TextColor = Colors.Green;

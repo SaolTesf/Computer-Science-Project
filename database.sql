@@ -33,35 +33,32 @@ CREATE TABLE Course (
 
 CREATE TABLE CourseEnrollment (
     EnrollmentID INT AUTO_INCREMENT PRIMARY KEY,
-    CourseNumber VARCHAR(10) NOT NULL,
     EnrollmentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CourseKey INT NOT NULL,
+    CourseID INT NOT NULL,
     UTDID VARCHAR(10) NOT NULL,
-    FOREIGN KEY (CourseKey) REFERENCES Course(CourseID) ON DELETE CASCADE,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
     FOREIGN KEY (UTDID) REFERENCES Student(UTDID) ON DELETE CASCADE,
-    UNIQUE KEY (CourseNumber, UTDID) -- Prevent duplicate enrollments
+    UNIQUE KEY (CourseID, UTDID) -- Prevent duplicate enrollments
 );
 
 -- Each class meeting with password/quiz config
 CREATE TABLE ClassSession (
     SessionID INT AUTO_INCREMENT PRIMARY KEY,
-    CourseNumber VARCHAR(10) NOT NULL,
     SessionDateTime DATETIME NOT NULL,
     Password VARCHAR(255) NOT NULL,
     QuizStartTime DATETIME NOT NULL,
     QuizEndTime DATETIME NOT NULL,
     QuestionBankID INT NOT NULL,
-    CourseKey INT NOT NULL,
-    FOREIGN KEY (CourseKey) REFERENCES Course(CourseID) ON DELETE CASCADE
+    CourseID INT NOT NULL,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
 );
 
 -- Group of questions for a session
 CREATE TABLE QuizQuestionBank (
     QuestionBankID INT AUTO_INCREMENT PRIMARY KEY,
     BankName VARCHAR(255) NOT NULL,
-    CourseNumber VARCHAR(10) NOT NULL,
-    CourseKey INT NOT NULL,
-    FOREIGN KEY (CourseKey) REFERENCES Course(CourseID) ON DELETE CASCADE
+    CourseID INT NOT NULL,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
 );
 
 -- Quiz Questions - Multiple-choice
@@ -125,12 +122,12 @@ VALUES
     (4, 'CS4348', 'Operating Systems', '003', '5400000001');
 
 -- Insert QuizQuestionBanks (depends on Course)
-INSERT INTO QuizQuestionBank (QuestionBankID, BankName, CourseNumber, CourseKey)
+INSERT INTO QuizQuestionBank (QuestionBankID, BankName, CourseID)
 VALUES
-    (1, 'Week 1 Quiz', 'CS4485', 1),
-    (2, 'Week 2 Quiz', 'CS4485', 1),
-    (3, 'Midterm Review', 'CS4361', 2),
-    (4, 'Final Review', 'CS4390', 3);
+    (1, 'Week 1 Quiz', 1),
+    (2, 'Week 2 Quiz', 1),
+    (3, 'Midterm Review', 2),
+    (4, 'Final Review', 3);
 
 -- Insert QuizQuestions (depends on QuizQuestionBank)
 INSERT INTO QuizQuestion (QuestionID, QuestionBankID, QuestionText, Option1, Option2, Option3, Option4)
@@ -142,12 +139,12 @@ VALUES
     (5, 4, 'Sample question 1 for Final Review?', 'Option A', 'Option B', 'Option C', 'Option D');
 
 -- Insert ClassSessions (depends on Course and QuizQuestionBank)
-INSERT INTO ClassSession (SessionID, CourseNumber, SessionDateTime, Password, QuizStartTime, QuizEndTime, QuestionBankID, CourseKey)
+INSERT INTO ClassSession (SessionID, SessionDateTime, Password, QuizStartTime, QuizEndTime, QuestionBankID, CourseID)
 VALUES
-    (1, 'CS4485', '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-03-24 10:45:00', 1, 1),
-    (2, 'CS4485', '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-03-31 10:45:00', 2, 1),
-    (3, 'CS4361', '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-04-02 14:45:00', 3, 2),
-    (4, 'CS4390', '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-04-04 15:45:00', 4, 3);
+    (1, '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-03-24 10:45:00', 1, 1),
+    (2, '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-03-31 10:45:00', 2, 1),
+    (3, '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-04-02 14:45:00', 3, 2),
+    (4, '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-04-04 15:45:00', 4, 3);
 
 -- Insert Attendance (depends on ClassSession and Student)
 INSERT INTO Attendance (AttendanceID, SessionID, UTDID, SubmissionTime, IPAddress, AttendanceType)

@@ -7,7 +7,7 @@ public class CourseEnrollment {
   public int EnrollmentID { get; set; }
 
   [Required]
-  public string CourseNumber { get; set; } = string.Empty; // Foreign key to Course
+  public int? CourseID { get; set; } // Foreign key to Course
 
   [Required]
   [StringLength(10, ErrorMessage = "UTDID must be 10 characters.")]

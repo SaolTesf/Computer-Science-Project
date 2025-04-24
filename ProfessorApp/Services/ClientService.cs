@@ -102,10 +102,23 @@ namespace ProfessorApp.Services
             var response = await _httpClient.PostAsJsonAsync("api/course", course);
             return response.IsSuccessStatusCode;
         }
+        public async Task<CourseDTO?> GetCourseByIdAsync(int? id)
+        {
+            return await _httpClient.GetFromJsonAsync<CourseDTO>($"api/course/{id}");
+        }
+        public async Task<string?> DeleteCourseByIDAsync(int? id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/course/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync(); // returns "<Name> has been removed."
+            }
+            return null;
+        }
 
         // Enrollments
-        public async Task<List<CourseEnrollmentDetailDTO>?> GetEnrollmentsAsync(string courseNumber)
-            => await _httpClient.GetFromJsonAsync<List<CourseEnrollmentDetailDTO>>($"api/courseenrollment/course/{courseNumber}");
+        public async Task<List<CourseEnrollmentDetailDTO>?> GetEnrollmentsAsync(int? courseID)
+            => await _httpClient.GetFromJsonAsync<List<CourseEnrollmentDetailDTO>>($"api/courseenrollment/course/{courseID}");
 
         public async Task<bool> EnrollStudentToCourseAsync(CourseEnrollmentDTO dto)
         {

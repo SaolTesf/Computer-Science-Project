@@ -14,15 +14,13 @@ namespace ProfessorApp.Pages
     public partial class StudentManagement : ContentPage
     {
         private readonly ClientService _clientService;
-        private readonly string _courseNumber;
-        private readonly int _courseId;
+        private readonly int? _courseId;
         private List<FileResult> _selectedFiles;
 
-        public StudentManagement(ClientService clientService, string courseNumber, int courseId)
+        public StudentManagement(ClientService clientService, int? courseId)
         {
             InitializeComponent();
             _clientService = clientService;
-            _courseNumber = courseNumber;
             _courseId = courseId;
             _selectedFiles = new List<FileResult>();
         }
@@ -30,12 +28,15 @@ namespace ProfessorApp.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            CourseDTO? course = await _clientService.GetCourseByIdAsync(_courseId);
+            if (course != null)
+                CourseLabel.Text = $"{course.CourseNumber}.{course.Section} - {course.CourseName}";
             await LoadEnrollmentsAsync();
         }
-
+        
         private async Task LoadEnrollmentsAsync()
         {
-            var enrollments = await _clientService.GetEnrollmentsAsync(_courseNumber);
+            var enrollments = await _clientService.GetEnrollmentsAsync(_courseId);
             EnrollmentCollectionView.ItemsSource = enrollments;
         }
 
@@ -171,7 +172,7 @@ namespace ProfessorApp.Pages
             {
                 if (await _clientService.AddStudentAsync(student))
                 {
-                    var dto = new CourseEnrollmentDTO { CourseNumber = _courseNumber, UTDID = student.UTDID };
+                    var dto = new CourseEnrollmentDTO { CourseID = _courseId, UTDID = student.UTDID };
                     await _clientService.EnrollStudentToCourseAsync(dto);
                 }
             }
@@ -259,7 +260,7 @@ namespace ProfessorApp.Pages
 
             if (await _clientService.AddStudentAsync(student))
             {
-                var dto = new CourseEnrollmentDTO { CourseNumber = _courseNumber, UTDID = student.UTDID };
+                var dto = new CourseEnrollmentDTO { CourseID = _courseId, UTDID = student.UTDID };
                 await _clientService.EnrollStudentToCourseAsync(dto);
                 await DisplayAlert("Success", "Student added and enrolled.", "OK");
                 AddStudentPopup.IsVisible = false;
@@ -293,6 +294,34 @@ namespace ProfessorApp.Pages
             if (DeleteStudentPopup.IsVisible)
             {
                 DeleteUTDIDEntry.Text = string.Empty;
+            }
+        }
+
+        // Open deletion pop up
+        private void ConfirmDelete(object sender, EventArgs e)
+        {
+            // Show the form
+            ConfirmDeletePopUp.IsVisible = true;
+        }
+
+        // Cancel deletion
+        private void OnConfirmCancelClicked(object sender, EventArgs e)
+        {
+            // Hide the form
+            ConfirmDeletePopUp.IsVisible = false;
+        }
+
+        // deletes course
+        private async void OnDeleteCourseClicked(object sender, EventArgs e)
+        {
+            string? message = await _clientService.DeleteCourseByIDAsync(_courseId);
+            if (message != null)
+            {
+                await DisplayAlert("Success", "The course has been deleted.", "OK");
+                await Navigation.PopAsync();
+            } else
+            {
+                await DisplayAlert("Error", "Course deletion failed.", "OK");
             }
         }
 

@@ -19,10 +19,10 @@ namespace AttendanceSystem.Data.Repositories
     private readonly AppDbContext _context;
     public CourseEnrollmentRepository(AppDbContext context) => _context = context;
 
-    public async Task<IEnumerable<CourseEnrollment>> GetByCourseNumberAsync(string courseNumber)
+    public async Task<IEnumerable<CourseEnrollment>> GetByCourseNumberAsync(int courseID)
       => await _context.CourseEnrollments
                         .Include(e => e.Student)
-                        .Where(e => e.CourseNumber == courseNumber)
+                        .Where(e => e.CourseID == courseID)
                         .ToListAsync();
 
     public async Task AddAsync(CourseEnrollment enrollment)
