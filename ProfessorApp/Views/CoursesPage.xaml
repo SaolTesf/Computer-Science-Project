@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="ProfessorApp.Pages.CoursePage"
+    x:Class="ProfessorApp.Pages.CoursesPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{DynamicResource SecondaryColor}">
@@ -42,5 +42,26 @@
                     MaximumWidthRequest="400" />
             </StackLayout>
         </StackLayout>
+        <!--modal for adding course-->
+        <Frame 
+            x:Name="AddCoursePopUp"
+            Padding="10" 
+            BorderColor="{DynamicResource PrimaryColor}" 
+            HeightRequest="400"
+            WidthRequest="500"
+            MaximumWidthRequest="1200" 
+            CornerRadius="10" 
+            HasShadow="True"
+            HorizontalOptions="Center"
+            IsVisible="False">
+            <StackLayout Spacing="10">
+                <Entry x:Name="courseIdEntry" Placeholder="Course ID" />
+                <Entry x:Name="courseNameEntry" Placeholder="Course Name" />
+                <Entry x:Name="sectionEntry" Placeholder="Section" />
+                <Button Text="Add Course" Clicked="AddCourse" Margin="0,10,0,0" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" />
+                <Button Text="Back To Courses" Clicked="GoToCourses" Margin="0,10,0,0" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" />
+                <Label x:Name="statusLabel" TextColor="Red" HorizontalOptions="Center" />
+            </StackLayout>
+        </Frame>
     </Grid>
 </ContentPage>

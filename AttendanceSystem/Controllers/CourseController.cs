@@ -2,7 +2,9 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using AttendanceSystem.Models.DTOs;
 
 namespace AttendanceSystem.Controllers
 {
@@ -38,6 +40,7 @@ namespace AttendanceSystem.Controllers
         // POST: api/course
         [HttpPost]
         public async Task<ActionResult> CreateCourse([FromBody] Course course) {
+            Debug.WriteLine("posting in controller");
             if (course == null)
                 return BadRequest();
             await _courseService.CreateCourseAsync(course);
