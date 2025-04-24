@@ -129,7 +129,7 @@ namespace ProfessorApp.Services
         }
         public async Task<bool> CreateQuizQuestionAsync(QuizQuestionDTO question)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/quizquestionbank", question);
+            var response = await _httpClient.PostAsJsonAsync("api/quizquestion", question);
             return response.IsSuccessStatusCode;
         }
 

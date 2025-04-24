@@ -5,37 +5,105 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     BackgroundColor="Black">
 
-    <!--  Main Content  -->
-    <VerticalStackLayout Padding="20" Spacing="10">
+    <Grid>
+        <!--  Main Content  -->
+        <VerticalStackLayout Padding="20" Spacing="10">
 
-        <Label
-            Margin="0,20,0,10"
-            FontAttributes="Bold"
-            FontSize="24"
-            HorizontalOptions="Center"
-            Text="Quizzes"
-            TextColor="White"
-            VerticalOptions="Start" />
+            <Label
+                Margin="0,20,0,10"
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Quizzes"
+                TextColor="White"
+                VerticalOptions="Start" />
 
-        <!--  Picker for Quiz Banks  -->
-        <Picker
-            x:Name="BankPicker"
-            Title="Select a Question Bank"
-            BackgroundColor="Orange"
-            TextColor="Black"
-            ItemsSource="{Binding BankList}"
-            SelectedItem="{Binding SelectedBank, Mode=TwoWay}" />
+            <!--  Button to trigger Add Question Form  -->
+            <Button
+                Margin="0,30,0,30"
+                BackgroundColor="Green"
+                Clicked="OnAddQuestionClicked"
+                Text="Add Question"
+                TextColor="White" />
+
+            <!--  Modal-style Add Question Popup  -->
+            <Frame
+                x:Name="AddQuestionPopup"
+                Padding="15"
+                BackgroundColor="White"
+                BorderColor="Green"
+                CornerRadius="12"
+                HeightRequest="400"
+                HorizontalOptions="Center"
+                IsVisible="False"
+                VerticalOptions="Center"
+                WidthRequest="400">
+
+                <StackLayout Spacing="5">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Add Question" />
+
+                    <Entry
+                        x:Name="QuestionBankIDEntry"
+                        Placeholder="QuestionBankID"
+                        TextColor="Black" />
+
+                    <Entry
+                        x:Name="QuestionTextEntry"
+                        Placeholder="Question:"
+                        TextColor="Black" />
+                    <Entry
+                        x:Name="Option1Entry"
+                        Placeholder="Option 1"
+                        TextColor="Black" />
+                    <Entry
+                        x:Name="Option2Entry"
+                        Placeholder="Option 2"
+                        TextColor="Black" />
+                    <Entry
+                        x:Name="Option3Entry"
+                        Placeholder="Option 3 (Optional)"
+                        TextColor="Black" />
+                    <Entry
+                        x:Name="Option4Entry"
+                        Placeholder="Option 4 (Optional)"
+                        TextColor="Black" />
 
 
-       
-        
-        <Picker
-            x:Name="QuestionPicker"
-            Title="Select a Question "
-            BackgroundColor="Orange"
-            TextColor="Black"
-            ItemsSource="{Binding BankList}"
-            SelectedItem="{Binding SelectedBank, Mode=TwoWay}" />
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Button
+                            BackgroundColor="Green"
+                            Clicked="OnSubmitQuestionClicked"
+                            Text="Submit"
+                            TextColor="White" />
+                        <Button
+                            BackgroundColor="Gray"
+                            Clicked="OnCancelClicked"
+                            Text="Cancel"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </StackLayout>
+            </Frame>
 
-    </VerticalStackLayout>
+            <!--  Picker for Quiz Banks  -->
+            <Picker
+                x:Name="BankPicker"
+                Title="Select a Question Bank"
+                BackgroundColor="Orange"
+                ItemsSource="{Binding BankList}"
+                SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
+                TextColor="Black" />
+
+            <Picker
+                x:Name="QuestionPicker"
+                Title="Select a Question "
+                BackgroundColor="Orange"
+                ItemsSource="{Binding BankList}"
+                SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
+                TextColor="Black" />
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
