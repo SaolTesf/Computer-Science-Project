@@ -145,5 +145,15 @@ namespace ProfessorApp.Services
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<int?> GetQuizBankIdByNameAsync(string bankName)
+        {
+            var response = await _httpClient.GetAsync($"api/quizquestionbank/GetBankIdByName?bankName={Uri.EscapeDataString(bankName)}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<int>();
+            }
+            return null;
+        }
+
     }
 }

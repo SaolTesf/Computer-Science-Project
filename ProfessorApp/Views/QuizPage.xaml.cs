@@ -44,7 +44,6 @@ namespace ProfessorApp.Pages
 
             if (AddQuestionPopup.IsVisible)
             {
-                QuestionBankIDEntry.Text = string.Empty; ;
                 QuestionTextEntry.Text = string.Empty;
                 Option1Entry.Text = string.Empty;
                 Option2Entry.Text = string.Empty;
@@ -55,29 +54,31 @@ namespace ProfessorApp.Pages
         //Submit question data to database based on manual
         private async void OnSubmitQuestionClicked(object sender, EventArgs e)
         {
-            var questionBankIDText = QuestionBankIDEntry.Text?.Trim();
             var questionText = QuestionTextEntry.Text?.Trim();
             var option1 = Option1Entry.Text?.Trim();
             var option2 = Option2Entry.Text?.Trim();
             var option3 = Option3Entry.Text?.Trim();
             var option4 = Option4Entry.Text?.Trim();
             //Checking to see if the question, and at least 2 answer fields are filled in
-            if (string.IsNullOrEmpty(questionBankIDText) || string.IsNullOrEmpty(questionText) ||
+            if (string.IsNullOrEmpty(questionText) ||
                 string.IsNullOrEmpty(option1) || string.IsNullOrEmpty(option2))
             {
                 await DisplayAlert("Input Error", "Please fill in all fields.", "OK");
                 return;
             }
-
-            if (!int.TryParse(questionBankIDText, out int questionBankID))
+            
+            //Getting BankID by using the Bank Name chosen from the picker
+            int? questionBankID = await _clientService.GetQuizBankIdByNameAsync(SelectedBank);
+            //Error in case it was not found
+            if (questionBankID == null)
             {
-                await DisplayAlert("Input Error", "Question Bank ID must be a valid number.", "OK");
+                await DisplayAlert("Error", $"Could not find ID for bank '{SelectedBank}'.", "OK");
                 return;
             }
             //Creating question item
             var question = new QuizQuestionDTO
             {
-                QuestionBankID = questionBankID,
+                QuestionBankID = (int)questionBankID,
                 QuestionText = questionText,
                 Option1 = option1,
                 Option2 = option2,
@@ -93,7 +94,6 @@ namespace ProfessorApp.Pages
                 {
                     await DisplayAlert("Success", "Question Added successfully.", "OK");
 
-                    QuestionBankIDEntry.Text = string.Empty;
                     QuestionTextEntry.Text = string.Empty;
                     Option1Entry.Text = string.Empty;
                     Option2Entry.Text = string.Empty;
@@ -115,7 +115,6 @@ namespace ProfessorApp.Pages
         private void OnCancelClicked(object sender, EventArgs e)
         {
             //Clear all fields
-            QuestionBankIDEntry.Text = string.Empty;
             QuestionTextEntry.Text = string.Empty;
             Option1Entry.Text = string.Empty;
             Option2Entry.Text = string.Empty;

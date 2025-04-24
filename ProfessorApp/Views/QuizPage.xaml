@@ -39,16 +39,19 @@
                 VerticalOptions="Center"
                 WidthRequest="400">
 
-                <StackLayout Spacing="5">
+                <StackLayout Spacing="2">
                     <Label
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalOptions="Center"
                         Text="Add Question" />
 
-                    <Entry
-                        x:Name="QuestionBankIDEntry"
-                        Placeholder="QuestionBankID"
+                    <Picker
+                        x:Name="QuestionBankPicker"
+                        Title="Select Question Bank"
+                        BackgroundColor="Orange"
+                        ItemsSource="{Binding BankList}"
+                        SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
                         TextColor="Black" />
 
                     <Entry
