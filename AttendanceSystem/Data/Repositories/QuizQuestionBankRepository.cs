@@ -49,5 +49,12 @@ namespace AttendanceSystem.Data.Repositories
                                  .Select(q => q.BankName)
                                  .ToListAsync();
         }
+
+        public async Task<int?> GetQuestionBankIdByNameAsync(string bankName)
+        {
+            var bank = await _context.QuizQuestionBanks .FirstOrDefaultAsync(qb => qb.BankName == bankName);
+
+            return bank?.QuestionBankID;
+        }
     }
 }

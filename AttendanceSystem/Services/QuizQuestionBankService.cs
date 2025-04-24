@@ -49,5 +49,11 @@ namespace AttendanceSystem.Services
         {
             return await _bankRepository.GetAllBankNamesAsync();
         }
+
+        // QuizQuestionService.cs
+        public async Task<int?> GetQuestionBankIdByNameAsync(string bankName)
+        {
+            return await _bankRepository.GetQuestionBankIdByNameAsync(bankName);
+        }
     }
 }
