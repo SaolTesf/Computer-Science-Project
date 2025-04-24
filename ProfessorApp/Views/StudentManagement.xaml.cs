@@ -15,13 +15,15 @@ namespace ProfessorApp.Pages
     {
         private readonly ClientService _clientService;
         private readonly string _courseNumber;
+        private readonly int _courseId;
         private List<FileResult> _selectedFiles;
 
-        public StudentManagement(ClientService clientService, string courseNumber)
+        public StudentManagement(ClientService clientService, string courseNumber, int courseId)
         {
             InitializeComponent();
             _clientService = clientService;
             _courseNumber = courseNumber;
+            _courseId = courseId;
             _selectedFiles = new List<FileResult>();
         }
 
@@ -281,7 +283,7 @@ namespace ProfessorApp.Pages
         }
 
         //Method to delete a student by UTDID
-        private void OnDeleteStudentClicked(object sender, EventArgs e)
+        private async void OnDeleteStudentClicked(object sender, EventArgs e)
         {
             //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;

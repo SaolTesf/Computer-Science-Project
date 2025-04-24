@@ -29,7 +29,7 @@ namespace ProfessorApp.Pages
                 CourseButtonContainer.Children.Clear();
 
                 // get all of the courses from the database then convert them to the correct format
-                var courses = await _clientService.GetCoursesAsync();
+                var courses = await _clientService.GetAllCoursesAsync();
                 if (courses != null)
                 {
                     foreach (var course in courses)

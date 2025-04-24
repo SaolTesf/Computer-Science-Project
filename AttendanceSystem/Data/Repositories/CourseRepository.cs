@@ -26,11 +26,6 @@ namespace AttendanceSystem.Data.Repositories
             return await _context.Courses.FindAsync(courseNumber);
         }
 
-        public async Task<IEnumerable<Course>> GetCoursesByProfessorAsync(string professorID)
-        {
-            return await _context.Courses.ToListAsync();
-        }
-        
         public async Task AddCourseAsync(Course course)
         {
             await _context.Courses.AddAsync(course);
