@@ -52,6 +52,24 @@ namespace AttendanceSystem.Services
             };
             return courseDto;
         }
+        public async Task<List<CourseDTO>> GetCoursesByProfessorAsync(string professorID)
+        {
+            var courses = await _courseRepository.GetAllCoursesAsync();
+            var coursesDTOs = new List<CourseDTO>();
+            // convert courses to DTOs
+            foreach (var course in courses)
+            {
+                var courseDto = new CourseDTO
+                {
+                    CourseNumber = course.CourseNumber,
+                    CourseName = course.CourseName,
+                    Section = course.Section,
+                    ProfessorID = course.ProfessorID,
+                };
+                coursesDTOs.Add(courseDto);
+            }
+            return new List<CourseDTO>(coursesDTOs);
+        }
 
         public async Task CreateCourseAsync(Course course)
         {

@@ -9,6 +9,7 @@ namespace AttendanceSystem.Data.Repositories
     {
         Task<IEnumerable<Course>> GetAllCoursesAsync(); // Retrieve all courses.
         Task<Course?> GetByCourseNumberAsync(string courseNumber); // Get course by primary key (CourseNumber).
+        Task<Course?> GetCoursesByProfessorAsync(string courseNumber); // Get course by primary key (CourseNumber).
         Task AddCourseAsync(Course course); // Add a new course.
         Task UpdateCourseAsync(Course course); // Update an existing course.
         Task DeleteCourseAsync(Course course); // Delete a course.

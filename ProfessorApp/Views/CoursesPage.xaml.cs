@@ -1,21 +1,17 @@
 ﻿// Sawyer Kamman
 // accesses CourseManagement API to allow creation and management of courses
-using System.Text;
-using Newtonsoft.Json;
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
-using Microsoft.Maui.Controls;
 
 namespace ProfessorApp.Pages
 {
     public partial class CoursesPage : ContentPage
     {
-        private readonly HttpClient _httpClient;
-        private const string CourseApiBaseUrl = "http://localhost:5225/api/course";
-        public CoursesPage()
+        private readonly ClientService _clientService;
+        public CoursesPage(ClientService clientService)
         {
             InitializeComponent();
-            _httpClient = new HttpClient();
+            _clientService = clientService;
         }
 
         // pop up when add course clicked
@@ -33,10 +29,8 @@ namespace ProfessorApp.Pages
                 CourseButtonContainer.Children.Clear();
 
                 // get all of the courses from the database then convert them to the correct format
-                var courseResponse = await GetCoursesFromDatabase();
-                var json = await courseResponse.Content.ReadAsStringAsync();
-                var courses = JsonConvert.DeserializeObject<List<CourseDTO>>(json);
-                if (courses != null && courseResponse.IsSuccessStatusCode)
+                var courses = await _clientService.GetCoursesAsync();
+                if (courses != null)
                 {
                     foreach (var course in courses)
                     {
@@ -55,7 +49,7 @@ namespace ProfessorApp.Pages
                         // attach function to the button to navigate to a respective management page
                         button.Clicked += async (sender, e) =>
                         {
-                            await Navigation.PushAsync(new CoursePage(_httpClient));
+                            await Navigation.PushAsync(new CoursePage(_clientService));
                         };
 
                         CourseButtonContainer.Add(button);
@@ -105,8 +99,10 @@ namespace ProfessorApp.Pages
 
             try
             {
-                var response = await AddCourseToDatabase(courseDto);
-                if (!response.IsSuccessStatusCode)
+                var course = courseDto;
+
+                bool response = await _clientService.AddCourseAsync(course);
+                if (!response)
                 {
                     statusLabel.TextColor = Colors.Red;
                     statusLabel.Text = "Course section already exists.";
@@ -121,19 +117,6 @@ namespace ProfessorApp.Pages
                 statusLabel.TextColor = Colors.Red;
                 statusLabel.Text = $"{ex.Message}";
             }
-        }
-        private async Task<HttpResponseMessage> AddCourseToDatabase(CourseDTO course)
-        {
-            var courseJson = JsonConvert.SerializeObject(course);
-            var content = new StringContent(courseJson, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync(CourseApiBaseUrl, content);
-            return response;
-        }
-        private async Task<HttpResponseMessage> GetCoursesFromDatabase()
-        {
-            var response = await _httpClient.GetAsync(CourseApiBaseUrl);
-            return response;
         }
 
         private void GoToCourses(object sender, EventArgs e)

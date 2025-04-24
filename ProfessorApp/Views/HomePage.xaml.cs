@@ -18,10 +18,10 @@ namespace ProfessorApp.Pages
 
         private async void GoToCoursePage(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CoursePage(_clientService));
+            await Navigation.PushAsync(new CoursesPage(_clientService));
         }
 
-        private void GoToAttPage(object sender, EventArgs e)
+        private async void GoToAttPage(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new AttendancePage());
         }
