@@ -35,10 +35,20 @@ public class StudentDTO{
     public string Username { get; set; } = null!;
 }
 
-public class CourseDTO
-{
-    public string CourseNumber { get; set; } = null!;
-    public string CourseName { get; set; } = null!;
-    public string Section { get; set; } = null!;
-    public string ProfessorID { get; set; } = null!;
+public class CourseDTO {
+  public string CourseNumber { get; set; } = null!;
+  public string CourseName { get; set; } = null!;
+  public string Section { get; set; } = null!;
+  public string ProfessorID { get; set; } = null!;
+}
+
+public class CourseEnrollmentDTO {
+  public int EnrollmentID { get; set; }
+  public string CourseNumber { get; set; } = null!;
+  public string UTDID { get; set; } = null!;
+}
+
+public class CourseEnrollmentDetailDTO {
+  public int EnrollmentID { get; set; }
+  public StudentDTO Student { get; set; } = null!;
 }

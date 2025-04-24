@@ -26,5 +26,7 @@ namespace AttendanceSystem.Models
 
         // Navigation property to QuizQuestionBanks for this Course
         public ICollection<QuizQuestionBank> QuizQuestionBanks { get; set; } = new List<QuizQuestionBank>();
+
+        public ICollection<CourseEnrollment>? CourseEnrollments { get; set; } = new List<CourseEnrollment>();    
     }
 }

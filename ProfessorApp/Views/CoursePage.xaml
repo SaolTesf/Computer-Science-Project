@@ -8,39 +8,31 @@
     <Grid>
 
         <!--  Main Content  -->
-        <StackLayout 
-            Padding="20" 
-            Spacing="20">
-            <StackLayout Spacing="20">
-                <Label
-                    Margin="0,20,0,10"
-                    FontAttributes="Bold"
-                    FontSize="24"
-                    HorizontalOptions="Center"
-                    Text="Courses"
-                    TextColor="White" />
-            </StackLayout>
-            <Frame Padding="20" 
-                   BorderColor="{DynamicResource PrimaryColor}" 
-                   MaximumWidthRequest="600" 
-                   MinimumHeightRequest="300" 
-                   MaximumHeightRequest="450" 
-                   CornerRadius="10" 
-                   HasShadow="True">
-                <ScrollView VerticalScrollBarVisibility="Always" Padding="30,0">
-                    <StackLayout x:Name="CourseButtonContainer" Spacing="8">
-                    </StackLayout>
-                </ScrollView>
-            </Frame>
-            <StackLayout Spacing="20">
-                <Button
-                    Margin="0,10,0,10"
-                    BackgroundColor="Green"
-                    Clicked="GoToManagement"
-                    Text="Add a new course"
-                    TextColor="White" 
-                    MaximumWidthRequest="400" />
-            </StackLayout>
-        </StackLayout>
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <Label
+                Margin="0,20,0,10"
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Courses"
+                TextColor="White"
+                VerticalOptions="Start" />
+
+            <!-- Courses List -->
+            <CollectionView x:Name="CourseCollectionView" SelectionMode="Single" SelectionChanged="OnCourseSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="Orange" CornerRadius="8" Padding="10" Margin="0,5">
+                            <StackLayout>
+                                <Label Text="{Binding CourseName}" TextColor="White" FontAttributes="Bold" />
+                                <Label Text="{Binding CourseNumber}" TextColor="White" />
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>
