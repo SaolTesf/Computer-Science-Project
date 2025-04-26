@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
 using Microsoft.Maui.Controls;
+using System.Linq;
 
 namespace ProfessorApp.Pages
 {
@@ -13,7 +14,9 @@ namespace ProfessorApp.Pages
         //Helper lists to save the names that show up on the picker
         public List<string> BankList { get; set; } = new List<string>();
         public string? SelectedBank { get; set; }
-
+        // list and string for the question picker func
+        public List<string> QuestionTextList { get; set; } = new List<string>();
+        public string? SelectedQuestion { get; set; }
         public QuizPage(ClientService clientService)
         {
             InitializeComponent();
@@ -66,10 +69,10 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Input Error", "Please fill in all fields.", "OK");
                 return;
             }
-            
+
             //Getting BankID by using the Bank Name chosen from the picker
-            int? questionBankID = await _clientService.GetQuizBankIdByNameAsync(SelectedBank);
-            //Error in case it was not found
+            int? questionBankID = int.TryParse((await _clientService.GetQuestionBankIdByNameAsync(SelectedBank))?.FirstOrDefault(), out var parsedId) ? parsedId: (int?)null;
+
             if (questionBankID == null)
             {
                 await DisplayAlert("Error", $"Could not find ID for bank '{SelectedBank}'.", "OK");
@@ -122,6 +125,54 @@ namespace ProfessorApp.Pages
             Option4Entry.Text = string.Empty;
             //Hide the form
             AddQuestionPopup.IsVisible = false;
+        }
+        // Method to load questions for the selected bank
+        private async void LoadQuestionsForSelectedBankAsync()
+        {
+            if (string.IsNullOrWhiteSpace(SelectedBank))
+            {
+                await DisplayAlert("Error", "Please select a quiz bank first.", "OK");
+                return;
+            }
+
+            // Get the bank ID from the selected bank name
+            var questionBankIDs = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
+            if (questionBankIDs == null || !questionBankIDs.Any())
+            {
+                await DisplayAlert("Error", $"Could not find ID for bank '{SelectedBank}'.", "OK");
+                return;
+            }
+
+            // Convert the bank IDs to integers
+            var bankIDList = questionBankIDs
+                .Select(id => int.TryParse(id, out var parsedId) ? parsedId : (int?)null)
+                .Where(id => id.HasValue)
+                .Select(id => id.Value)
+                .ToList();
+
+            // Retrieve quiz questions for the selected bank IDs
+            var questions = await _clientService.GetAllQuizQuestionAsync();
+            var filteredQuestions = questions?.Where(q => bankIDList.Contains(q.QuestionBankID)).ToList();
+
+            QuestionTextList = filteredQuestions?.Select(q => q.QuestionText).ToList() ?? new List<string>();
+
+            if (QuestionTextList.Count > 0)
+            {
+                SelectedQuestion = QuestionTextList[0];
+            }
+
+            OnPropertyChanged(nameof(QuestionTextList));
+            OnPropertyChanged(nameof(SelectedQuestion));
+        }
+
+        // Event handler for when the question picker is focused
+        private void OnQuestionPickerFocused(object sender, FocusEventArgs e)
+        {
+            LoadQuestionsForSelectedBankAsync();
+        }
+        private void OnBankPickerSelectionChanged(object sender, EventArgs e)
+        {
+            LoadQuestionsForSelectedBankAsync();
         }
     }
 }

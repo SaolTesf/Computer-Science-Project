@@ -75,7 +75,6 @@
                         Placeholder="Option 4 (Optional)"
                         TextColor="Black" />
 
-
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                         <Button
                             BackgroundColor="Green"
@@ -98,14 +97,16 @@
                 BackgroundColor="Orange"
                 ItemsSource="{Binding BankList}"
                 SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
+                SelectedIndexChanged="OnBankPickerSelectionChanged"
                 TextColor="Black" />
 
+            <!--  Picker for Questions -->
             <Picker
                 x:Name="QuestionPicker"
-                Title="Select a Question "
+                Title="Select a Question"
                 BackgroundColor="Orange"
-                ItemsSource="{Binding BankList}"
-                SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
+                ItemsSource="{Binding QuestionTextList}"
+                SelectedItem="{Binding SelectedQuestion, Mode=TwoWay}"
                 TextColor="Black" />
         </VerticalStackLayout>
     </Grid>
