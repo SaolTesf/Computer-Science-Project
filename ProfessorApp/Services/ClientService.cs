@@ -2,12 +2,15 @@ using System.Net.Http.Json;
 using AttendanceShared.DTOs;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace ProfessorApp.Services
 {
     public class ClientService
     {
         private readonly HttpClient _httpClient;
+        public string? ProfessorId { get; private set; }
+        public ProfessorDTO? CurrentProfessor { get; private set; }
 
         public ClientService(HttpClient httpClient)
         {
@@ -20,7 +23,14 @@ namespace ProfessorApp.Services
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", loginDto);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
+                var auth = await response.Content.ReadFromJsonAsync<AuthResponseDTO>();
+                if (auth != null)
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth.Token);
+                    ProfessorId = auth.User.ID;
+                    CurrentProfessor = auth.User;
+                }
+                return auth;
             }
             return null;
         }
@@ -151,6 +161,51 @@ namespace ProfessorApp.Services
         }
 
      
+
+        // Courses
+        public async Task<List<CourseDTO>?> GetAllCoursesAsync()
+            => await _httpClient.GetFromJsonAsync<List<CourseDTO>>("api/course");
+
+        public async Task<List<CourseDTO>?> GetCoursesByProfessorAsync()
+        {
+            if (ProfessorId == null) return null;
+            return await _httpClient.GetFromJsonAsync<List<CourseDTO>>($"api/course/professor/{ProfessorId}");
+        }
+
+        public async Task<bool> AddCourseAsync(CourseDTO course)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/course", course);
+            return response.IsSuccessStatusCode;
+        }
+        public async Task<CourseDTO?> GetCourseByIdAsync(int? id)
+        {
+            return await _httpClient.GetFromJsonAsync<CourseDTO>($"api/course/{id}");
+        }
+        public async Task<string?> DeleteCourseByIDAsync(int? id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/course/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync(); // returns "<Name> has been removed."
+            }
+            return null;
+        }
+
+        // Enrollments
+        public async Task<List<CourseEnrollmentDetailDTO>?> GetEnrollmentsAsync(int? courseID)
+            => await _httpClient.GetFromJsonAsync<List<CourseEnrollmentDetailDTO>>($"api/courseenrollment/course/{courseID}");
+
+        public async Task<bool> EnrollStudentToCourseAsync(CourseEnrollmentDTO dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/courseenrollment", dto);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UnenrollStudentAsync(int enrollmentId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/courseenrollment/{enrollmentId}");
+            return response.IsSuccessStatusCode;
+        }
 
     }
 }

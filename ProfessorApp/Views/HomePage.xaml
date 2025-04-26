@@ -20,6 +20,7 @@
                 VerticalOptions="Start" />
 
             <Label
+                x:Name="WelcomeLabel"
                 Margin="0,20,0,10"
                 FontAttributes="Bold"
                 FontSize="24"
@@ -28,18 +29,20 @@
                 TextColor="White"
                 VerticalOptions="Start" />
 
-            <!--  Button to Choose Files  -->
+            <!--  Navigation Buttons  -->
             <Button
-                BackgroundColor="Orange"
+                BackgroundColor="DarkOrange"
                 Clicked="GoToCoursePage"
                 Text="Courses"
-                TextColor="White" />
+                TextColor="White"
+                MaximumWidthRequest="600" />
 
             <Button
-                BackgroundColor="Orange"
+                BackgroundColor="DarkOrange"
                 Clicked="GoToAttPage"
                 Text="Attendance"
-                TextColor="White" />
+                TextColor="White"
+                MaximumWidthRequest="600" />
 
 
         </VerticalStackLayout>

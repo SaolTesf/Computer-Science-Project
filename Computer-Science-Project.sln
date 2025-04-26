@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttendanceSystem", "AttendanceSystem\AttendanceSystem.csproj", "{73BA815E-9121-6666-727F-20296AE082C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfessorApp", "ProfessorApp\ProfessorApp.csproj", "{A73BADFF-7198-49B6-B32D-5B1981ECF435}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73BA815E-9121-6666-727F-20296AE082C9} = {73BA815E-9121-6666-727F-20296AE082C9}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttendanceShared", "AttendanceShared\AttendanceShared.csproj", "{27F703A2-D518-4514-9CD4-0C19E36B4FAD}"
 EndProject

@@ -1,4 +1,9 @@
-﻿using System.Text;
+﻿/*
+Saol Tesfaghebriel
+This file is part of the ProfessorApp project, which is a mobile application for managing attendance and courses.
+*/
+
+using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
@@ -14,6 +19,14 @@ namespace ProfessorApp.Pages
         {
             _clientService = clientService;
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            var prof = _clientService.CurrentProfessor;
+            if (prof != null)
+                WelcomeLabel.Text = $"Welcome, Professor {prof.LastName}!";
         }
 
         private async void GoToCoursePage(object sender, EventArgs e)

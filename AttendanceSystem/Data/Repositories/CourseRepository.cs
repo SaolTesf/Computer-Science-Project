@@ -20,10 +20,10 @@ namespace AttendanceSystem.Data.Repositories
             return await _context.Courses.ToListAsync();
         }
 
-        public async Task<Course?> GetByCourseNumberAsync(string courseNumber)
+        public async Task<Course?> GetCourseByIDAsync(int courseID)
         {
-            // CourseNumber is the primary key.
-            return await _context.Courses.FindAsync(courseNumber);
+            // CourseID is the primary key.
+            return await _context.Courses.FindAsync(courseID);
         }
 
         public async Task AddCourseAsync(Course course)
