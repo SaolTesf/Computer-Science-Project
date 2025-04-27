@@ -57,7 +57,11 @@ namespace ProfessorApp.Pages
         private async void OnSelectFileClicked(object sender, EventArgs e)
         {
             //Open file picker to select file
-            var file = await FilePicker.PickAsync();
+            var pickOptions = new PickOptions
+            {
+                PickerTitle = "Select Student File"
+            };
+            var file = await FilePicker.PickAsync(pickOptions);
             if (file != null)
             {
                 try
