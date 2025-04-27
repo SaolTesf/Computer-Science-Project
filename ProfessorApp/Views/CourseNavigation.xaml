@@ -3,8 +3,7 @@
     x:Class="ProfessorApp.Pages.CourseNavigation"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Session Management"
-    BackgroundColor="{DynamicResource SecondaryColor}">
+    BackgroundColor="#222">
 
     <Grid>
         <!--  Main Content  -->
@@ -50,7 +49,7 @@
         <Frame
         x:Name="ConfirmDeletePopUp"
         Padding="15"
-        BackgroundColor="White"
+        BackgroundColor="#333"
         BorderColor="Red"
         CornerRadius="12"
         IsVisible="False"
@@ -61,7 +60,7 @@
                 <Label
                 FontSize="20"
                 HorizontalOptions="Center"
-                TextColor="Black"
+                TextColor="White"
                 Text="Are you sure you want to delete this course? This cannot be undone." />
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">

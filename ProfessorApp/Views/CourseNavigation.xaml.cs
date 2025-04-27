@@ -19,6 +19,14 @@ namespace ProfessorApp.Pages
             _courseId = courseId;
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            CourseDTO? course = await _clientService.GetCourseByIdAsync(_courseId);
+            if (course != null)
+                CourseLabel.Text = $"{course.CourseNumber}.{course.Section} - {course.CourseName}";
+        }
+
         private async void GoToSessionPage(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SessionManagement(_clientService, _courseId));

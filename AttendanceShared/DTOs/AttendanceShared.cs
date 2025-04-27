@@ -81,41 +81,36 @@ public class AttendanceDTO{
 
 public class ClassSessionDTO{
     public int SessionID { get; set; }
-
-    public string CourseNumber { get; set; } = string.Empty; 
-
+    public int? CourseID { get; set; }
     public DateTime SessionDateTime { get; set; }
-
     public string Password { get; set; } = string.Empty;
-
     public DateTime QuizStartTime { get; set; }
-
     public DateTime QuizEndTime { get; set; }
-
     public int QuestionBankID { get; set; }
+}
 
-
+public class ClassSessionFormatDTO
+{
+    public string Date { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string Duration { get; set; } = string.Empty;
+    public string Quiz { get; set; } = string.Empty;
+    public int SessionID { get; set; }
+    public string SessionNumber { get; set; } = string.Empty;
 }
 
 public class QuizQuestionBankDTO{
     public int QuestionBankID { get; set; }
     public string BankName { get; set; } = string.Empty;
-
     public string CourseNumber { get; set; } = string.Empty; 
-
     public CourseDTO? Course { get; set; } = null!;
 }
 public class QuizQuestionDTO{
     public int QuestionID { get; set; }
-
     public int QuestionBankID { get; set; } 
-
     public string QuestionText { get; set; } = string.Empty;
-
     public string Option1 { get; set; } = string.Empty;
-
     public string Option2 { get; set; } = string.Empty;
-
     // Option3 and Option4 are optional
     public string? Option3 { get; set; }
     public string? Option4 { get; set; }
@@ -123,11 +118,8 @@ public class QuizQuestionDTO{
 
 public class QuizResponseDTO{
     public int ResponseID { get; set; }
-
     public int AttendanceID { get; set; }  
-
     public int QuestionID { get; set; }    
-
     public int SelectedOption { get; set; }
 }
 

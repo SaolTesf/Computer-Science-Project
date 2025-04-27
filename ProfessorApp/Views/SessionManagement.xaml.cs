@@ -4,6 +4,7 @@ Add or remove class sessions
  */
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
+using System.Diagnostics;
 
 namespace ProfessorApp.Pages
 {
@@ -26,77 +27,108 @@ namespace ProfessorApp.Pages
             if (course != null)
                 CourseLabel.Text = $"{course.CourseNumber}.{course.Section} - {course.CourseName}";
             await LoadSessionsAsync();
+            await LoadQuizzesAsync();
         }
 
         // load list of sessions
         private async Task LoadSessionsAsync()
         {
-            var sessions = await _clientService.GetSessionsAsync(_courseId);
-            SessionCollectionView.ItemsSource = sessions;
+            // get list of sessions
+            var sessions = await _clientService.GetSessionsByCourseIDAsync(_courseId);
+            var formattedSessions = new List<ClassSessionFormatDTO>();
+            if (sessions != null)
+            {
+                // sort sessions in order of date (ascending)
+                var sortedSessions = sessions.OrderBy(session => session.SessionDateTime).ToList();
+                for (int i = 0; i < sortedSessions.Count; i++) {
+                    ClassSessionDTO session = sortedSessions[i];
+                    QuizQuestionBankDTO? quiz = await _clientService.GetQuizQuestionBankByIDAsync(session.QuestionBankID);
+                    
+                    if (quiz != null) {
+                        // create formatted sessions
+                        string sessionNumber = "Session " + (i + 1);
+                        var format = new ClassSessionFormatDTO
+                        {
+                            Date = session.SessionDateTime.ToString("D"),
+                            Duration = session.QuizStartTime.ToString("h:mm tt") + " - " + session.QuizEndTime.ToString("h:mm tt"),
+                            Password = session.Password,
+                            Quiz = quiz.BankName,
+                            SessionID = session.SessionID,
+                            SessionNumber = sessionNumber
+                        };
+                        formattedSessions.Add(format);
+                    }
+                }
+            }
+            SessionCollectionView.ItemsSource = formattedSessions;
         }
 
         // load list of quizzes
         private async Task LoadQuizzesAsync()
         {
-            var quizzes = await _clientService.GetQuizBanksAsync(_courseId);
+            var quizzes = await _clientService.GetAllQuizQuestionBanksAsync();
             QuizPicker.ItemsSource = quizzes;
         }
-
-        // occurs when a quiz is picked
-        private void OnQuizSelected(object sender, EventArgs e)
-        {
-            var selectedQuiz = QuizPicker.SelectedItem as QuizDTO;
-        }
-
 
         private async void OnRemoveSessionClicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.CommandParameter is int sessionID)
             {
-                var success = await _clientService.RemoveSessionAsync(sessionID);
+                var success = await _clientService.RemoveClassSessionAsync(sessionID);
                 if (success)
-                    await LoadSessionsAsync();
+                    OnAppearing();
                 else
                     await DisplayAlert("Error", "Failed to remove session.", "OK");
             }
         }
 
-        // Event handler for adding session through form (Add session button)
+        // Open the "add session" pop up when the button is clicked
         private void OnAddSessionClicked(object sender, EventArgs e)
         {
             // Toggle the add session form visibility
             AddSessionPopup.IsVisible = !AddSessionPopup.IsVisible;
         }
 
-        //Submit session data to database
+        // Submit session data to database
         private async void OnSubmitSessionClicked(object sender, EventArgs e)
         {
             var date = SessionDate.Date;
             var start = StartTime.Time;
             var end = EndTime.Time;
             var password = Password.Text?.Trim();
+            var quiz = QuizPicker.SelectedItem as QuizQuestionBankDTO;
+
+            if (quiz == null)
+            {
+                statusLabel.TextColor = Colors.Red;
+                statusLabel.Text = "You must select a quiz.";
+                return;
+            }
 
             if (string.IsNullOrEmpty(password))
             {
-                password = "";
+                statusLabel.TextColor = Colors.Red;
+                statusLabel.Text = "You must set a password.";
+                return;
             }
 
             DateTime quizStart = date + start;
             DateTime quizEnd = date + end;
-
+            int quizID = quiz.QuestionBankID;
 
             var session = new ClassSessionDTO
             {
-                SessionDate = date,
-                StartTime = quizStart,
-                EndTime = quizEnd,
+                CourseID = _courseId,
+                SessionDateTime = date,
+                QuizStartTime = quizStart,
+                QuizEndTime = quizEnd,
                 Password = password,
-                QuestionBankID = _questionBankID
+                QuestionBankID = quizID
             };
 
             try
             {
-                var response = await _clientService.AddCourseSessionAsync(session);
+                var response = await _clientService.AddClassSessionAsync(session);
                 if (!response)
                 {
                     statusLabel.TextColor = Colors.Red;

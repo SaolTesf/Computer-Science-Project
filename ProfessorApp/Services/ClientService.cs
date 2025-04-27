@@ -94,9 +94,9 @@ namespace ProfessorApp.Services
             return response;
         }
 
-        public async Task<List<QuizQuestionBankDTO>?> GetQuizQuestionBankByIDAsync(int bankId)
+        public async Task<QuizQuestionBankDTO?> GetQuizQuestionBankByIDAsync(int bankId)
         {
-            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionBankDTO>>($"api/quizquestionbank/{bankId}");
+            var response = await _httpClient.GetFromJsonAsync<QuizQuestionBankDTO>($"api/quizquestionbank/{bankId}");
             return response;
         }
 
@@ -207,5 +207,26 @@ namespace ProfessorApp.Services
             return response.IsSuccessStatusCode;
         }
 
+        // course sessions
+        // get course sessions by the course's ID
+        public async Task<List<ClassSessionDTO>?> GetSessionsByCourseIDAsync(int? courseID)
+            => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/course/{courseID}");
+
+        public async Task<List<ClassSessionDTO>?> GetSessionsAsync()
+            => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>("api/classsession/");
+
+        // add a class session
+        public async Task<bool> AddClassSessionAsync(ClassSessionDTO dto)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/classsession", dto);
+            return response.IsSuccessStatusCode;
+        }
+        
+        // remove a class session by ID
+        public async Task<bool> RemoveClassSessionAsync(int sessionID)
+        {
+            var response = await _httpClient.DeleteAsync($"api/classsession/{sessionID}");
+            return response.IsSuccessStatusCode;
+        }
     }
 }

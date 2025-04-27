@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Session Management"
-    BackgroundColor="{DynamicResource SecondaryColor}">
+    BackgroundColor="#222">
 
     <Grid>
 
@@ -21,12 +21,19 @@
                 TextColor="White"
                 VerticalOptions="Start" />
 
-            <Label Text="Class Sessions:" TextColor="White" Margin="0,20,0,0" />
-            <CollectionView x:Name="SessionCollectionView" SelectionMode="None" HeightRequest="400">
+            <CollectionView x:Name="SessionCollectionView" SelectionMode="None" WidthRequest="600" HeightRequest="700">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame BackgroundColor="#333" CornerRadius="8" Padding="10" Margin="0,5">
-                            <StackLayout Orientation="Horizontal" Spacing="0">
+                            <StackLayout Orientation="Vertical" Spacing="10">
+                                <Label Text="{Binding SessionNumber}" FontAttributes="Bold" FontSize="16" TextColor="White" />
+                                <Label Text="{Binding Date}" TextColor="White" />
+                                <Label Text="{Binding Duration}" TextColor="White" />
+                                <Label Text="Password" FontAttributes="Bold" FontSize="16" TextColor="White" />
+                                <Label Text="{Binding Password}" TextColor="White" />
+                                <Label Text="Quiz" FontAttributes="Bold" FontSize="16" TextColor="White" />
+                                <Label Text="{Binding Quiz}" TextColor="White" />
+                                <Button Text="Remove (will be update)" BackgroundColor="DarkOrange" TextColor="White" Clicked="OnRemoveSessionClicked" CommandParameter="{Binding SessionID}" />
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
@@ -51,7 +58,7 @@
             BackgroundColor="#333"
             BorderColor="DarkOrange"
             CornerRadius="12"
-            HeightRequest="400"
+            HeightRequest="500"
             HorizontalOptions="Center"
             IsVisible="False"
             VerticalOptions="Center"
@@ -77,7 +84,7 @@
                     TextColor="White"
                     FontSize="15"
                     FontAttributes="Bold"
-                    Text="Start Time" />
+                    Text="Quiz Start Time" />
                 <TimePicker x:Name="StartTime" 
                     TextColor="White"/>
 
@@ -85,7 +92,7 @@
                     TextColor="White"
                     FontSize="15"
                     FontAttributes="Bold"
-                    Text="End Time" />
+                    Text="Quiz End Time" />
                 <TimePicker x:Name="EndTime" 
                     TextColor="White"/>
                 
@@ -95,11 +102,17 @@
                     Placeholder="Password"
                     TextColor="White" />
 
+                <Label
+                    TextColor="White"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    Text="Quiz" />
                 <Picker x:Name="QuizPicker"
-                        Title="Quiz"
+                        TextColor="White"
+                        FontAttributes="Bold"
                         ItemDisplayBinding="{Binding BankName}" />
 
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
                     <Button
                         BackgroundColor="Green"
                         Clicked="OnSubmitSessionClicked"
