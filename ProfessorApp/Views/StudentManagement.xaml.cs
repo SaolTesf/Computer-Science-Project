@@ -1,6 +1,7 @@
 ﻿/*Diego Cabanas
  Functions to Manage students, Add through file, Add manually, or Delete
-Delete also deletes any attendance statistics/facts that are associated with the student*/
+Delete also deletes any attendance statistics/facts that are associated with the student
+ */
 using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
@@ -294,34 +295,6 @@ namespace ProfessorApp.Pages
             if (DeleteStudentPopup.IsVisible)
             {
                 DeleteUTDIDEntry.Text = string.Empty;
-            }
-        }
-
-        // Open deletion pop up
-        private void ConfirmDelete(object sender, EventArgs e)
-        {
-            // Show the form
-            ConfirmDeletePopUp.IsVisible = true;
-        }
-
-        // Cancel deletion
-        private void OnConfirmCancelClicked(object sender, EventArgs e)
-        {
-            // Hide the form
-            ConfirmDeletePopUp.IsVisible = false;
-        }
-
-        // deletes course
-        private async void OnDeleteCourseClicked(object sender, EventArgs e)
-        {
-            string? message = await _clientService.DeleteCourseByIDAsync(_courseId);
-            if (message != null)
-            {
-                await DisplayAlert("Success", "The course has been deleted.", "OK");
-                await Navigation.PopAsync();
-            } else
-            {
-                await DisplayAlert("Error", "Course deletion failed.", "OK");
             }
         }
 

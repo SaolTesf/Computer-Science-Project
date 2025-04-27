@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProfessorApp.Pages.SessionManagement"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Session Management"
+    BackgroundColor="{DynamicResource SecondaryColor}">
+
+    <Grid>
+
+        <!--  Main Content  -->
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <Label
+                x:Name="CourseLabel"
+                Margin="0,20,0,10"
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="CourseName"
+                TextColor="White"
+                VerticalOptions="Start" />
+
+            <Label Text="Class Sessions:" TextColor="White" Margin="0,20,0,0" />
+            <CollectionView x:Name="SessionCollectionView" SelectionMode="None" HeightRequest="400">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#333" CornerRadius="8" Padding="10" Margin="0,5">
+                            <StackLayout Orientation="Horizontal" Spacing="0">
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--  Button to trigger Add Session Form  -->
+            <Button
+                WidthRequest="400"
+                Margin="0,15,0,15"
+                BackgroundColor="Green"
+                Clicked="OnAddSessionClicked"
+                Text="Add Session"
+                TextColor="White" />
+
+        </VerticalStackLayout>
+
+        <!--  Modal-style Add Session Popup  -->
+        <Frame
+            x:Name="AddSessionPopup"
+            Padding="15"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
+            CornerRadius="12"
+            HeightRequest="400"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="400">
+
+            <StackLayout Spacing="5">
+                <Label
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Add Session" />
+
+                <Label
+                    TextColor="White"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    Text="Date" />
+                <DatePicker x:Name="SessionDate" 
+                    TextColor="White"/>
+
+                <Label
+                    TextColor="White"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    Text="Start Time" />
+                <TimePicker x:Name="StartTime" 
+                    TextColor="White"/>
+
+                <Label
+                    TextColor="White"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    Text="End Time" />
+                <TimePicker x:Name="EndTime" 
+                    TextColor="White"/>
+                
+                <Entry
+                    x:Name="Password"
+                    MaxLength="255"
+                    Placeholder="Password"
+                    TextColor="White" />
+
+                <Picker x:Name="QuizPicker"
+                        Title="Quiz"
+                        ItemDisplayBinding="{Binding BankName}" />
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button
+                        BackgroundColor="Green"
+                        Clicked="OnSubmitSessionClicked"
+                        Text="Submit"
+                        TextColor="White" />
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnCancelSessionClicked"
+                        Text="Cancel"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+
+                <Label x:Name="statusLabel" TextColor="Red" HorizontalOptions="Center" />
+
+            </StackLayout>
+        </Frame>
+
+    </Grid>
+</ContentPage>
