@@ -49,7 +49,7 @@ namespace ProfessorApp.Services
         }
 
 
-        // Additional methods to be added later
+        // Student Methods
         public async Task<List<StudentDTO>?> GetAllStudentsAsync()
         {
             return await _httpClient.GetFromJsonAsync<List<StudentDTO>>("api/student");
@@ -82,10 +82,85 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/student/{utdId}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync(); // returns "<Name> has been removed."
+                return await response.Content.ReadAsStringAsync(); 
             }
             return null;
         }
+
+        // QuizBank Methods
+        public async Task<List<QuizQuestionBankDTO>?> GetAllQuizQuestionBanksAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionBankDTO>>("api/quizquestionbank");
+            return response;
+        }
+
+        public async Task<List<QuizQuestionBankDTO>?> GetQuizQuestionBankByIDAsync(int bankId)
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionBankDTO>>($"api/quizquestionbank/{bankId}");
+            return response;
+        }
+
+        public async Task<bool> CreateQuizQuestionBankAsync(QuizQuestionBankDTO bank)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/quizquestionbank", bank);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateQuizQuestionBankAsync(QuizQuestionBankDTO bank)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/quizquestionbank/{bank.QuestionBankID}", bank);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteQuizQuestionBankAsync(int bankId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/quizquestionbank/{bankId}");
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<List<string>?> GetAllQuizBankNamesAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<string>>("api/quizquestionbank/banknames");
+            return response;
+        }
+
+        public async Task<List<string>?> GetQuestionBankIdByNameAsync(string bankName)
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<string>>($"api/quizquestionbank/GetBankIdByName?bankName={Uri.EscapeDataString(bankName)}");
+            return response;
+        }
+
+        // Quizquestion Methods
+        public async Task<List<QuizQuestionDTO>?> GetAllQuizQuestionAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionDTO>>("api/quizquestion");
+            return response;
+        }
+
+       public async Task<List<QuizQuestionDTO>?> GetQuizQuestionByIdAsync(int questionId)
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionDTO>>($"api/quizquestion/{questionId}");
+            return response;
+        }
+        public async Task<bool> CreateQuizQuestionAsync(QuizQuestionDTO question)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/quizquestion", question);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateQuizQuestionAsync(QuizQuestionDTO question)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/quizquestion/{question.QuestionID}", question);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteQuizQuestionAsync(int questionId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/quizquestion/{questionId}");
+            return response.IsSuccessStatusCode;
+        }
+
+     
 
         // Courses
         public async Task<List<CourseDTO>?> GetAllCoursesAsync()
@@ -131,5 +206,6 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/courseenrollment/{enrollmentId}");
             return response.IsSuccessStatusCode;
         }
+
     }
 }

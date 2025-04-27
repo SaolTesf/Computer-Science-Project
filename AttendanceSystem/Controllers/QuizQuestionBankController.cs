@@ -62,5 +62,32 @@ namespace AttendanceSystem.Controllers
             await _quizQuestionBankService.DeleteBankAsync(bankId);
             return NoContent();
         }
+
+        // GET: api/quizquestionbank/banknames
+        [HttpGet("banknames")]
+        public async Task<ActionResult<IEnumerable<string>>> GetAllBankNames()
+        {
+            var bankNames = await _quizQuestionBankService.GetAllBankNamesAsync();
+            return Ok(bankNames);
+
+        }
+
+        [HttpGet("GetBankIdByName")]
+        public async Task<IActionResult> GetBankIdByName([FromQuery] string bankName)
+        {
+            if (string.IsNullOrWhiteSpace(bankName))
+            {
+                return BadRequest("BankName cannot be null or empty.");
+            }
+
+            var bankId = await _quizQuestionBankService.GetQuestionBankIdByNameAsync(bankName);
+
+            if (bankId == null)
+            {
+                return NotFound($"No Question Bank found with the name '{bankName}'.");
+            }
+
+            return Ok(bankId);
+        }
     }
 }

@@ -213,7 +213,7 @@ namespace ProfessorApp.Pages
         //Event handler for adding student through form (Add Student button)
         private void OnAddStudentClicked(object sender, EventArgs e)
         {
-            // Toggle the Add Student form visibility
+            //Toggle the Add Student form visibility
             AddStudentPopup.IsVisible = !AddStudentPopup.IsVisible;
 
             if (AddStudentPopup.IsVisible)
