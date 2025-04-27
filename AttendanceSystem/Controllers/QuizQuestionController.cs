@@ -62,5 +62,16 @@ namespace AttendanceSystem.Controllers
             await _quizQuestionService.DeleteQuestionAsync(id);
             return NoContent();
         }
+
+        [HttpGet("GetByBankId/{bankId}")]
+        public async Task<IActionResult> GetQuestionsByBankId(int bankId)
+        {
+            var questions = await _quizQuestionService.GetQuestionsByBankIdAsync(bankId);
+            if (questions == null || !questions.Any())
+            {
+                return NotFound($"No questions found for bank ID {bankId}.");
+            }
+            return Ok(questions);
+        }
     }
 }

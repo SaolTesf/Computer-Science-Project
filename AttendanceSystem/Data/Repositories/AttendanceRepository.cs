@@ -67,4 +67,11 @@ public class AttendanceRepository : IAttendanceRepository
             .AnyAsync(a => a.SubmissionTime.Date == date.Date);
     }
 
+    public async Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId)
+    {
+        return await _context.Attendances
+            .Where(a => a.UTDID == utdId)
+            .ToListAsync();
+    }
+
 }

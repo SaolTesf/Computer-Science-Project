@@ -69,5 +69,10 @@ namespace AttendanceSystem.Services
             return await _attendanceRepository.DateExistsAsync(date);
         }
 
+        public async Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId)
+        {
+            return await _attendanceRepository.GetAttendanceByUtdIdAsync(utdId);
+        }
+
     }
 }

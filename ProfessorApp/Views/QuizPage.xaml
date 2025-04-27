@@ -97,7 +97,7 @@
                 BackgroundColor="Orange"
                 ItemsSource="{Binding BankList}"
                 SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
-                SelectedIndexChanged="OnBankPickerSelectionChanged"
+            
                 TextColor="Black" />
 
             <!--  Picker for Questions -->

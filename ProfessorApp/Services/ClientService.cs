@@ -124,11 +124,12 @@ namespace ProfessorApp.Services
             return response;
         }
 
-        public async Task<List<string>?> GetQuestionBankIdByNameAsync(string bankName)
+        public async Task<int> GetQuestionBankIdByNameAsync(string bankName)
         {
-            var response = await _httpClient.GetFromJsonAsync<List<string>>($"api/quizquestionbank/GetBankIdByName?bankName={Uri.EscapeDataString(bankName)}");
+            var response = await _httpClient.GetFromJsonAsync<int>($"api/quizquestionbank/GetBankIdByName?bankName={bankName}");
             return response;
         }
+
 
         // Quizquestion Methods
         public async Task<List<QuizQuestionDTO>?> GetAllQuizQuestionAsync()

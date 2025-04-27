@@ -17,5 +17,8 @@ namespace AttendanceSystem.Services
 
         Task<bool> DateExistsAsync(DateTime date);
 
+        Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId);
+
+
     }
 }
