@@ -34,8 +34,12 @@ namespace ProfessorApp.Pages
 
         private async void GoToAttPage(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new StudentManagement(_clientService, _courseId));
+            await Navigation.PushAsync(new AttendancePage(_clientService, _courseId));
         }
+        private async void GoToStudentManagmentPage(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new StudentManagement(_clientService, _courseId));
+        }   
 
         // course deletion stuff
 

@@ -33,6 +33,13 @@
               Text="Attendance"
               TextColor="White"
               MaximumWidthRequest="600" />
+            
+            <Button
+                BackgroundColor="DarkOrange"
+                Clicked="GoToStudentManagmentPage"
+                Text="Student Managment"
+                TextColor="White"
+                MaximumWidthRequest="600" />
 
             <!--  Delete Course Button  -->
             <Button
