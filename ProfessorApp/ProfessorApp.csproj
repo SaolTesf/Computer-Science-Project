@@ -99,4 +99,8 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.0" />
+  </ItemGroup>
+
 </Project>
