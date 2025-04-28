@@ -36,15 +36,6 @@
                 Text="Courses"
                 TextColor="White"
                 MaximumWidthRequest="600" />
-
-            <Button
-                BackgroundColor="DarkOrange"
-                Clicked="GoToAttPage"
-                Text="Attendance"
-                TextColor="White"
-                MaximumWidthRequest="600" />
-
-
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
