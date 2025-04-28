@@ -232,5 +232,9 @@ namespace ProfessorApp.Services
         // Attendance methods
         public async Task<List<AttendanceDTO>?> GetAllAttendancesAsync()
             => await _httpClient.GetFromJsonAsync<List<AttendanceDTO>>("api/attendance");
+
+        // Attendance methods by course
+        public async Task<List<AttendanceDTO>?> GetAttendancesByCourseIDAsync(int? courseID)
+            => await _httpClient.GetFromJsonAsync<List<AttendanceDTO>>($"api/attendance/course/{courseID}");
     }
 }

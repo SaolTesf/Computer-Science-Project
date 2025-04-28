@@ -67,4 +67,14 @@ public class AttendanceRepository : IAttendanceRepository
             .AnyAsync(a => a.SubmissionTime.Date == date.Date);
     }
 
+    public async Task<IEnumerable<Attendance>> GetByCourseIDAsync(int courseID)
+    {
+        return await _context.Attendances
+            .Include(a => a.ClassSession)
+            .Where(a => a.ClassSession != null 
+                        && a.ClassSession.CourseID == courseID
+                        && _context.CourseEnrollments.Any(e => e.CourseID == courseID && e.UTDID == a.UTDID))
+            .ToListAsync();
+    }
+
 }

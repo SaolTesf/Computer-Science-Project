@@ -94,5 +94,13 @@ namespace AttendanceSystem.Controllers
             return Ok(exists);
         }
 
+        // GET: api/attendance/course/{courseID}
+        [HttpGet("course/{courseID}")]
+        public async Task<ActionResult<IEnumerable<Attendance>>> GetByCourseID(int courseID)
+        {
+            var attendances = await _attendanceService.GetByCourseIDAsync(courseID);
+            return Ok(attendances);
+        }
+
     }
 }
