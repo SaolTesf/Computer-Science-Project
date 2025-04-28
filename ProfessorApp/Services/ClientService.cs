@@ -228,5 +228,9 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/classsession/{sessionID}");
             return response.IsSuccessStatusCode;
         }
+
+        // Attendance methods
+        public async Task<List<AttendanceDTO>?> GetAllAttendancesAsync()
+            => await _httpClient.GetFromJsonAsync<List<AttendanceDTO>>("api/attendance");
     }
 }
