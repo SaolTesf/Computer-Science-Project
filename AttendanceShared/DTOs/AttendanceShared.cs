@@ -1,5 +1,14 @@
-﻿
+﻿/*
+This file allows us to share DTOs between the Attendace API and professor App
+*/
+
 namespace AttendanceShared.DTOs;
+
+public enum AttendanceType {
+    Present,
+    Excused,
+    Unexcused
+}
 
 public class RegisterDTO
 {
@@ -121,11 +130,4 @@ public class QuizResponseDTO{
     public int AttendanceID { get; set; }  
     public int QuestionID { get; set; }    
     public int SelectedOption { get; set; }
-}
-
-public enum AttendanceType
-{
-    Present,
-    Absent,
-    Excused
 }
