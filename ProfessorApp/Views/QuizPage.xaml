@@ -63,6 +63,58 @@
                 </StackLayout>
             </Frame>
 
+            <!--  Delete Bank Button  -->
+            <Button
+                Margin="0,15,0,15"
+                BackgroundColor="Red"
+                Clicked="OnDeleteBankClicked"
+                Text="Delete Question Bank"
+                TextColor="White"
+                WidthRequest="400" />
+
+            <Frame
+                x:Name="DeleteBankPopup"
+                Padding="15"
+                BackgroundColor="White"
+                BorderColor="Red"
+                CornerRadius="12"
+                HeightRequest="200"
+                HorizontalOptions="Center"
+                IsVisible="False"
+                VerticalOptions="Center"
+                WidthRequest="200">
+
+                <StackLayout Spacing="10">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Delete Quiz Bank"
+                        TextColor="Black" />
+
+                    <Picker
+                        x:Name="DeleteQuestionBankPicker"
+                        Title="Select Question Bank"
+                        BackgroundColor="Orange"
+                        ItemsSource="{Binding BankList}"
+                        SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
+                        TextColor="Black" />
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Button
+                            BackgroundColor="Green"
+                            Clicked="OnSubmitDeleteBankClicked"
+                            Text="Confirm"
+                            TextColor="White" />
+                        <Button
+                            BackgroundColor="Gray"
+                            Clicked="OnCancelDeleteBankClicked"
+                            Text="Cancel"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </StackLayout>
+            </Frame>
+
             <!--  Button to trigger Add Question Form  -->
             <Button
                 Margin="0,30,0,30"

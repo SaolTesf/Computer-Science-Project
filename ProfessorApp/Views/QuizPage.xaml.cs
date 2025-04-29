@@ -123,7 +123,24 @@ namespace ProfessorApp.Pages
             //Hide the form
             AddBankPopup.IsVisible = false;
         }
+        //Method to delete a student by UTDID
+        private async void OnDeleteBankClicked(object sender, EventArgs e)
+        {
+            //Toggle the Delete Student form visibility
+            DeleteBankPopup.IsVisible = !DeleteBankPopup.IsVisible;
+        }
 
+        //Method to Delete Bank and All the questions within it
+        private async void OnSubmitDeleteBankClicked(object sender, EventArgs e)
+        {
+            DeleteBankPopup.IsVisible = false;
+        }
+        //Cancel Deleting Question Bank
+        private void OnCancelDeleteBankClicked(object sender, EventArgs e)
+        {
+            //Hide delete student form
+            DeleteBankPopup.IsVisible = false;
+        }
         //Event handler for adding quiz question through form (Add Question button)
         private void OnAddQuestionClicked(object sender, EventArgs e)
         {
@@ -157,8 +174,7 @@ namespace ProfessorApp.Pages
             }
 
             //Getting BankID by using the Bank Name chosen from the picker
-            int? questionBankID = SelectedBank != null
-                ? await _clientService.GetQuestionBankIdByNameAsync(SelectedBank) : (int?)null;
+            int? questionBankID = SelectedBank != null? await _clientService.GetQuestionBankIdByNameAsync(SelectedBank) : (int?)null;
 
             if (questionBankID == null)
             {
