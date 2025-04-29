@@ -101,9 +101,7 @@ public class QuizQuestionBankDTO{
     public int QuestionBankID { get; set; }
     public string BankName { get; set; } = string.Empty;
 
-    public string CourseNumber { get; set; } = string.Empty; 
-
-    public CourseDTO? Course { get; set; } = null!;
+    public int CourseID { get; set; }
 }
 public class QuizQuestionDTO{
     public int QuestionID { get; set; }

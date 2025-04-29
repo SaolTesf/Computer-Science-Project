@@ -56,5 +56,13 @@ namespace AttendanceSystem.Data.Repositories
 
             return bank?.QuestionBankID;
         }
+
+        public async Task<List<QuizQuestionBank>> GetBanksByCourseIdAsync(int courseId)
+        {
+            return await _context.QuizQuestionBanks
+                                 .Where(b => b.CourseID == courseId)
+                                 .ToListAsync();
+        }
+
     }
 }

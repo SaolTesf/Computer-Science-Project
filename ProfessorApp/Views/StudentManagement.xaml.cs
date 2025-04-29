@@ -377,5 +377,13 @@ namespace ProfessorApp.Pages
             //Hide delete student form
             DeleteStudentPopup.IsVisible = false;
         }
+
+        private async void OnGoToQuizPageClicked(object sender, EventArgs e)
+        {
+            var course = _courseId; 
+            if (course == null) return;
+
+            await Navigation.PushAsync(new QuizPage(_clientService, course));
+        }
     }
 }

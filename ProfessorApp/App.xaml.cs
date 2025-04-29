@@ -12,7 +12,7 @@ namespace ProfessorApp
             InitializeComponent();
             
             // Set LoginPage as the initial page
-            MainPage = new NavigationPage(new QuizPage(clientService));
+            MainPage = new NavigationPage(new LoginPage(clientService));
         }
     }
 }

@@ -16,6 +16,6 @@ namespace AttendanceSystem.Services
         Task<IEnumerable<string>> GetAllBankNamesAsync();
 
         Task<int?> GetQuestionBankIdByNameAsync(string bankName);
-
+        Task<List<QuizQuestionBank>> GetBanksByCourseIdAsync(int courseId);
     }
 }
