@@ -85,5 +85,24 @@ namespace AttendanceSystem.Controllers
                 return Ok(false);
             }
         }
+
+        // GET: api/attendance/date-exists?date=2025-04-21
+        [HttpGet("date-exists")]
+        public async Task<ActionResult<bool>> CheckDateExists([FromQuery] DateTime date)
+        {
+            var exists = await _attendanceService.DateExistsAsync(date.Date);
+            return Ok(exists);
+        }
+
+        [HttpGet("GetByUtdId/{utdId}")]
+        public async Task<IActionResult> GetAttendanceByUtdId(string utdId)
+        {
+            var attendanceRecords = await _attendanceService.GetAttendanceByUtdIdAsync(utdId);
+            if (attendanceRecords == null || !attendanceRecords.Any())
+            {
+                return NotFound($"No attendance records found for UTD ID {utdId}.");
+            }
+            return Ok(attendanceRecords);
+        }
     }
 }

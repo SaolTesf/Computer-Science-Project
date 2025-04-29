@@ -4,25 +4,52 @@ Delete also deletes any attendance statistics/facts that are associated with the
 using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
-
-
-
+using ProfessorApp.Services;
+using System.IO;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Controls;
 
 namespace ProfessorApp.Pages
 {
     public partial class StudentManagement : ContentPage
     {
-        private readonly HttpClient _httpClient;
-        private const string StudentApiBaseUrl = "http://localhost:5225/api/student";
-        private const string AttendanceApiBaseUrl = "http://localhost:5225/api/attendance";
-        // List to hold selected files
+        private readonly ClientService _clientService;
+        private readonly int? _courseId;
         private List<FileResult> _selectedFiles;
 
-        public StudentManagement()
+        public StudentManagement(ClientService clientService, int? courseId)
         {
             InitializeComponent();
-            _httpClient = new HttpClient();
+            _clientService = clientService;
+            _courseId = courseId;
             _selectedFiles = new List<FileResult>();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            CourseDTO? course = await _clientService.GetCourseByIdAsync(_courseId);
+            if (course != null)
+                CourseLabel.Text = $"{course.CourseNumber}.{course.Section} - {course.CourseName}";
+            await LoadEnrollmentsAsync();
+        }
+        
+        private async Task LoadEnrollmentsAsync()
+        {
+            var enrollments = await _clientService.GetEnrollmentsAsync(_courseId);
+            EnrollmentCollectionView.ItemsSource = enrollments;
+        }
+
+        private async void OnUnenrollClicked(object sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.CommandParameter is int enrollmentId)
+            {
+                var success = await _clientService.UnenrollStudentAsync(enrollmentId);
+                if (success)
+                    await LoadEnrollmentsAsync();
+                else
+                    await DisplayAlert("Error", "Failed to remove student.", "OK");
+            }
         }
 
         //Event handler for selecting file
@@ -140,28 +167,16 @@ namespace ProfessorApp.Pages
         //Method called to read and upload the txt file
         public async Task UploadStudentData(string filePath)
         {
-            try
+            var students = ParseStudentFile(filePath);
+            foreach (var student in students)
             {
-                //Parse txt into student object
-                var students = ParseStudentFile(filePath);
-                foreach (var student in students)
+                if (await _clientService.AddStudentAsync(student))
                 {
-                    //Add student object to database
-                    var response = await AddStudentToDatabase(student);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        Console.WriteLine($"Student {student.Username} added successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Failed to add student {student.Username}.");
-                    }
+                    var dto = new CourseEnrollmentDTO { CourseID = _courseId, UTDID = student.UTDID };
+                    await _clientService.EnrollStudentToCourseAsync(dto);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+            await LoadEnrollmentsAsync();
         }
 
         //Parse the txt file into student object
@@ -194,20 +209,10 @@ namespace ProfessorApp.Pages
             return students;
         }
 
-        //Method to add student to database through API
-        private async Task<HttpResponseMessage> AddStudentToDatabase(StudentDTO student)
-        {
-            var studentJson = JsonConvert.SerializeObject(student);
-            var content = new StringContent(studentJson, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync(StudentApiBaseUrl, content);
-            return response;
-        }
-
         //Event handler for adding student through form (Add Student button)
         private void OnAddStudentClicked(object sender, EventArgs e)
         {
-            // Toggle the Add Student form visibility
+            //Toggle the Add Student form visibility
             AddStudentPopup.IsVisible = !AddStudentPopup.IsVisible;
 
             if (AddStudentPopup.IsVisible)
@@ -227,7 +232,6 @@ namespace ProfessorApp.Pages
             var username = UsernameEntry.Text?.Trim();
             var utdid = AddStudentUTDIDEntry.Text?.Trim();
 
-            //Check if Username and UTDID are the correct amount of characters
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) ||
                 string.IsNullOrEmpty(username) || string.IsNullOrEmpty(utdid))
             {
@@ -246,7 +250,6 @@ namespace ProfessorApp.Pages
                 return;
             }
 
-            //Create new student object
             var student = new StudentDTO
             {
                 FirstName = firstName,
@@ -255,34 +258,16 @@ namespace ProfessorApp.Pages
                 UTDID = utdid
             };
 
-            try
+            if (await _clientService.AddStudentAsync(student))
             {
-                var studentJson = JsonConvert.SerializeObject(student);
-                var content = new StringContent(studentJson, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync(StudentApiBaseUrl, content);
-                if (response.IsSuccessStatusCode)
-                {
-                    await DisplayAlert("Success", "Student added successfully.", "OK");
-
-                    //Clear the fields for adding another student
-                    FirstNameEntry.Text = string.Empty;
-                    LastNameEntry.Text = string.Empty;
-                    UsernameEntry.Text = string.Empty;
-                    AddStudentUTDIDEntry.Text = string.Empty;
-
-                    //Hide form after submission
-                    AddStudentPopup.IsVisible = false;
-                }
-                else
-                {
-                    await DisplayAlert("Error", "Failed to add student. Please try again.", "OK");
-                }
+                var dto = new CourseEnrollmentDTO { CourseID = _courseId, UTDID = student.UTDID };
+                await _clientService.EnrollStudentToCourseAsync(dto);
+                await DisplayAlert("Success", "Student added and enrolled.", "OK");
+                AddStudentPopup.IsVisible = false;
+                await LoadEnrollmentsAsync();
             }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
-            }
+            else
+                await DisplayAlert("Error", "Failed to add student.", "OK");
         }
 
         //Cancel adding student button
@@ -304,9 +289,39 @@ namespace ProfessorApp.Pages
             //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;
 
+            await DisplayAlert("Error", "Deletion unsuccessful", "OK");
+
             if (DeleteStudentPopup.IsVisible)
             {
                 DeleteUTDIDEntry.Text = string.Empty;
+            }
+        }
+
+        // Open deletion pop up
+        private void ConfirmDelete(object sender, EventArgs e)
+        {
+            // Show the form
+            ConfirmDeletePopUp.IsVisible = true;
+        }
+
+        // Cancel deletion
+        private void OnConfirmCancelClicked(object sender, EventArgs e)
+        {
+            // Hide the form
+            ConfirmDeletePopUp.IsVisible = false;
+        }
+
+        // deletes course
+        private async void OnDeleteCourseClicked(object sender, EventArgs e)
+        {
+            string? message = await _clientService.DeleteCourseByIDAsync(_courseId);
+            if (message != null)
+            {
+                await DisplayAlert("Success", "The course has been deleted.", "OK");
+                await Navigation.PopAsync();
+            } else
+            {
+                await DisplayAlert("Error", "Course deletion failed.", "OK");
             }
         }
 
@@ -323,22 +338,18 @@ namespace ProfessorApp.Pages
 
             try
             {
-                var checkResponse = await _httpClient.GetAsync($"{StudentApiBaseUrl}/id/{utdid}");
-                if (checkResponse.IsSuccessStatusCode)
+                var student = await _clientService.GetStudentByUTDIdAsync(utdid);
+                if (student != null)
                 {
-                    var deleteResponse = await _httpClient.DeleteAsync($"{StudentApiBaseUrl}/{utdid}");
-                    var attdeleteResponse = await _httpClient.DeleteAsync($"{AttendanceApiBaseUrl}/{utdid}");
+                    var deleteStudentResponse = await _clientService.DeleteStudentByUTDIdAsync(utdid);
+                    var deleteAttendanceResponse = await _clientService.DeleteStudentByUTDIdAsync(utdid);
 
-                    if (deleteResponse.IsSuccessStatusCode)
+                    if (!string.IsNullOrEmpty(deleteStudentResponse))
                     {
-                        string resultMessage = await deleteResponse.Content.ReadAsStringAsync();
-
+                        string resultMessage = deleteStudentResponse;
                         await DisplayAlert("Success", resultMessage, "OK");
 
-                        //Clear form fields
                         DeleteUTDIDEntry.Text = string.Empty;
-
-                        //Hide the delete popup
                         DeleteStudentPopup.IsVisible = false;
                     }
                     else
@@ -365,6 +376,14 @@ namespace ProfessorApp.Pages
 
             //Hide delete student form
             DeleteStudentPopup.IsVisible = false;
+        }
+
+        private async void OnGoToQuizPageClicked(object sender, EventArgs e)
+        {
+            var course = _courseId; 
+            if (course == null) return;
+
+            await Navigation.PushAsync(new QuizPage(_clientService, course));
         }
     }
 }

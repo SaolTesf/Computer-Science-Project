@@ -11,15 +11,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
   public DbSet<Professor> Professors { get; set; } = null!;
   public DbSet<Attendance> Attendances { get; set; } = null!;
-
   public DbSet<Course> Courses { get; set; } = null!;
   public DbSet<ClassSession> ClassSessions { get; set; } = null!;
   public DbSet<QuizQuestionBank> QuizQuestionBanks { get; set; } = null!;
   public DbSet<QuizQuestion> QuizQuestions { get; set; } = null!;
   public DbSet<QuizResponse> QuizResponses { get; set; } = null!;
   public DbSet<Student> Students { get; set; } = null!;
+  public DbSet<CourseEnrollment> CourseEnrollments { get; set; } = null!;
 
-  protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
 
@@ -71,7 +71,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     modelBuilder.Entity<Course>(entity =>
     {
       entity.ToTable("Course");
-      entity.HasKey(e => e.CourseNumber);
+      entity.HasKey(e => e.CourseID);
+      entity.Property(e => e.CourseID).IsRequired();
       entity.Property(e => e.CourseNumber).HasMaxLength(10).IsRequired();
       entity.Property(e => e.CourseName).HasMaxLength(255).IsRequired();
       entity.Property(e => e.Section).HasMaxLength(10).IsRequired();
@@ -84,7 +85,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.ToTable("ClassSession");
       entity.HasKey(e => e.SessionID);
       entity.Property(e => e.SessionID).ValueGeneratedOnAdd();
-      entity.Property(e => e.CourseNumber).HasMaxLength(10).IsRequired();
+      entity.Property(e => e.CourseID).IsRequired();
       entity.Property(e => e.SessionDateTime).IsRequired();
       entity.Property(e => e.Password).HasMaxLength(255).IsRequired();
       entity.Property(e => e.QuizStartTime).IsRequired();
@@ -92,8 +93,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.Property(e => e.QuestionBankID).IsRequired();
       entity.HasOne(e => e.Course)
                     .WithMany(c => c.ClassSessions)
-                    .HasForeignKey(e => e.CourseNumber)
+                    .HasForeignKey(e => e.CourseID)
                     .OnDelete(DeleteBehavior.Cascade);
+
+      // map QuizQuestionBank to ClassSession               
+      entity.HasOne(e => e.QuizQuestionBank)
+        .WithMany(qb => qb.ClassSessions)
+        .HasForeignKey(e => e.QuestionBankID)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      entity.HasOne(e => e.Course)
+            .WithMany(c => c.ClassSessions)
+            .HasForeignKey(e => e.CourseID)
+            .OnDelete(DeleteBehavior.Cascade);
        
     });
 
@@ -104,10 +116,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.HasKey(e => e.QuestionBankID);
       entity.Property(e => e.QuestionBankID).ValueGeneratedOnAdd();
       entity.Property(e => e.BankName).HasMaxLength(255).IsRequired();
-      entity.Property(e => e.CourseNumber).HasMaxLength(10).IsRequired();
+      entity.Property(e => e.CourseID).IsRequired();
       entity.HasOne(e => e.Course)
                     .WithMany(c => c.QuizQuestionBanks)
-                    .HasForeignKey(e => e.CourseNumber)
+                    .HasForeignKey(e => e.CourseID)
                     .OnDelete(DeleteBehavior.Cascade);
     });
 
@@ -147,5 +159,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .OnDelete(DeleteBehavior.Cascade);
     });
 
-  }
+    // Configure CourseEnrollment entity
+    modelBuilder.Entity<CourseEnrollment>(entity =>
+    {
+      entity.ToTable("CourseEnrollment");
+      entity.HasKey(e => e.EnrollmentID);
+      entity.Property(e => e.CourseID).IsRequired();
+      entity.Property(e => e.UTDID).HasMaxLength(10).IsRequired();
+      entity.HasOne(e => e.Course)
+            .WithMany(c => c.CourseEnrollments)
+            .HasForeignKey(e => e.CourseID)
+            .OnDelete(DeleteBehavior.Cascade);
+      entity.HasOne(e => e.Student)
+            .WithMany(s => s.CourseEnrollments)
+            .HasForeignKey(e => e.UTDID)
+            .OnDelete(DeleteBehavior.Cascade);
+    });
+
+    }
 }

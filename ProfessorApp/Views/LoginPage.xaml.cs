@@ -1,3 +1,4 @@
+using ProfessorApp.Pages;
 using ProfessorApp.Services;
 
 namespace ProfessorApp.Views
@@ -29,7 +30,7 @@ namespace ProfessorApp.Views
                 {
                     statusLabel.TextColor = Colors.Green;
                     statusLabel.Text = "Login successful!";
-                    // Navigate to main page or dashboard
+                    await Navigation.PushAsync(new HomePage(_clientService));
                 }
                 else
                 {

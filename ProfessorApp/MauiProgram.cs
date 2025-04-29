@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using ProfessorApp.Pages;
 using ProfessorApp.Services;
 using ProfessorApp.Views;
 
@@ -25,6 +26,13 @@ public static class MauiProgram
 
         // Register pages for dependency injection
         builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<RegisterPage>();
+        builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<CoursePage>();
+        builder.Services.AddTransient<StudentManagement>();
+        builder.Services.AddTransient<AttendancePage>();
+        builder.Services.AddTransient<QuizPage>();
+
         builder.Services.AddSingleton<App>();
 
 #if DEBUG
@@ -33,4 +41,5 @@ public static class MauiProgram
 
         return builder.Build();
     }
+
 }

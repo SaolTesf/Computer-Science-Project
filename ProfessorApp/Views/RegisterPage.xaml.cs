@@ -76,8 +76,6 @@ namespace ProfessorApp.Views
             { 
                 var response = await _clientService.RegisterAsync(id, firstName, lastName, username, email, password);
 
-                Debug.WriteLine("here");
-                Debug.WriteLine("response: " + response);
                 if (response == null)
                 {
                     statusLabel.TextColor = Colors.Red;

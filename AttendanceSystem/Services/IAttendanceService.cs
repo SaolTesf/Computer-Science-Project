@@ -15,6 +15,10 @@ namespace AttendanceSystem.Services
 
         Task<bool> RecordExistsAsync(string ipAddress, DateTime date);
 
+        Task<bool> DateExistsAsync(DateTime date);
+
+        Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId);
+
 
     }
 }

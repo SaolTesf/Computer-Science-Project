@@ -14,4 +14,9 @@ public interface IAttendanceRepository
     Task DeleteAttendanceAsync(Attendance attendance);
 
     Task<bool> ExistsAsync(string ipAddress, DateTime date);
+    Task<bool> DateExistsAsync(DateTime date);
+
+    Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId);
+
+
 }

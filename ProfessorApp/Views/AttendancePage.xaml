@@ -17,13 +17,6 @@
             TextColor="White"
             VerticalOptions="Start" />
 
-        <!--  Entry to input UTDID for deletion  -->
-        <Entry
-            x:Name="AttendanceUTDIDEntry"
-            Keyboard="Numeric"
-            Placeholder="Enter Student UTDID" />
-
-        <!--  Delete Student Button  -->
         <Button
             BackgroundColor="Orange"
             Clicked="OngetAttendanceClicked"

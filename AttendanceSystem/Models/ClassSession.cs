@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AttendanceSystem.Models
 {
@@ -10,8 +11,7 @@ namespace AttendanceSystem.Models
         public int SessionID { get; set; }
 
         [Required]
-        [StringLength(10)]
-        public string CourseNumber { get; set; } = string.Empty; // Foreign key to Course
+        public int? CourseID { get; set; } // foreign key to course ID
 
         [Required]
         public DateTime SessionDateTime { get; set; }
@@ -28,14 +28,14 @@ namespace AttendanceSystem.Models
 
         [Required]
         public int QuestionBankID { get; set; } // Foreign key to QuizQuestionBank
-
-      
-
+        
+        [JsonIgnore]
+        public QuizQuestionBank? QuizQuestionBank { get; set; } = null!;
 
         // Navigation property to the associated Course
-        public Course Course { get; set; } = null!;
+        [JsonIgnore]
+        public Course? Course { get; set; } = null!;
 
         public ICollection<Attendance> Attendance { get; set; } = new List<Attendance>();
-
     }
 }
