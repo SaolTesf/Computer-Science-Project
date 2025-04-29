@@ -8,37 +8,139 @@ using System.Linq;
 
 namespace ProfessorApp.Pages
 {
+    public class QuestionWithSelection
+    {
+        public string QuestionText { get; set; } = string.Empty;
+        public bool IsChecked { get; set; }
+    }
     public partial class QuizPage : ContentPage
     {
         private readonly ClientService _clientService;
-        //Helper lists to save the names that show up on the picker
         public List<string> BankList { get; set; } = new List<string>();
         public string? SelectedBank { get; set; }
-        // list and string for the question picker func
-        public List<string> QuestionTextList { get; set; } = new List<string>();
-        public string? SelectedQuestion { get; set; }
-        public QuizPage(ClientService clientService)
+        public List<QuestionWithSelection> QuestionTextList { get; set; } = new List<QuestionWithSelection>();
+        private StackLayout QuestionsCheckBoxLayout;
+        private int? _courseID;
+
+        public QuizPage(ClientService clientService, int? courseID)
         {
             InitializeComponent();
             _clientService = clientService;
+            _courseID = courseID; //Store the course ID
             BindingContext = this;
+            QuestionsCheckBoxLayout = new StackLayout();
             LoadBankNamesAsync();
         }
-        //Method to load the Bank Names on the drop down menu
+
         private async void LoadBankNamesAsync()
         {
-            var bankNames = await _clientService.GetAllQuizBankNamesAsync();
+            if (_courseID == null)
+            {
+                await DisplayAlert("Error", "Course ID is not provided.", "OK");
+                return;
+            }
 
-            BankList = bankNames ?? new List<string>();
+            // Fetch banks associated with the specific course
+            var bankNames = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
+
+            BankList = bankNames?.Select(b => b.BankName).ToList() ?? new List<string>();
 
             if (BankList.Count > 0)
             {
                 SelectedBank = BankList[0]; 
             }
+
             OnPropertyChanged(nameof(BankList));
             OnPropertyChanged(nameof(SelectedBank));
         }
 
+        //Event handler for adding bank question through form (Add Question button)
+        private void OnAddBankClicked(object sender, EventArgs e)
+        {
+            //Toggle the Add Question form visibility
+            AddBankPopup.IsVisible = !AddBankPopup.IsVisible;
+
+            if (AddQuestionPopup.IsVisible)
+            {
+                BankNameEntry.Text = string.Empty;
+            }
+        }
+
+        //Submit question data to database based on manual
+        private async void OnSubmitQuizBankClicked(object sender, EventArgs e)
+        {
+            var bankName = BankNameEntry.Text?.Trim();
+
+            // Validate the input
+            if (string.IsNullOrEmpty(bankName))
+            {
+                await DisplayAlert("Input Error", "Please fill in the quiz bank name.", "OK");
+                return;
+            }
+
+            //Check if the CourseID is null
+            if (_courseID == null)
+            {
+                await DisplayAlert("Error", "Course ID is not provided.", "OK");
+                return;
+            }
+
+            //Create the new QuizQuestionBankDTO object with the current CourseID
+            var newBank = new QuizQuestionBankDTO
+            {
+                BankName = bankName,
+                CourseID = (int)_courseID
+            };
+
+            try
+            {
+                //Make an API call to add the new quiz bank
+                bool response = await _clientService.CreateQuizQuestionBankAsync(newBank);
+
+                if (response)
+                {
+                    await DisplayAlert("Success", "Quiz Bank added successfully.", "OK");
+
+                    //Close the form and refresh the list of banks
+                    AddBankPopup.IsVisible = false;
+                    LoadBankNamesAsync(); 
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Failed to add quiz bank. Please try again.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+            }
+        }
+
+        private void OnCancelQuizBankClicked(object sender, EventArgs e)
+        {
+            //Clear all fields
+            BankNameEntry.Text = string.Empty;
+            //Hide the form
+            AddBankPopup.IsVisible = false;
+        }
+        //Method to delete a student by UTDID
+        private void OnDeleteBankClicked(object sender, EventArgs e)
+        {
+            //Toggle the Delete Student form visibility
+            DeleteBankPopup.IsVisible = !DeleteBankPopup.IsVisible;
+        }
+
+        //Method to Delete Bank and All the questions within it
+        private void OnSubmitDeleteBankClicked(object sender, EventArgs e)
+        {
+            DeleteBankPopup.IsVisible = false;
+        }
+        //Cancel Deleting Question Bank
+        private void OnCancelDeleteBankClicked(object sender, EventArgs e)
+        {
+            //Hide delete student form
+            DeleteBankPopup.IsVisible = false;
+        }
         //Event handler for adding quiz question through form (Add Question button)
         private void OnAddQuestionClicked(object sender, EventArgs e)
         {
@@ -52,6 +154,7 @@ namespace ProfessorApp.Pages
                 Option2Entry.Text = string.Empty;
                 Option3Entry.Text = string.Empty;
                 Option4Entry.Text = string.Empty;
+                SelectedBank = null;
             }
         }
         //Submit question data to database based on manual
@@ -71,7 +174,7 @@ namespace ProfessorApp.Pages
             }
 
             //Getting BankID by using the Bank Name chosen from the picker
-            int? questionBankID = int.TryParse((await _clientService.GetQuestionBankIdByNameAsync(SelectedBank))?.FirstOrDefault(), out var parsedId) ? parsedId: (int?)null;
+            int? questionBankID = SelectedBank != null? await _clientService.GetQuestionBankIdByNameAsync(SelectedBank) : (int?)null;
 
             if (questionBankID == null)
             {
@@ -102,6 +205,7 @@ namespace ProfessorApp.Pages
                     Option2Entry.Text = string.Empty;
                     Option3Entry.Text = string.Empty;
                     Option4Entry.Text = string.Empty;
+                    SelectedBank = null;
                     AddQuestionPopup.IsVisible = false;
                 }
                 else
@@ -123,56 +227,54 @@ namespace ProfessorApp.Pages
             Option2Entry.Text = string.Empty;
             Option3Entry.Text = string.Empty;
             Option4Entry.Text = string.Empty;
+            SelectedBank = null;
             //Hide the form
             AddQuestionPopup.IsVisible = false;
         }
-        // Method to load questions for the selected bank
-        private async void LoadQuestionsForSelectedBankAsync()
+
+        private void OnBankPickerSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(SelectedBank))
+            OnSelectedBankChanged();
+        }
+
+        private async void OnSelectedBankChanged()
+        {
+            if (SelectedBank != null)
             {
-                await DisplayAlert("Error", "Please select a quiz bank first.", "OK");
+                var bankId = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
+
+                if (bankId != null)
+                {
+                    //Fetch questions based on the bank ID
+                    var questions = await _clientService.GetQuestionsByBankIdAsync(bankId);
+
+                    //Map the questions to a list of QuestionWithSelection 
+                    QuestionTextList = questions?.Select(q => new QuestionWithSelection
+                    {
+                        QuestionText = q.QuestionText,
+                        //Initially, all checkboxes are unchecked
+                        IsChecked = false  
+                    }).ToList() ?? new List<QuestionWithSelection>();
+
+                    OnPropertyChanged(nameof(QuestionTextList));
+                }
+            }
+        }
+        //Method to save the selected questions to a list
+        private void OnSubmitSelectedQuestionsClicked(object sender, EventArgs e)
+        {
+            var selectedQuestions = QuestionTextList.Where(q => q.IsChecked).ToList();
+
+            if (selectedQuestions.Count == 0)
+            {
+                DisplayAlert("No Selection", "Please select at least one question.", "OK");
                 return;
             }
 
-            // Get the bank ID from the selected bank name
-            var questionBankIDs = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
-            if (questionBankIDs == null || !questionBankIDs.Any())
-            {
-                await DisplayAlert("Error", $"Could not find ID for bank '{SelectedBank}'.", "OK");
-                return;
-            }
+            string selectedQuestionTexts = string.Join("\n", selectedQuestions.Select(q => q.QuestionText));
+            DisplayAlert("Selected Questions", selectedQuestionTexts, "OK");
 
-            // Convert the bank IDs to integers
-            var bankIDList = questionBankIDs
-                .Select(id => int.TryParse(id, out var parsedId) ? parsedId : (int?)null)
-                .Where(id => id.HasValue)
-                .Select(id => id.Value)
-                .ToList();
-
-            // Retrieve quiz questions for the selected bank IDs
-            var questions = await _clientService.GetAllQuizQuestionAsync();
-            var filteredQuestions = questions?.Where(q => bankIDList.Contains(q.QuestionBankID)).ToList();
-
-            QuestionTextList = filteredQuestions?.Select(q => q.QuestionText).ToList() ?? new List<string>();
-
-            if (QuestionTextList.Count > 0)
-            {
-                SelectedQuestion = QuestionTextList[0];
-            }
-
-            OnPropertyChanged(nameof(QuestionTextList));
-            OnPropertyChanged(nameof(SelectedQuestion));
         }
 
-        // Event handler for when the question picker is focused
-        private void OnQuestionPickerFocused(object sender, FocusEventArgs e)
-        {
-            LoadQuestionsForSelectedBankAsync();
-        }
-        private void OnBankPickerSelectionChanged(object sender, EventArgs e)
-        {
-            LoadQuestionsForSelectedBankAsync();
-        }
     }
 }

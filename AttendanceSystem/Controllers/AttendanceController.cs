@@ -102,5 +102,15 @@ namespace AttendanceSystem.Controllers
             return Ok(attendances);
         }
 
+        [HttpGet("GetByUtdId/{utdId}")]
+        public async Task<IActionResult> GetAttendanceByUtdId(string utdId)
+        {
+            var attendanceRecords = await _attendanceService.GetAttendanceByUtdIdAsync(utdId);
+            if (attendanceRecords == null || !attendanceRecords.Any())
+            {
+                return NotFound($"No attendance records found for UTD ID {utdId}.");
+            }
+            return Ok(attendanceRecords);
+        }
     }
 }

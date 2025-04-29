@@ -18,5 +18,9 @@ namespace AttendanceSystem.Services
         Task<bool> DateExistsAsync(DateTime date);
         /// Retrieve attendances for a specific course via its sessions
         Task<List<Attendance>> GetByCourseIDAsync(int courseID);
+
+        Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId);
+
+
     }
 }

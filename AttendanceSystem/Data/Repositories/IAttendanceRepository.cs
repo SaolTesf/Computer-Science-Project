@@ -18,4 +18,7 @@ public interface IAttendanceRepository
 
     // Retrieve attendances for a specific course via its sessions
     Task<IEnumerable<Attendance>> GetByCourseIDAsync(int courseID);
+    Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId);
+
+
 }

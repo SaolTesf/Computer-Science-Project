@@ -50,10 +50,14 @@ namespace AttendanceSystem.Services
             return await _bankRepository.GetAllBankNamesAsync();
         }
 
-        // QuizQuestionService.cs
         public async Task<int?> GetQuestionBankIdByNameAsync(string bankName)
         {
             return await _bankRepository.GetQuestionBankIdByNameAsync(bankName);
+        }
+
+        public async Task<List<QuizQuestionBank>> GetBanksByCourseIdAsync(int courseId)
+        {
+            return await _bankRepository.GetBanksByCourseIdAsync(courseId);
         }
     }
 }

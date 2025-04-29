@@ -76,5 +76,12 @@ public class AttendanceRepository : IAttendanceRepository
                         && _context.CourseEnrollments.Any(e => e.CourseID == courseID && e.UTDID == a.UTDID))
             .ToListAsync();
     }
+    
+    public async Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId)
+    {
+        return await _context.Attendances
+            .Where(a => a.UTDID == utdId)
+            .ToListAsync();
+    }
 
 }

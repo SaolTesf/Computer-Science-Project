@@ -14,5 +14,6 @@ namespace AttendanceSystem.Data.Repositories
         Task DeleteBankAsync(QuizQuestionBank bank); // Delete a quiz bank.
         Task<List<string>> GetAllBankNamesAsync();
         Task<int?> GetQuestionBankIdByNameAsync(string bankName);
+        Task<List<QuizQuestionBank>> GetBanksByCourseIdAsync(int courseId);
     }
 }

@@ -2,6 +2,9 @@
  Functions to Manage students, Add through file, Add manually, or Delete
 Delete also deletes any attendance statistics/facts that are associated with the student
  */
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
@@ -353,6 +356,41 @@ namespace ProfessorApp.Pages
 
             //Hide delete student form
             DeleteStudentPopup.IsVisible = false;
+        }
+
+        private async void OnGoToQuizPageClicked(object sender, EventArgs e)
+        {
+            var course = _courseId; 
+            if (course == null) return;
+
+            await Navigation.PushAsync(new QuizPage(_clientService, course));
+        }
+
+        // Open deletion confirmation popup
+        private void ConfirmDelete(object sender, EventArgs e)
+        {
+            ConfirmDeletePopUp.IsVisible = true;
+        }
+
+        // Cancel deletion
+        private void OnConfirmCancelClicked(object sender, EventArgs e)
+        {
+            ConfirmDeletePopUp.IsVisible = false;
+        }
+
+        // Delete course action
+        private async void OnDeleteCourseClicked(object sender, EventArgs e)
+        {
+            var message = await _clientService.DeleteCourseByIDAsync(_courseId);
+            if (message != null)
+            {
+                await DisplayAlert("Success", "Course deleted.", "OK");
+                await Navigation.PopAsync();
+            }
+            else
+            {
+                await DisplayAlert("Error", "Failed to delete course.", "OK");
+            }
         }
     }
 }

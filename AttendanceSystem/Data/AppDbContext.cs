@@ -19,7 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
   public DbSet<Student> Students { get; set; } = null!;
   public DbSet<CourseEnrollment> CourseEnrollments { get; set; } = null!;
 
-  protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
 
@@ -176,5 +176,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .OnDelete(DeleteBehavior.Cascade);
     });
 
-  }
+    }
 }

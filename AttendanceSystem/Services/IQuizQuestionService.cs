@@ -12,6 +12,8 @@ namespace AttendanceSystem.Services
         Task<QuizQuestion?> GetQuestionByIdAsync(int questionId);  // Get a question by ID
         Task CreateQuestionAsync(QuizQuestion question);           // Create a new quiz question
         Task UpdateQuestionAsync(QuizQuestion question);           // Update an existing quiz question
-        Task DeleteQuestionAsync(int questionId);                  // Delete a quiz question by ID
+        Task DeleteQuestionAsync(int questionId);   // Delete a quiz question by ID
+
+        Task<List<QuizQuestion>> GetQuestionsByBankIdAsync(int bankId);
     }
 }

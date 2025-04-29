@@ -42,5 +42,11 @@ namespace AttendanceSystem.Data.Repositories
             _context.QuizQuestions.Remove(question);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<QuizQuestion>> GetQuestionsByBankIdAsync(int bankId)
+        {
+            return await _context.QuizQuestions
+                .Where(q => q.QuestionBankID == bankId)
+                .ToListAsync();
+        }
     }
 }

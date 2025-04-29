@@ -124,11 +124,18 @@ namespace ProfessorApp.Services
             return response;
         }
 
-        public async Task<List<string>?> GetQuestionBankIdByNameAsync(string bankName)
+        public async Task<int> GetQuestionBankIdByNameAsync(string bankName)
         {
-            var response = await _httpClient.GetFromJsonAsync<List<string>>($"api/quizquestionbank/GetBankIdByName?bankName={Uri.EscapeDataString(bankName)}");
+            var response = await _httpClient.GetFromJsonAsync<int>($"api/quizquestionbank/GetBankIdByName?bankName={bankName}");
             return response;
         }
+        public async Task<List<QuizQuestionBankDTO>?> GetQuizBanksByCourseIdAsync(int courseId)
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionBankDTO>>($"api/quizquestionbank/course/{courseId}");
+            return response;
+        }
+
+
 
         // Quizquestion Methods
         public async Task<List<QuizQuestionDTO>?> GetAllQuizQuestionAsync()
@@ -160,7 +167,25 @@ namespace ProfessorApp.Services
             return response.IsSuccessStatusCode;
         }
 
-     
+        public async Task<List<QuizQuestionDTO>?> GetQuestionsByBankIdAsync(int bankId)
+        {
+            var httpResponse = await _httpClient.GetAsync($"api/quizquestion/GetByBankId/{bankId}");
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                //Only try to read JSON if status is success
+                var questions = await httpResponse.Content.ReadFromJsonAsync<List<QuizQuestionDTO>>();
+                return questions;
+            }
+            else if (httpResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception($"Unexpected error: {httpResponse.StatusCode}");
+            }
+        }
 
         // Courses
         public async Task<List<CourseDTO>?> GetAllCoursesAsync()
