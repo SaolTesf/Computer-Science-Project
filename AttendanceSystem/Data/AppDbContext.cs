@@ -132,8 +132,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.Property(e => e.QuestionText).IsRequired();
       entity.Property(e => e.Option1).IsRequired();
       entity.Property(e => e.Option2).IsRequired();
-      // Option3 and Option4 are optional
-      entity.HasOne(e => e.QuizQuestionBank)
+      entity.Property(e => e.Answer).IsRequired();
+        // Option3 and Option4 are optional
+        entity.HasOne(e => e.QuizQuestionBank)
                     .WithMany(qb => qb.QuizQuestions)
                     .HasForeignKey(e => e.QuestionBankID)
                     .OnDelete(DeleteBehavior.Cascade);
