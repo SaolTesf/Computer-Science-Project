@@ -1,4 +1,9 @@
-﻿using AttendanceShared.DTOs;
+﻿/*
+This file takes care of the attendance page logic in the Professor App.
+It handles loading attendance records, applying filters, and displaying the data in a CollectionView.
+*/
+
+using AttendanceShared.DTOs;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using ProfessorApp.Services;
@@ -41,6 +46,7 @@ namespace ProfessorApp.Pages
             await LoadAttendanceAsync();
         }
 
+        // This method loads attendance records and populates the UI elements
         private async Task LoadAttendanceAsync()
         {
             var all = await _clientService.GetAttendancesByCourseIDAsync(_courseId) ?? new List<AttendanceDTO>();
@@ -67,14 +73,18 @@ namespace ProfessorApp.Pages
                     LastName = student?.LastName ?? string.Empty,
                     UTDID = dto.UTDID,
                     SubmissionTime = dto.SubmissionTime.ToString("g"),
+                    SubmissionDate = dto.SubmissionTime.Date,
                     AttendanceType = dto.AttendanceType.ToString()
                 });
             }
             TypeFilterPicker.ItemsSource = new List<string> { "All", "Present", "Excused", "Unexcused" };
-            TypeFilterPicker.SelectedItem = "All";
+            TypeFilterPicker.SelectedIndex = 0;
+            FromDatePicker.Date = FromDatePicker.MinimumDate;
+            ToDatePicker.Date = ToDatePicker.MaximumDate;
             ApplyFilters();
         }
 
+        // This method applies the filters based on user input
         private void ApplyFilters()
         {
             var filtered = _allRecords.AsEnumerable();
@@ -94,17 +104,29 @@ namespace ProfessorApp.Pages
             var type = TypeFilterPicker.SelectedItem as string;
             if (!string.IsNullOrEmpty(type) && type != "All")
                 filtered = filtered.Where(r => r.AttendanceType == type);
+            var from = FromDatePicker.Date;
+            var to = ToDatePicker.Date;
+            if (from > FromDatePicker.MinimumDate || to < ToDatePicker.MaximumDate)
+                filtered = filtered.Where(r => r.SubmissionDate.Date >= from && r.SubmissionDate.Date <= to);
             AttendanceCollectionView.ItemsSource = filtered.ToList();
         }
 
+        // Event handlers for filter changes
         private void OnFilterTextChanged(object sender, TextChangedEventArgs e) => ApplyFilters();
         private void OnFilterChanged(object sender, EventArgs e) => ApplyFilters();
+        private void OnDateFilterChanged(object sender, DateChangedEventArgs e) => ApplyFilters();
+
+        // Event handler for clear filters button
+        // This resets all filters to their default values
         private void OnClearFiltersClicked(object sender, EventArgs e)
         {
             FirstNameFilterEntry.Text = string.Empty;
             LastNameFilterEntry.Text = string.Empty;
             UTDIDFilterEntry.Text = string.Empty;
             TypeFilterPicker.SelectedItem = "All";
+            SessionFilterPicker.SelectedIndex = 0;
+            FromDatePicker.Date = FromDatePicker.MinimumDate;
+            ToDatePicker.Date = ToDatePicker.MaximumDate;
             ApplyFilters();
         }
 
@@ -116,6 +138,7 @@ namespace ProfessorApp.Pages
             public string LastName { get; set; } = string.Empty;
             public string UTDID { get; set; } = string.Empty;
             public string SubmissionTime { get; set; } = string.Empty;
+            public DateTime SubmissionDate { get; set; }
             public string AttendanceType { get; set; } = string.Empty;
         }
     }

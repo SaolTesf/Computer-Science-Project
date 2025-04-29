@@ -2,7 +2,7 @@
 <ContentPage
     x:Class="ProfessorApp.Pages.AttendancePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     BackgroundColor="#222">
 
@@ -25,6 +25,14 @@
                 <Entry x:Name="LastNameFilterEntry" Placeholder="Last Name" TextColor="White" TextChanged="OnFilterTextChanged" />
                 <Entry x:Name="UTDIDFilterEntry" Placeholder="UTDID" TextColor="White" TextChanged="OnFilterTextChanged" />
                 <Picker x:Name="TypeFilterPicker" Title="Type" TextColor="White" SelectedIndexChanged="OnFilterChanged" />
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="From" TextColor="White" FontSize="12" />
+                    <DatePicker x:Name="FromDatePicker" TextColor="White" DateSelected="OnDateFilterChanged" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="To" TextColor="White" FontSize="12" />
+                    <DatePicker x:Name="ToDatePicker" TextColor="White" DateSelected="OnDateFilterChanged" />
+                </VerticalStackLayout>
                 <Button Text="Clear" BackgroundColor="Gray" TextColor="White" Clicked="OnClearFiltersClicked" />
             </HorizontalStackLayout>
 
