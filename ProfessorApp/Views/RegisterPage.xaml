@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ProfessorApp.Views.RegisterPage"
              Title="Attendance Manager"
-             BackgroundColor="{DynamicResource SecondaryColor}">
+             BackgroundColor="#222">
     <StackLayout Padding="30" VerticalOptions="Center" Spacing="20">
         
-        <Label Text="Register Account" FontSize="Large" TextColor="{DynamicResource PrimaryColor}" HorizontalOptions="Center" FontAttributes="Bold" Margin="0,0,0,30" />
+        <Label Text="Register Account" FontSize="Large" TextColor="White" HorizontalOptions="Center" FontAttributes="Bold" Margin="0,0,0,30" />
 
-        <Frame Padding="10" BorderColor="{DynamicResource PrimaryColor}" MaximumWidthRequest="600" CornerRadius="10" HasShadow="True">
+        <Frame Padding="10" BorderColor="DarkOrange" BackgroundColor="#333" MaximumWidthRequest="600" CornerRadius="10" HasShadow="True">
             <StackLayout Spacing="10">
                 <Entry x:Name="idEntry" MaxLength="10" Placeholder="ID" TextChanged="IDTextChanged" Keyboard="Numeric" />
                 <Entry x:Name="firstNameEntry" Placeholder="First Name" />
@@ -16,8 +16,8 @@
                 <Entry x:Name="usernameEntry" Placeholder="Username" />
                 <Entry x:Name="emailEntry" Placeholder="Email Address" />
                 <Entry x:Name="passwordEntry" Placeholder="Password" IsPassword="True" />
-                <Button Text="Register Account" Clicked="OnRegisterClicked" Margin="0,10,0,0" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" />
-                <Button Text="Go To Login" Clicked="GoToLogin" Margin="0,10,0,0" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="White" />
+                <Button Text="Register Account" BackgroundColor="Green" Clicked="OnRegisterClicked" Margin="0,10,0,0" TextColor="White" MaximumWidthRequest="400" />
+                <Button Text="Go To Login" BackgroundColor="Grey" Clicked="GoToLogin" Margin="0,10,0,0" TextColor="White" MaximumWidthRequest="400" />
                 <Label x:Name="statusLabel" TextColor="Red" HorizontalOptions="Center" />
             </StackLayout>
         </Frame>

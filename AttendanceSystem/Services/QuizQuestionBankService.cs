@@ -2,6 +2,7 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories; // Assumes IQuizQuestionBankRepository exists
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace AttendanceSystem.Services
 {
@@ -42,6 +43,21 @@ namespace AttendanceSystem.Services
             {
                 await _bankRepository.DeleteBankAsync(bank);
             }
+        }
+
+        public async Task<IEnumerable<string>> GetAllBankNamesAsync()
+        {
+            return await _bankRepository.GetAllBankNamesAsync();
+        }
+
+        public async Task<int?> GetQuestionBankIdByNameAsync(string bankName)
+        {
+            return await _bankRepository.GetQuestionBankIdByNameAsync(bankName);
+        }
+
+        public async Task<List<QuizQuestionBank>> GetBanksByCourseIdAsync(int courseId)
+        {
+            return await _bankRepository.GetBanksByCourseIdAsync(courseId);
         }
     }
 }

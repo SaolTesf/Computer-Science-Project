@@ -15,11 +15,11 @@ namespace AttendanceSystem.Controllers
     private readonly ICourseEnrollmentService _service;
     public CourseEnrollmentController(ICourseEnrollmentService service) => _service = service;
 
-    // GET: api/courseenrollment/course/{courseNumber}
-    [HttpGet("course/{courseNumber}")]
-    public async Task<ActionResult<List<CourseEnrollmentDetailDTO>>> GetEnrollmentsByCourse(string courseNumber)
+    // GET: api/courseenrollment/course/{courseID}
+    [HttpGet("course/{courseID}")]
+    public async Task<ActionResult<List<CourseEnrollmentDetailDTO>>> GetEnrollmentsByCourse(int courseID)
     {
-      var enrollments = await _service.GetEnrollmentsByCourseAsync(courseNumber);
+      var enrollments = await _service.GetEnrollmentsByCourseAsync(courseID);
       var dto = enrollments.Select(e => new CourseEnrollmentDetailDTO {
         EnrollmentID = e.EnrollmentID,
         Student = new StudentDTO {
@@ -37,11 +37,11 @@ namespace AttendanceSystem.Controllers
     public async Task<ActionResult> EnrollStudent([FromBody] CourseEnrollmentDTO enrollmentDto)
     {
       var enrollment = new CourseEnrollment {
-        CourseNumber = enrollmentDto.CourseNumber,
+        CourseID = enrollmentDto.CourseID,
         UTDID = enrollmentDto.UTDID
       };
       await _service.EnrollStudentAsync(enrollment);
-      return CreatedAtAction(nameof(GetEnrollmentsByCourse), new { courseNumber = enrollmentDto.CourseNumber }, null);
+      return CreatedAtAction(nameof(GetEnrollmentsByCourse), new { courseID = enrollmentDto.CourseID }, null);
     }
 
     // DELETE: api/courseenrollment/{enrollmentId}

@@ -16,4 +16,9 @@ public interface IAttendanceRepository
     Task<bool> ExistsAsync(string ipAddress, DateTime date);
     Task<bool> DateExistsAsync(DateTime date);
 
+    // Retrieve attendances for a specific course via its sessions
+    Task<IEnumerable<Attendance>> GetByCourseIDAsync(int courseID);
+    Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId);
+
+
 }

@@ -69,5 +69,15 @@ namespace AttendanceSystem.Services
             return await _attendanceRepository.DateExistsAsync(date);
         }
 
+        public async Task<List<Attendance>> GetByCourseIDAsync(int courseID)
+        {
+            var result = await _attendanceRepository.GetByCourseIDAsync(courseID);
+            return new List<Attendance>(result);
+        }
+        public async Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId)
+        {
+            return await _attendanceRepository.GetAttendanceByUtdIdAsync(utdId);
+        }
+
     }
 }

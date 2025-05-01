@@ -41,7 +41,16 @@ namespace AttendanceSystem.Services
             if (question != null)
             {
                 await _questionRepository.DeleteQuestionAsync(question);
+
+
             }
         }
+
+        public async Task<List<QuizQuestion>?> GetQuestionsByBankIdAsync(int bankId)
+        {
+            return await _questionRepository.GetQuestionsByBankIdAsync(bankId);
+        }
+
     }
+
 }

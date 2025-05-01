@@ -7,7 +7,7 @@ namespace AttendanceSystem.Services
   // Service for managing course enrollments
   public interface ICourseEnrollmentService
   {
-    Task<List<CourseEnrollment>> GetEnrollmentsByCourseAsync(string courseNumber);
+    Task<List<CourseEnrollment>> GetEnrollmentsByCourseAsync(int courseID);
     Task EnrollStudentAsync(CourseEnrollment enrollment);
     Task UnenrollStudentAsync(int enrollmentId);
   }

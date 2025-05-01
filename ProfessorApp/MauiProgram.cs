@@ -2,6 +2,7 @@
 using ProfessorApp.Pages;
 using ProfessorApp.Services;
 using ProfessorApp.Views;
+using CommunityToolkit.Maui;
 
 namespace ProfessorApp;
 
@@ -12,6 +13,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -41,4 +43,5 @@ public static class MauiProgram
 
         return builder.Build();
     }
+
 }

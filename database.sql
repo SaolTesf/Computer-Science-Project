@@ -3,7 +3,8 @@ USE AttendanceSystem;
 
 -- Users with login credentials
 CREATE TABLE Professor (
-    ID VARCHAR(10) PRIMARY KEY,
+    ProfessorID INT AUTO_INCREMENT PRIMARY KEY,
+    ID VARCHAR(10) NOT NULL UNIQUE,
     FirstName VARCHAR(255) NOT NULL,
     LastName VARCHAR(255) NOT NULL,
     Username VARCHAR(25) UNIQUE NOT NULL,
@@ -13,7 +14,8 @@ CREATE TABLE Professor (
 
 -- Imported from CSV, no login credentials
 CREATE TABLE Student (
-    UTDID VARCHAR(10) PRIMARY KEY,
+    StudentID INT AUTO_INCREMENT PRIMARY KEY,
+    UTDID VARCHAR(10) NOT NULL UNIQUE,
     FirstName VARCHAR(255) NOT NULL,
     LastName VARCHAR(255) NOT NULL,
     Username VARCHAR(10) UNIQUE NOT NULL
@@ -21,7 +23,8 @@ CREATE TABLE Student (
 
 -- Courses Table
 CREATE TABLE Course (
-    CourseNumber VARCHAR(10) PRIMARY KEY,
+    CourseID INT AUTO_INCREMENT PRIMARY KEY,
+    CourseNumber VARCHAR(10) NOT NULL,
     CourseName VARCHAR(255) NOT NULL,
     Section VARCHAR(10) NOT NULL,
     ProfessorID VARCHAR(10) NOT NULL,
@@ -30,32 +33,43 @@ CREATE TABLE Course (
 
 CREATE TABLE CourseEnrollment (
     EnrollmentID INT AUTO_INCREMENT PRIMARY KEY,
-    CourseNumber VARCHAR(10) NOT NULL,
-    UTDID VARCHAR(10) NOT NULL,
     EnrollmentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CourseNumber) REFERENCES Course(CourseNumber) ON DELETE CASCADE,
+    CourseID INT NOT NULL,
+    UTDID VARCHAR(10) NOT NULL,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE,
     FOREIGN KEY (UTDID) REFERENCES Student(UTDID) ON DELETE CASCADE,
-    UNIQUE KEY (CourseNumber, UTDID) -- Prevent duplicate enrollments
+    UNIQUE KEY (CourseID, UTDID) -- Prevent duplicate enrollments
 );
 
 -- Each class meeting with password/quiz config
 CREATE TABLE ClassSession (
     SessionID INT AUTO_INCREMENT PRIMARY KEY,
-    CourseNumber VARCHAR(10) NOT NULL,
     SessionDateTime DATETIME NOT NULL,
     Password VARCHAR(255) NOT NULL,
     QuizStartTime DATETIME NOT NULL,
     QuizEndTime DATETIME NOT NULL,
     QuestionBankID INT NOT NULL,
-    FOREIGN KEY (CourseNumber) REFERENCES Course(CourseNumber) ON DELETE CASCADE
+    CourseID INT NOT NULL,
+    AccessCode VARCHAR(36) NOT NULL UNIQUE,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
+);
+
+-- Map questions to sessions (which questions used in each session)
+CREATE TABLE SessionQuestion (
+    SessionQuestionID INT AUTO_INCREMENT PRIMARY KEY,
+    SessionID INT NOT NULL,
+    QuestionID INT NOT NULL,
+    FOREIGN KEY (SessionID) REFERENCES ClassSession(SessionID) ON DELETE CASCADE,
+    FOREIGN KEY (QuestionID) REFERENCES QuizQuestion(QuestionID) ON DELETE CASCADE,
+    UNIQUE KEY (SessionID, QuestionID)
 );
 
 -- Group of questions for a session
 CREATE TABLE QuizQuestionBank (
     QuestionBankID INT AUTO_INCREMENT PRIMARY KEY,
     BankName VARCHAR(255) NOT NULL,
-    CourseNumber VARCHAR(10) NOT NULL,
-    FOREIGN KEY (CourseNumber) REFERENCES Course(CourseNumber) ON DELETE CASCADE
+    CourseID INT NOT NULL,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
 );
 
 -- Quiz Questions - Multiple-choice
@@ -95,36 +109,36 @@ CREATE TABLE QuizResponse (
 -- Sample Data Insertion
 
 -- Insert Professors (no dependencies)
-INSERT INTO Professor (ID, FirstName, LastName, Username, Email, PasswordHash)
+INSERT INTO Professor (ProfessorID, ID, FirstName, LastName, Username, Email, PasswordHash)
 VALUES
-   ('5400000001', 'John', 'Smith', 'jsmith', 'john.smith@example.com', 'hashedpassword1'),
-   ('5400000002', 'Jane', 'Doe', 'jdoe', 'jane.doe@example.com', 'hashedpassword2'),
-   ('5400000003', 'Robert', 'Johnson', 'rjohnson', 'robert.johnson@example.com', 'hashedpassword3');
+   (1, '5400000001', 'John', 'Smith', 'jsmith', 'john.smith@example.com', 'hashedpassword1'),
+   (2, '5400000002', 'Jane', 'Doe', 'jdoe', 'jane.doe@example.com', 'hashedpassword2'),
+   (3, '5400000003', 'Robert', 'Johnson', 'rjohnson', 'robert.johnson@example.com', 'hashedpassword3');
 
 -- Insert Students (no dependencies)
-INSERT INTO Student (UTDID, FirstName, LastName, Username)
+INSERT INTO Student (StudentID, UTDID, FirstName, LastName, Username)
 VALUES
-     ('2100000001', 'Alice', 'Williams', 'axw3456432'),
-     ('2100000002', 'Bob', 'Brown', 'bxb3456432'),
-     ('2100000003', 'Charlie', 'Davis', 'cxd3456432'),
-     ('2100000004', 'Diana', 'Evans', 'dxe3456432'),
-     ('2100000005', 'Ethan', 'Fisher', 'exf3456432');
+     (1, '2100000001', 'Alice', 'Williams', 'axw3456432'),
+     (2, '2100000002', 'Bob', 'Brown', 'bxb3456432'),
+     (3, '2100000003', 'Charlie', 'Davis', 'cxd3456432'),
+     (4, '2100000004', 'Diana', 'Evans', 'dxe3456432'),
+     (5, '2100000005', 'Ethan', 'Fisher', 'exf3456432');
 
 -- Insert Courses (depends on Professor)
-INSERT INTO Course (CourseNumber, CourseName, Section, ProfessorID)
+INSERT INTO Course (CourseID, CourseNumber, CourseName, Section, ProfessorID)
 VALUES
-    ('CS4485', 'Computer Science Project', '001', '5400000001'),
-    ('CS4361', 'Computer Graphics', '002', '5400000002'),
-    ('CS4390', 'Computer Networks', '001', '5400000003'),
-    ('CS4348', 'Operating Systems', '003', '5400000001');
+    (1, 'CS4485', 'Computer Science Project', '001', '5400000001'),
+    (2, 'CS4361', 'Computer Graphics', '002', '5400000002'),
+    (3, 'CS4390', 'Computer Networks', '001', '5400000003'),
+    (4, 'CS4348', 'Operating Systems', '003', '5400000001');
 
 -- Insert QuizQuestionBanks (depends on Course)
-INSERT INTO QuizQuestionBank (QuestionBankID, BankName, CourseNumber)
+INSERT INTO QuizQuestionBank (QuestionBankID, BankName, CourseID)
 VALUES
-    (1, 'Week 1 Quiz', 'CS4485'),
-    (2, 'Week 2 Quiz', 'CS4485'),
-    (3, 'Midterm Review', 'CS4361'),
-    (4, 'Final Review', 'CS4390');
+    (1, 'Week 1 Quiz', 1),
+    (2, 'Week 2 Quiz', 1),
+    (3, 'Midterm Review', 2),
+    (4, 'Final Review', 3);
 
 -- Insert QuizQuestions (depends on QuizQuestionBank)
 INSERT INTO QuizQuestion (QuestionID, QuestionBankID, QuestionText, Option1, Option2, Option3, Option4)
@@ -136,12 +150,12 @@ VALUES
     (5, 4, 'Sample question 1 for Final Review?', 'Option A', 'Option B', 'Option C', 'Option D');
 
 -- Insert ClassSessions (depends on Course and QuizQuestionBank)
-INSERT INTO ClassSession (SessionID, CourseNumber, SessionDateTime, Password, QuizStartTime, QuizEndTime, QuestionBankID)
+INSERT INTO ClassSession (SessionID, SessionDateTime, Password, QuizStartTime, QuizEndTime, QuestionBankID, CourseID)
 VALUES
-    (1, 'CS4485', '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-03-24 10:45:00', 1),
-    (2, 'CS4485', '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-03-31 10:45:00', 2),
-    (3, 'CS4361', '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-04-02 14:45:00', 3),
-    (4, 'CS4390', '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-04-04 15:45:00', 4);
+    (1, '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-03-24 10:45:00', 1, 1),
+    (2, '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-03-31 10:45:00', 2, 1),
+    (3, '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-04-02 14:45:00', 3, 2),
+    (4, '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-04-04 15:45:00', 4, 3);
 
 -- Insert Attendance (depends on ClassSession and Student)
 INSERT INTO Attendance (AttendanceID, SessionID, UTDID, SubmissionTime, IPAddress, AttendanceType)
@@ -156,6 +170,15 @@ VALUES
     (8, 4, '2100000003', '2025-04-04 15:10:00', '192.168.1.103', 'Present'),
     (9, 1, '2100000004', '2025-03-24 10:00:00', '192.168.1.104', 'Unexcused'),
     (10, 2, '2100000003', '2025-03-31 10:30:00', '192.168.1.103', 'Excused');
+
+-- Sample mapping of questions to sessions
+INSERT INTO SessionQuestion (SessionID, QuestionID)
+VALUES
+    (1, 1), -- session 1 uses question 1
+    (1, 2), -- session 1 uses question 2
+    (2, 3), -- session 2 uses question 3
+    (3, 4), -- session 3 uses question 4
+    (4, 5); -- session 4 uses question 5
 
 -- Insert QuizResponses (depends on Attendance and QuizQuestion)
 INSERT INTO QuizResponse (ResponseID, AttendanceID, QuestionID, SelectedOption)

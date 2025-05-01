@@ -1,6 +1,10 @@
 ﻿/*Diego Cabanas
  Functions to Manage students, Add through file, Add manually, or Delete
-Delete also deletes any attendance statistics/facts that are associated with the student*/
+Delete also deletes any attendance statistics/facts that are associated with the student
+ */
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
@@ -14,26 +18,29 @@ namespace ProfessorApp.Pages
     public partial class StudentManagement : ContentPage
     {
         private readonly ClientService _clientService;
-        private readonly string _courseNumber;
+        private readonly int? _courseId;
         private List<FileResult> _selectedFiles;
 
-        public StudentManagement(ClientService clientService, string courseNumber)
+        public StudentManagement(ClientService clientService, int? courseId)
         {
             InitializeComponent();
             _clientService = clientService;
-            _courseNumber = courseNumber;
+            _courseId = courseId;
             _selectedFiles = new List<FileResult>();
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            CourseDTO? course = await _clientService.GetCourseByIdAsync(_courseId);
+            if (course != null)
+                CourseLabel.Text = $"{course.CourseNumber}.{course.Section} - {course.CourseName}";
             await LoadEnrollmentsAsync();
         }
-
+        
         private async Task LoadEnrollmentsAsync()
         {
-            var enrollments = await _clientService.GetEnrollmentsAsync(_courseNumber);
+            var enrollments = await _clientService.GetEnrollmentsAsync(_courseId);
             EnrollmentCollectionView.ItemsSource = enrollments;
         }
 
@@ -53,7 +60,11 @@ namespace ProfessorApp.Pages
         private async void OnSelectFileClicked(object sender, EventArgs e)
         {
             //Open file picker to select file
-            var file = await FilePicker.PickAsync();
+            var pickOptions = new PickOptions
+            {
+                PickerTitle = "Select Student File"
+            };
+            var file = await FilePicker.PickAsync(pickOptions);
             if (file != null)
             {
                 try
@@ -169,7 +180,7 @@ namespace ProfessorApp.Pages
             {
                 if (await _clientService.AddStudentAsync(student))
                 {
-                    var dto = new CourseEnrollmentDTO { CourseNumber = _courseNumber, UTDID = student.UTDID };
+                    var dto = new CourseEnrollmentDTO { CourseID = _courseId, UTDID = student.UTDID };
                     await _clientService.EnrollStudentToCourseAsync(dto);
                 }
             }
@@ -209,7 +220,7 @@ namespace ProfessorApp.Pages
         //Event handler for adding student through form (Add Student button)
         private void OnAddStudentClicked(object sender, EventArgs e)
         {
-            // Toggle the Add Student form visibility
+            //Toggle the Add Student form visibility
             AddStudentPopup.IsVisible = !AddStudentPopup.IsVisible;
 
             if (AddStudentPopup.IsVisible)
@@ -257,7 +268,7 @@ namespace ProfessorApp.Pages
 
             if (await _clientService.AddStudentAsync(student))
             {
-                var dto = new CourseEnrollmentDTO { CourseNumber = _courseNumber, UTDID = student.UTDID };
+                var dto = new CourseEnrollmentDTO { CourseID = _courseId, UTDID = student.UTDID };
                 await _clientService.EnrollStudentToCourseAsync(dto);
                 await DisplayAlert("Success", "Student added and enrolled.", "OK");
                 AddStudentPopup.IsVisible = false;
@@ -281,10 +292,12 @@ namespace ProfessorApp.Pages
         }
 
         //Method to delete a student by UTDID
-        private void OnDeleteStudentClicked(object sender, EventArgs e)
+        private async void OnDeleteStudentClicked(object sender, EventArgs e)
         {
             //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;
+
+            await DisplayAlert("Error", "Deletion unsuccessful", "OK");
 
             if (DeleteStudentPopup.IsVisible)
             {
@@ -343,6 +356,41 @@ namespace ProfessorApp.Pages
 
             //Hide delete student form
             DeleteStudentPopup.IsVisible = false;
+        }
+
+        private async void OnGoToQuizPageClicked(object sender, EventArgs e)
+        {
+            var course = _courseId; 
+            if (course == null) return;
+
+            await Navigation.PushAsync(new QuizPage(_clientService, course));
+        }
+
+        // Open deletion confirmation popup
+        private void ConfirmDelete(object sender, EventArgs e)
+        {
+            ConfirmDeletePopUp.IsVisible = true;
+        }
+
+        // Cancel deletion
+        private void OnConfirmCancelClicked(object sender, EventArgs e)
+        {
+            ConfirmDeletePopUp.IsVisible = false;
+        }
+
+        // Delete course action
+        private async void OnDeleteCourseClicked(object sender, EventArgs e)
+        {
+            var message = await _clientService.DeleteCourseByIDAsync(_courseId);
+            if (message != null)
+            {
+                await DisplayAlert("Success", "Course deleted.", "OK");
+                await Navigation.PopAsync();
+            }
+            else
+            {
+                await DisplayAlert("Error", "Failed to delete course.", "OK");
+            }
         }
     }
 }

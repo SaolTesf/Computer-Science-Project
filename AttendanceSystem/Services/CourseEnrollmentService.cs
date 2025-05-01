@@ -14,16 +14,16 @@ namespace AttendanceSystem.Services
   // Implements ICourseEnrollmentService
   public class CourseEnrollmentService : ICourseEnrollmentService
   {
-    private readonly ICourseEnrollmentRepository _courceEnrollmentRepository;
-    public CourseEnrollmentService(ICourseEnrollmentRepository repo) => _courceEnrollmentRepository = repo;
+    private readonly ICourseEnrollmentRepository _courseEnrollmentRepository;
+    public CourseEnrollmentService(ICourseEnrollmentRepository repo) => _courseEnrollmentRepository = repo;
 
-    public async Task<List<CourseEnrollment>> GetEnrollmentsByCourseAsync(string courseNumber)
-      => new List<CourseEnrollment>(await _courceEnrollmentRepository.GetByCourseNumberAsync(courseNumber));
+    public async Task<List<CourseEnrollment>> GetEnrollmentsByCourseAsync(int courseID)
+      => new List<CourseEnrollment>(await _courseEnrollmentRepository.GetByCourseNumberAsync(courseID));
 
     public async Task EnrollStudentAsync(CourseEnrollment enrollment)
-      => await _courceEnrollmentRepository.AddAsync(enrollment);
+      => await _courseEnrollmentRepository.AddAsync(enrollment);
 
     public async Task UnenrollStudentAsync(int enrollmentId)
-      => await _courceEnrollmentRepository.DeleteAsync(enrollmentId);
+      => await _courseEnrollmentRepository.DeleteAsync(enrollmentId);
   }
 }

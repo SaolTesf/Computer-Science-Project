@@ -94,5 +94,23 @@ namespace AttendanceSystem.Controllers
             return Ok(exists);
         }
 
+        // GET: api/attendance/course/{courseID}
+        [HttpGet("course/{courseID}")]
+        public async Task<ActionResult<IEnumerable<Attendance>>> GetByCourseID(int courseID)
+        {
+            var attendances = await _attendanceService.GetByCourseIDAsync(courseID);
+            return Ok(attendances);
+        }
+
+        [HttpGet("GetByUtdId/{utdId}")]
+        public async Task<IActionResult> GetAttendanceByUtdId(string utdId)
+        {
+            var attendanceRecords = await _attendanceService.GetAttendanceByUtdIdAsync(utdId);
+            if (attendanceRecords == null || !attendanceRecords.Any())
+            {
+                return NotFound($"No attendance records found for UTD ID {utdId}.");
+            }
+            return Ok(attendanceRecords);
+        }
     }
 }

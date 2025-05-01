@@ -73,21 +73,34 @@
 	  <Compile Update="Views\CoursePage.xaml.cs">
 	    <DependentUpon>CoursePage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\SessionManagement.xaml.cs">
+	    <DependentUpon>SessionManagement.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\RegisterPage.xaml.cs">
 	    <DependentUpon>RegisterPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <MauiXaml Update="Views\CoursePage.xaml">
+	  <MauiXaml Update="Views\CourseNavigation.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\CoursePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SessionManagement.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\RegisterPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.0" />
+  </ItemGroup>
 
 </Project>

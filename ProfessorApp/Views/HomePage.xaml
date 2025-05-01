@@ -3,7 +3,7 @@
     x:Class="ProfessorApp.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    BackgroundColor="Black">
+    BackgroundColor="#222">
 
     <Grid>
 
@@ -29,20 +29,13 @@
                 TextColor="White"
                 VerticalOptions="Start" />
 
-            <!--  Button to Choose Files  -->
+            <!--  Navigation Buttons  -->
             <Button
-                BackgroundColor="Orange"
+                BackgroundColor="DarkOrange"
                 Clicked="GoToCoursePage"
                 Text="Courses"
-                TextColor="White" />
-
-            <Button
-                BackgroundColor="Orange"
-                Clicked="GoToAttPage"
-                Text="Attendance"
-                TextColor="White" />
-
-
+                TextColor="White"
+                MaximumWidthRequest="600" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

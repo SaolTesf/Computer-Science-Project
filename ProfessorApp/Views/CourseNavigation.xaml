@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProfessorApp.Pages.CourseNavigation"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#222">
+
+    <Grid>
+        <!--  Main Content  -->
+        <VerticalStackLayout Padding="20" Spacing="10">
+
+            <Label
+                x:Name="CourseLabel"
+                Margin="0,20,0,10"
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="CourseName"
+                TextColor="White"
+                VerticalOptions="Start" />
+
+            <!--  Navigation Buttons  -->
+            <Button
+              BackgroundColor="DarkOrange"
+              Clicked="GoToSessionPage"
+              Text="Sessions"
+              TextColor="White"
+              MaximumWidthRequest="600" />
+
+            <Button
+              BackgroundColor="DarkOrange"
+              Clicked="GoToAttPage"
+              Text="Attendance"
+              TextColor="White"
+              MaximumWidthRequest="600" />
+            
+            <Button
+                BackgroundColor="DarkOrange"
+                Clicked="GoToStudentManagmentPage"
+                Text="Student Managment"
+                TextColor="White"
+                MaximumWidthRequest="600" />
+
+            <!--  Delete Course Button  -->
+            <Button
+                WidthRequest="400"
+                Margin="0,15,0,35"
+                BackgroundColor="Red"
+                Clicked="ConfirmDelete"
+                Text="Delete Course"
+                TextColor="White" />
+
+        </VerticalStackLayout>
+    
+        <!--  Modal-style Delete Course Popup  -->
+        <Frame
+        x:Name="ConfirmDeletePopUp"
+        Padding="15"
+        BackgroundColor="#333"
+        BorderColor="Red"
+        CornerRadius="12"
+        IsVisible="False"
+        HeightRequest="150"
+        WidthRequest="400">
+
+            <StackLayout Spacing="10">
+                <Label
+                FontSize="20"
+                HorizontalOptions="Center"
+                TextColor="White"
+                Text="Are you sure you want to delete this course? This cannot be undone." />
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button
+                    BackgroundColor="Red"
+                    Clicked="OnDeleteCourseClicked"
+                    Text="Confirm"
+                    TextColor="White" />
+                    <Button
+                    BackgroundColor="Gray"
+                    Clicked="OnConfirmCancelClicked"
+                    Text="Cancel"
+                    TextColor="White" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

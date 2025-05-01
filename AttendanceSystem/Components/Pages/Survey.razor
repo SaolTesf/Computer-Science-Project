@@ -1,118 +1,152 @@
+<!-- yxl200067  -->
 @page "/survey"
+<!-- starting page  -->
 @page "/"
+<!-- sets render mode for interactions -->
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using System.ComponentModel.DataAnnotations;
 @inject IJSRuntime JSRuntime
+@inject IHttpContextAccessor httpContextAccessor
+<!-- to move to home page -->
 @inject NavigationManager NavigationManager
+<!--Injecting Services for API calls-->
+ @using AttendanceSystem.Models;
+ @using AttendanceSystem.Services
+ @inject IAttendanceService AttendanceService;
+ @inject IStudentService StudentService;
+ @inject GetIPService GetIPService;
 
+<!-- CSS  -->
 <style>
+    /* background */
     .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
     }
 
+    /* middle box */
     .form-box {
-        width: 90%;
-        max-width: 600px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
+    width: 90%;
+    max-width: 600px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
     }
 
+    /* title  */
     .title {
-        background-color: #ff9800;
-        color: white;
-        padding: 15px;
-        font-size: 20px;
-        font-weight: bold;
-        text-align: center;
+    background-color: #ff9800;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
     }
 
     .content {
-        padding: 20px;
+    padding: 20px;
     }
 
+    /* Student ID */
     .input-field {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
     }
 
+    /* format for red text */
     .error-message {
-        color: red;
-        font-size: 14px;
+    color: red;
+    font-size: 14px;
     }
 
+    /* format for each question prompt */
     .question {
-        margin-top: 15px;
-        font-weight: bold;
+    margin-top: 15px;
+    font-weight: bold;
     }
 
+    /* format for each answer choice */
     .options {
-        display: flex;
-        flex-direction: column;
-        margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
     }
 
+    /* submit button  */
     .submit-btn {
-        width: 100%;
-        background-color: #ff9800;
-        color: white;
-        border: none;
-        padding: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
+    width: 100%;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
     }
 
     .submit-btn:hover {
-        background-color: #e68900;
+    background-color: #e68900;
     }
 
+    /* debugging + spacing out radio buttons */
     input[type="radio"] {
-        appearance: auto;
-        margin-right: 8px;
+    appearance: auto;
+    margin-right: 8px;
     }
 </style>
+
 
 <div class="container">
     <div class="form-box">
         <div class="title">Student Attendance Survey</div>
         <div class="content">
+            <!-- allows data validation within [], allows making error messages -->
             <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
+                <!-- allows data validation within [], allows making error messages -->
                 <DataAnnotationsValidator />
+                <!-- allows displaying error messages -->
                 <ValidationSummary />
-                
+
                 <!-- student ID  -->
                 <div style="margin-top: 30px; margin-bottom: 40px;">
                     <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
+                    <!-- binding input text to StudentID variable, limiting input to 10 chars -->
                     <InputText id="studentIdInput"
-                        @bind-Value="formData.StudentID"
-                        class="input-field"
-                        maxlength="10"
-                        pattern="\d*"
-                        inputmode="numeric" />
+                    @bind-Value="formData.StudentID"
+                    class="input-field"
+                    maxlength="10"
+                    pattern="\d*"
+                    inputmode="numeric" />
+                    <!-- validation here, based on validation in formData class below -->
                     <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
                 </div>
-
+                <!-- MC choices part  -->
+                <!-- embedded C# if, showing error message at top if any question is empty at submission attempt -->
                 @if (showValidationError)
                 {
                     <div class="error-message" style="margin-bottom: 10px;">
                         Please answer all questions before submitting.
                     </div>
                 }
-
-                <!-- MC choices part  -->
+                <!-- Error message if student is not found -->
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="error-message" style="margin-top: 10px;">
+                        @errorMessage
+                    </div>
+                }
+                <!-- embedded C# for loop for Question list iteration-->
                 @for (int qIndex = 0; qIndex < questions.Count; qIndex++)
                 {
                     var q = questions[qIndex];
@@ -138,9 +172,9 @@
 </div>
 
 @code {
-
+    private string errorMessage = string.Empty;
     private EditForm? editForm;
-
+    private string clientIp = string.Empty;
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -159,9 +193,10 @@
 
     private bool showValidationError = false;
 
-   // parse question bank - split question bank into parts
+    // parse question bank - split question bank into parts
     protected override void OnInitialized()
     {
+        clientIp = GetIPService.GetClientIp();
         questions = rawQuestions.Select(q =>
         {
             var parts = q.Split('\t');
@@ -182,6 +217,7 @@
         public string? SelectedAnswer { get; set; }
     }
 
+    // fordata class + validation
     public class FormData
     {
         [Required(ErrorMessage = "Student ID is required.")]
@@ -189,6 +225,7 @@
         public string? StudentID { get; set; }
     }
 
+    // submission code + input validation
     private async Task HandleSubmit(EditContext context)
     {
         showValidationError = false;
@@ -197,15 +234,30 @@
         // validate StudentID and that all questions are answered
         if (context.Validate() && questions.All(q => !string.IsNullOrEmpty(q.SelectedAnswer)))
         {
-            bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
-            if (confirmed)
+            if (string.IsNullOrEmpty(formData.StudentID))
             {
-                Console.WriteLine($"Submitted: {formData.StudentID}");
-                foreach (var q in questions)
+                errorMessage = "Student ID is required.";
+                showValidationError = true;
+                return;
+            }
+            
+            var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
+            if (student != null)
+            {
+                bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
+                if (confirmed)
                 {
-                    Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
+                    Console.WriteLine($"Submitted: {formData.StudentID}");
+                    foreach (var q in questions)
+                    {
+                        Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
+                    }
+                    NavigationManager.NavigateTo("/home");
                 }
-                NavigationManager.NavigateTo("/home");
+            }
+            else
+            {
+                errorMessage = $"No student found with UTDID {formData.StudentID}.";
             }
         }
         else
@@ -213,5 +265,5 @@
             showValidationError = true;
             Console.WriteLine("Form validation failed");
         }
-    }
+}
 }

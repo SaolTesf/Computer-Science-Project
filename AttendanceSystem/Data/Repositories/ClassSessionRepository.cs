@@ -2,6 +2,7 @@ using AttendanceSystem.Data;
 using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace AttendanceSystem.Data.Repositories
@@ -24,6 +25,10 @@ namespace AttendanceSystem.Data.Repositories
         {
             return await _context.ClassSessions.FindAsync(sessionId);
         }
+        public async Task<IEnumerable<ClassSession>> GetByCourseIDAsync(int courseID)
+        => await _context.ClassSessions
+                    .Where(e => e.CourseID == courseID)
+                    .ToListAsync();
 
         public async Task AddSessionAsync(ClassSession session)
         {
