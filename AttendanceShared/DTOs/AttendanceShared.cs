@@ -1,5 +1,5 @@
 ﻿/*
-This file allows us to share DTOs between the Attendace API and professor App
+This file allows us to share DTOs between the Attendance API and professor App
 */
 
 namespace AttendanceShared.DTOs;
@@ -96,6 +96,14 @@ public class ClassSessionDTO{
     public DateTime QuizStartTime { get; set; }
     public DateTime QuizEndTime { get; set; }
     public int QuestionBankID { get; set; }
+    public string AccessCode { get; set; } = string.Empty;
+}
+
+// DTO returned when students join via AccessCode
+public class SessionInfoDTO {
+    public string AccessCode { get; set; } = string.Empty;
+    public string CourseTitle { get; set; } = string.Empty; // e.g. CS4485.001 – Computer Science Project
+    public string QuizBankName { get; set; } = string.Empty;
 }
 
 public class ClassSessionFormatDTO
@@ -106,6 +114,13 @@ public class ClassSessionFormatDTO
     public string Quiz { get; set; } = string.Empty;
     public int SessionID { get; set; }
     public string SessionNumber { get; set; } = string.Empty;
+}
+
+// DTO for session-question mapping
+public class SessionQuestionDTO {
+    public int SessionQuestionID { get; set; }
+    public int SessionID { get; set; }
+    public int QuestionID { get; set; }
 }
 
 public class QuizQuestionBankDTO{
