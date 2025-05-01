@@ -1,6 +1,9 @@
 CREATE DATABASE AttendanceSystem;
 USE AttendanceSystem;
 
+-- Disable FK checks to allow referencing before definition
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Users with login credentials
 CREATE TABLE Professor (
     ProfessorID INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +53,7 @@ CREATE TABLE ClassSession (
     QuizEndTime DATETIME NOT NULL,
     QuestionBankID INT NOT NULL,
     CourseID INT NOT NULL,
-    AccessCode VARCHAR(36) NOT NULL UNIQUE,
+    AccessCode VARCHAR(36) NOT NULL DEFAULT (UUID()) UNIQUE, -- this value is automatically generated and will be used as the access code for the session (EX: http://localhost:5225/123e4567-e89b-12d3-a456-426614174000)
     FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
 );
 
@@ -107,6 +110,9 @@ CREATE TABLE QuizResponse (
 );
 
 -- Sample Data Insertion
+
+-- Re-enable FK checks
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Insert Professors (no dependencies)
 INSERT INTO Professor (ProfessorID, ID, FirstName, LastName, Username, Email, PasswordHash)

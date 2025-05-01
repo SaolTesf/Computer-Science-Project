@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `QuizResponse`;
 DROP TABLE IF EXISTS `Attendance`;
 DROP TABLE IF EXISTS `QuizQuestion`;
 DROP TABLE IF EXISTS `QuizQuestionBank`;
+DROP TABLE IF EXISTS `SessionQuestion`;
 DROP TABLE IF EXISTS `ClassSession`;
 DROP TABLE IF EXISTS `CourseEnrollment`;
 DROP TABLE IF EXISTS `Course`;
