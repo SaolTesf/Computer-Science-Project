@@ -289,8 +289,6 @@ namespace ProfessorApp.Pages
             //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;
 
-            await DisplayAlert("Error", "Deletion unsuccessful", "OK");
-
             if (DeleteStudentPopup.IsVisible)
             {
                 DeleteUTDIDEntry.Text = string.Empty;

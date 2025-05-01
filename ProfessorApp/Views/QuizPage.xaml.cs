@@ -40,17 +40,21 @@ namespace ProfessorApp.Pages
                 return;
             }
 
-            // Fetch banks associated with the specific course
+            //Fetch banks associated with the specific course
             var bankNames = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
 
             BankList = bankNames?.Select(b => b.BankName).ToList() ?? new List<string>();
 
             if (BankList.Count > 0)
             {
-                SelectedBank = BankList[0]; 
+                SelectedBank = BankList.Contains(SelectedBank) ? SelectedBank : BankList[0];
+            }
+            else 
+            {
+                SelectedBank = null;
             }
 
-            OnPropertyChanged(nameof(BankList));
+                OnPropertyChanged(nameof(BankList));
             OnPropertyChanged(nameof(SelectedBank));
         }
 
@@ -71,7 +75,7 @@ namespace ProfessorApp.Pages
         {
             var bankName = BankNameEntry.Text?.Trim();
 
-            // Validate the input
+            //Validate the input
             if (string.IsNullOrEmpty(bankName))
             {
                 await DisplayAlert("Input Error", "Please fill in the quiz bank name.", "OK");
@@ -133,7 +137,22 @@ namespace ProfessorApp.Pages
         //Method to Delete Bank and All the questions within it
         private async void OnSubmitDeleteBankClicked(object sender, EventArgs e)
         {
-            DeleteBankPopup.IsVisible = false;
+            if (SelectedBank == null)
+            { 
+                await DisplayAlert("Error", "Please select a bank to delete.", "OK");
+            }
+            var selected =  await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
+            var deleteBankResponse = await _clientService.DeleteQuizQuestionBankAsync(selected);
+            if (deleteBankResponse)
+            {
+                LoadBankNamesAsync();
+                await Application.Current.MainPage.DisplayAlert("Success", "Bank deleted successfully.", "OK");
+                DeleteBankPopup.IsVisible = false;
+            }
+            else 
+            {
+                await DisplayAlert("Error", $"Failed to delete bank.", "OK");
+            }
         }
         //Cancel Deleting Question Bank
         private void OnCancelDeleteBankClicked(object sender, EventArgs e)
