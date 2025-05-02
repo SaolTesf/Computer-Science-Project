@@ -356,14 +356,6 @@ namespace ProfessorApp.Pages
             DeleteStudentPopup.IsVisible = false;
         }
 
-        private async void OnGoToQuizPageClicked(object sender, EventArgs e)
-        {
-            var course = _courseId; 
-            if (course == null) return;
-
-            await Navigation.PushAsync(new QuizPage(_clientService, course));
-        }
-
         // Open deletion confirmation popup
         private void ConfirmDelete(object sender, EventArgs e)
         {

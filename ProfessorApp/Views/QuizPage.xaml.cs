@@ -131,14 +131,20 @@ namespace ProfessorApp.Pages
         }
 
         //Method to Delete Bank and All the questions within it
-        private void OnSubmitDeleteBankClicked(object sender, EventArgs e)
+        private async void OnSubmitDeleteBankClicked(object sender, EventArgs e)
         {
             if (SelectedBank == null)
             {
                 await DisplayAlert("Error", "Please select a bank to delete.", "OK");
+                return;
             }
-            var selected = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
-            var deleteBankResponse = await _clientService.DeleteQuizQuestionBankAsync(selected);
+
+            // Await the task to get the actual integer value for the bank ID
+            var selectedBankId = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
+
+            // Pass the integer value to the DeleteQuizQuestionBankAsync method
+            bool deleteBankResponse = await _clientService.DeleteQuizQuestionBankAsync(selectedBankId);
+
             if (deleteBankResponse)
             {
                 LoadBankNamesAsync();
@@ -148,7 +154,7 @@ namespace ProfessorApp.Pages
             }
             else
             {
-                await DisplayAlert("Error", $"Failed to delete bank.", "OK");
+                await DisplayAlert("Error", "Failed to delete bank.", "OK");
             }
         }
         //Cancel Deleting Question Bank
