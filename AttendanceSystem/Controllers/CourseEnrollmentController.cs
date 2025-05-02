@@ -8,48 +8,50 @@ using System.Threading.Tasks;
 
 namespace AttendanceSystem.Controllers
 {
-  [ApiController]
-  [Route("api/[controller]")]
-  public class CourseEnrollmentController : ControllerBase
-  {
-    private readonly ICourseEnrollmentService _service;
-    public CourseEnrollmentController(ICourseEnrollmentService service) => _service = service;
-
-    // GET: api/courseenrollment/course/{courseID}
-    [HttpGet("course/{courseID}")]
-    public async Task<ActionResult<List<CourseEnrollmentDetailDTO>>> GetEnrollmentsByCourse(int courseID)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CourseEnrollmentController : ControllerBase
     {
-      var enrollments = await _service.GetEnrollmentsByCourseAsync(courseID);
-      var dto = enrollments.Select(e => new CourseEnrollmentDetailDTO {
-        EnrollmentID = e.EnrollmentID,
-        Student = new StudentDTO {
-          UTDID = e.Student!.UTDID,
-          FirstName = e.Student.FirstName,
-          LastName = e.Student.LastName,
-          Username = e.Student.Username
+        private readonly ICourseEnrollmentService _service;
+        public CourseEnrollmentController(ICourseEnrollmentService service) => _service = service;
+
+        // GET: api/courseenrollment/course/{courseID}
+        [HttpGet("course/{courseID}")]
+        public async Task<ActionResult<List<CourseEnrollmentDetailDTO>>> GetEnrollmentsByCourse(int courseID)
+        {
+            var enrollments = await _service.GetEnrollmentsByCourseAsync(courseID);
+            var dto = enrollments.Select(e => new CourseEnrollmentDetailDTO
+            {
+                EnrollmentID = e.EnrollmentID,
+                Student = new StudentDTO
+                {
+                    UTDID = e.Student!.UTDID,
+                    FirstName = e.Student.FirstName,
+                    LastName = e.Student.LastName,
+                    Username = e.Student.Username
+                }
+            }).ToList();
+            return Ok(dto);
         }
-      }).ToList();
-      return Ok(dto);
-    }
 
-    // POST: api/courseenrollment
-    [HttpPost]
-    public async Task<ActionResult> EnrollStudent([FromBody] CourseEnrollmentDTO enrollmentDto)
-    {
-      var enrollment = new CourseEnrollment {
-        CourseID = enrollmentDto.CourseID,
-        UTDID = enrollmentDto.UTDID
-      };
-      await _service.EnrollStudentAsync(enrollment);
-      return CreatedAtAction(nameof(GetEnrollmentsByCourse), new { courseID = enrollmentDto.CourseID }, null);
-    }
+        // POST: api/courseenrollment
+        [HttpPost]
+        public async Task<ActionResult> EnrollStudent([FromBody] CourseEnrollment enrollment)
+        {
+            if (enrollment == null)
+            {
+                return BadRequest();
+            }
+            await _service.EnrollStudentAsync(enrollment);
+            return CreatedAtAction(nameof(GetEnrollmentsByCourse), new { id = enrollment.CourseID }, enrollment);
+        }
 
-    // DELETE: api/courseenrollment/{enrollmentId}
-    [HttpDelete("{enrollmentId}")]
-    public async Task<ActionResult> UnenrollStudent(int enrollmentId)
-    {
-      await _service.UnenrollStudentAsync(enrollmentId);
-      return NoContent();
+        // DELETE: api/courseenrollment/{enrollmentId}
+        [HttpDelete("{enrollmentId}")]
+        public async Task<ActionResult> UnenrollStudent(int enrollmentId)
+        {
+            await _service.UnenrollStudentAsync(enrollmentId);
+            return NoContent();
+        }
     }
-  }
 }

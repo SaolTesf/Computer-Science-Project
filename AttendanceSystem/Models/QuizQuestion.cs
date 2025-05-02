@@ -21,6 +21,7 @@ namespace AttendanceSystem.Models
         [Required]
         public string Option2 { get; set; } = string.Empty;
 
+        [Required]
         public int Answer { get; set; } = 0;
 
         // Option3 and Option4 are optional
