@@ -6,57 +6,59 @@
     BackgroundColor="#222">
 
     <Grid>
-        <!--  Main Content  -->
-        <VerticalStackLayout Padding="20" Spacing="10">
+        <ScrollView Grid.Row="1">
+            <!--  Main Content  -->
+            <VerticalStackLayout Padding="20" Spacing="10">
 
-            <Label
-                x:Name="CourseLabel"
-                Margin="0,20,0,10"
-                FontAttributes="Bold"
-                FontSize="24"
-                HorizontalOptions="Center"
-                Text="CourseName"
-                TextColor="White"
-                VerticalOptions="Start" />
+                <Label
+                    x:Name="CourseLabel"
+                    Margin="0,20,0,10"
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="CourseName"
+                    TextColor="White"
+                    VerticalOptions="Start" />
 
-            <!--  Navigation Buttons  -->
-            <Button
-                BackgroundColor="DarkOrange"
-                Clicked="GoToSessionPage"
-                MaximumWidthRequest="600"
-                Text="Sessions"
-                TextColor="White" />
+                <!--  Navigation Buttons  -->
+                <Button
+                    BackgroundColor="DarkOrange"
+                    Clicked="GoToSessionPage"
+                    MaximumWidthRequest="600"
+                    Text="Sessions"
+                    TextColor="White" />
 
-            <Button
-                BackgroundColor="DarkOrange"
-                Clicked="GoToAttPage"
-                MaximumWidthRequest="600"
-                Text="Attendance"
-                TextColor="White" />
+                <Button
+                    BackgroundColor="DarkOrange"
+                    Clicked="GoToAttPage"
+                    MaximumWidthRequest="600"
+                    Text="Attendance"
+                    TextColor="White" />
 
-            <Button
-                BackgroundColor="DarkOrange"
-                Clicked="GoToStudentManagmentPage"
-                MaximumWidthRequest="600"
-                Text="Student Managment"
-                TextColor="White" />
-            <Button
-                BackgroundColor="DarkOrange"
-                Clicked="GoToQuizPage"
-                MaximumWidthRequest="600"
-                Text="Quiz Management"
-                TextColor="White" />
+                <Button
+                    BackgroundColor="DarkOrange"
+                    Clicked="GoToStudentManagmentPage"
+                    MaximumWidthRequest="600"
+                    Text="Student Managment"
+                    TextColor="White" />
+                <Button
+                    BackgroundColor="DarkOrange"
+                    Clicked="GoToQuizPage"
+                    MaximumWidthRequest="600"
+                    Text="Quiz Management"
+                    TextColor="White" />
 
-            <!--  Delete Course Button  -->
-            <Button
-                Margin="0,15,0,35"
-                BackgroundColor="Red"
-                Clicked="ConfirmDelete"
-                Text="Delete Course"
-                TextColor="White"
-                WidthRequest="400" />
+                <!--  Delete Course Button  -->
+                <Button
+                    Margin="0,15,0,35"
+                    BackgroundColor="Red"
+                    Clicked="ConfirmDelete"
+                    Text="Delete Course"
+                    TextColor="White"
+                    WidthRequest="400" />
 
-        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
 
         <!--  Modal-style Delete Course Popup  -->
         <Frame

@@ -7,128 +7,155 @@
     BackgroundColor="#222">
 
     <Grid>
+        <ScrollView Grid.Row="1">
+            <!--  Main Content  -->
+            <VerticalStackLayout Padding="20" Spacing="10">
 
-        <!--  Main Content  -->
-        <VerticalStackLayout Padding="20" Spacing="10">
+                <Label
+                    x:Name="CourseLabel"
+                    Margin="0,20,0,10"
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="CourseName"
+                    TextColor="White"
+                    VerticalOptions="Start" />
 
-            <Label
-                x:Name="CourseLabel"
-                Margin="0,20,0,10"
-                FontAttributes="Bold"
-                FontSize="24"
-                HorizontalOptions="Center"
-                Text="CourseName"
-                TextColor="White"
-                VerticalOptions="Start" />
+                <CollectionView
+                    x:Name="SessionCollectionView"
+                    HeightRequest="700"
+                    SelectionMode="None"
+                    WidthRequest="600">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Margin="0,5"
+                                Padding="10"
+                                BackgroundColor="#333"
+                                CornerRadius="8">
+                                <StackLayout Orientation="Vertical" Spacing="10">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="{Binding SessionNumber}"
+                                        TextColor="White" />
+                                    <Label Text="{Binding Date}" TextColor="White" />
+                                    <Label Text="{Binding Duration}" TextColor="White" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="Password"
+                                        TextColor="White" />
+                                    <Label Text="{Binding Password}" TextColor="White" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="Quiz"
+                                        TextColor="White" />
+                                    <Label Text="{Binding Quiz}" TextColor="White" />
+                                    <Button
+                                        BackgroundColor="DarkOrange"
+                                        Clicked="OnRemoveSessionClicked"
+                                        CommandParameter="{Binding SessionID}"
+                                        Text="Remove Session"
+                                        TextColor="White" />
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <CollectionView x:Name="SessionCollectionView" SelectionMode="None" WidthRequest="600" HeightRequest="700">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame BackgroundColor="#333" CornerRadius="8" Padding="10" Margin="0,5">
-                            <StackLayout Orientation="Vertical" Spacing="10">
-                                <Label Text="{Binding SessionNumber}" FontAttributes="Bold" FontSize="16" TextColor="White" />
-                                <Label Text="{Binding Date}" TextColor="White" />
-                                <Label Text="{Binding Duration}" TextColor="White" />
-                                <Label Text="Password" FontAttributes="Bold" FontSize="16" TextColor="White" />
-                                <Label Text="{Binding Password}" TextColor="White" />
-                                <Label Text="Quiz" FontAttributes="Bold" FontSize="16" TextColor="White" />
-                                <Label Text="{Binding Quiz}" TextColor="White" />
-                                <Button Text="Remove (will be update)" BackgroundColor="DarkOrange" TextColor="White" Clicked="OnRemoveSessionClicked" CommandParameter="{Binding SessionID}" />
-                            </StackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <!--  Button to trigger Add Session Form  -->
+                <Button
+                    Margin="0,15,0,15"
+                    BackgroundColor="Green"
+                    Clicked="OnAddSessionClicked"
+                    Text="Add Session"
+                    TextColor="White"
+                    WidthRequest="400" />
 
-            <!--  Button to trigger Add Session Form  -->
-            <Button
-                WidthRequest="400"
-                Margin="0,15,0,15"
-                BackgroundColor="Green"
-                Clicked="OnAddSessionClicked"
-                Text="Add Session"
-                TextColor="White" />
-
-        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
 
         <!--  Modal-style Add Session Popup  -->
         <Frame
             x:Name="AddSessionPopup"
+            Grid.Row="2"
             Padding="15"
             BackgroundColor="#333"
             BorderColor="DarkOrange"
             CornerRadius="12"
-            HeightRequest="500"
             HorizontalOptions="Center"
             IsVisible="False"
             VerticalOptions="Center"
             WidthRequest="400">
-
-            <StackLayout Spacing="5">
-                <Label
-                    TextColor="White"
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    HorizontalOptions="Center"
-                    Text="Add Session" />
-
-                <Label
-                    TextColor="White"
-                    FontSize="15"
-                    FontAttributes="Bold"
-                    Text="Date" />
-                <DatePicker x:Name="SessionDate" 
-                    TextColor="White"/>
-
-                <Label
-                    TextColor="White"
-                    FontSize="15"
-                    FontAttributes="Bold"
-                    Text="Quiz Start Time" />
-                <TimePicker x:Name="StartTime" 
-                    TextColor="White"/>
-
-                <Label
-                    TextColor="White"
-                    FontSize="15"
-                    FontAttributes="Bold"
-                    Text="Quiz End Time" />
-                <TimePicker x:Name="EndTime" 
-                    TextColor="White"/>
-                
-                <Entry
-                    x:Name="Password"
-                    MaxLength="255"
-                    Placeholder="Password"
-                    TextColor="White" />
-
-                <Label
-                    TextColor="White"
-                    FontSize="15"
-                    FontAttributes="Bold"
-                    Text="Quiz" />
-                <Picker x:Name="QuizPicker"
-                        TextColor="White"
+            <ScrollView VerticalScrollBarVisibility="Default">
+                <StackLayout Spacing="5">
+                    <Label
                         FontAttributes="Bold"
-                        ItemDisplayBinding="{Binding BankName}" />
-
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
-                    <Button
-                        BackgroundColor="Green"
-                        Clicked="OnSubmitSessionClicked"
-                        Text="Submit"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Add Session"
                         TextColor="White" />
-                    <Button
-                        BackgroundColor="Gray"
-                        Clicked="OnCancelSessionClicked"
-                        Text="Cancel"
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Date"
                         TextColor="White" />
-                </HorizontalStackLayout>
+                    <DatePicker x:Name="SessionDate" TextColor="White" />
 
-                <Label x:Name="statusLabel" TextColor="Red" HorizontalOptions="Center" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Quiz Start Time"
+                        TextColor="White" />
+                    <TimePicker x:Name="StartTime" TextColor="White" />
 
-            </StackLayout>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Quiz End Time"
+                        TextColor="White" />
+                    <TimePicker x:Name="EndTime" TextColor="White" />
+
+                    <Entry
+                        x:Name="Password"
+                        MaxLength="255"
+                        Placeholder="Password"
+                        TextColor="White" />
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Quiz"
+                        TextColor="White" />
+                    <Picker
+                        x:Name="QuizPicker"
+                        FontAttributes="Bold"
+                        ItemDisplayBinding="{Binding BankName}"
+                        TextColor="White" />
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                        <Button
+                            BackgroundColor="Green"
+                            Clicked="OnSubmitSessionClicked"
+                            Text="Submit"
+                            TextColor="White" />
+                        <Button
+                            BackgroundColor="Gray"
+                            Clicked="OnCancelSessionClicked"
+                            Text="Cancel"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+
+                    <Label
+                        x:Name="statusLabel"
+                        HorizontalOptions="Center"
+                        TextColor="Red" />
+
+                </StackLayout>
+            </ScrollView>
         </Frame>
-
     </Grid>
 </ContentPage>

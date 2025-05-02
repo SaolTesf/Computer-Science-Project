@@ -76,7 +76,6 @@ CREATE TABLE QuizQuestionBank (
 );
 
 -- Quiz Questions - Multiple-choice
--- Quiz Questions - Multiple-choice
 CREATE TABLE QuizQuestion (
     QuestionID INT AUTO_INCREMENT PRIMARY KEY,
     QuestionBankID INT NOT NULL,
@@ -178,15 +177,6 @@ VALUES
     (8, 4, '2100000003', '2025-04-04 15:10:00', '192.168.1.103', 'Present'),
     (9, 1, '2100000004', '2025-03-24 10:00:00', '192.168.1.104', 'Unexcused'),
     (10, 2, '2100000003', '2025-03-31 10:30:00', '192.168.1.103', 'Excused');
-
--- Sample mapping of questions to sessions
-INSERT INTO SessionQuestion (SessionID, QuestionID)
-VALUES
-    (1, 1), -- session 1 uses question 1
-    (1, 2), -- session 1 uses question 2
-    (2, 3), -- session 2 uses question 3
-    (3, 4), -- session 3 uses question 4
-    (4, 5); -- session 4 uses question 5
 
 -- Insert QuizResponses (depends on Attendance and QuizQuestion)
 INSERT INTO QuizResponse (ResponseID, AttendanceID, QuestionID, SelectedOption)

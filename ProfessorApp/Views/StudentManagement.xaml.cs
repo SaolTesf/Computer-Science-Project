@@ -328,6 +328,7 @@ namespace ProfessorApp.Pages
                         await DisplayAlert("Success", resultMessage, "OK");
 
                         DeleteUTDIDEntry.Text = string.Empty;
+                        await LoadEnrollmentsAsync();
                         DeleteStudentPopup.IsVisible = false;
                     }
                     else

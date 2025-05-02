@@ -1,4 +1,8 @@
-﻿/*Diego: Added function to add questions to specific banks and add question banks*/
+﻿/*Diego: 
+ * Added function to add questions to specific banks and add question banks
+ which are mapped to the specific course the page was accessed from,
+it also allows the user to pick what questions they want to use 
+for a specific quiz on a specific session*/
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AttendanceShared.DTOs;
@@ -27,12 +31,20 @@ namespace ProfessorApp.Pages
         {
             InitializeComponent();
             _clientService = clientService;
-            _courseID = courseID; //Store the course ID
+            _courseID = courseID; 
             BindingContext = this;
             QuestionsCheckBoxLayout = new StackLayout();
             LoadBankNamesAsync();
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            //Reset the picker and checkbox
+            BankPicker.SelectedIndex = -1;
+            QuestionCollectionView.IsVisible = false;
+        }
+        //Method to load/refresh the banks on the pickers
         private async void LoadBankNamesAsync()
         {
             if (_courseID == null)
@@ -53,10 +65,10 @@ namespace ProfessorApp.Pages
             OnPropertyChanged(nameof(SelectedBank));
         }
 
-        //Event handler for adding bank question through form (Add Question button)
+        //Event handler for adding bank 
         private void OnAddBankClicked(object sender, EventArgs e)
         {
-            //Toggle the Add Question form visibility
+            //Toggle the Add Bank form visibility
             AddBankPopup.IsVisible = !AddBankPopup.IsVisible;
 
             if (AddQuestionPopup.IsVisible)
@@ -65,7 +77,7 @@ namespace ProfessorApp.Pages
             }
         }
 
-        //Submit question data to database based on manual
+        //Submit bank to database 
         private async void OnSubmitQuizBankClicked(object sender, EventArgs e)
         {
             var bankName = BankNameEntry.Text?.Trim();
@@ -93,7 +105,7 @@ namespace ProfessorApp.Pages
 
             try
             {
-                //Make an API call to add the new quiz bank
+                //Make an API call to add the new bank
                 bool response = await _clientService.CreateQuizQuestionBankAsync(newBank);
 
                 if (response)
@@ -123,15 +135,18 @@ namespace ProfessorApp.Pages
             //Hide the form
             AddBankPopup.IsVisible = false;
         }
-        //Method to delete a student by UTDID
+        //Method to open form to delete bank
         private void OnDeleteBankClicked(object sender, EventArgs e)
         {
-            //Toggle the Delete Student form visibility
+            //Toggle the Delete Bank form visibility
             DeleteBankPopup.IsVisible = !DeleteBankPopup.IsVisible;
         }
-
-        //Method to Delete Bank and All the questions within it
         private async void OnSubmitDeleteBankClicked(object sender, EventArgs e)
+        {
+            DeleteConfirmationPopup.IsVisible = true;
+        }
+        //Method to Delete Bank and All the questions within it
+        private async void OnConfirmDeleteBankClicked(object sender, EventArgs e)
         {
             if (SelectedBank == null)
             {
@@ -139,16 +154,17 @@ namespace ProfessorApp.Pages
                 return;
             }
 
-            // Await the task to get the actual integer value for the bank ID
+            //API call to get BankID using the name
             var selectedBankId = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
 
-            // Pass the integer value to the DeleteQuizQuestionBankAsync method
+            //API call to Delete the bank using its ID
             bool deleteBankResponse = await _clientService.DeleteQuizQuestionBankAsync(selectedBankId);
 
             if (deleteBankResponse)
             {
                 LoadBankNamesAsync();
-                await Application.Current.MainPage.DisplayAlert("Success", "Bank deleted successfully.", "OK");
+                await DisplayAlert("Success", "Bank deleted successfully.", "OK");
+                DeleteConfirmationPopup.IsVisible = false;
                 DeleteBankPopup.IsVisible = false;
                 LoadBankNamesAsync();
             }
@@ -160,10 +176,15 @@ namespace ProfessorApp.Pages
         //Cancel Deleting Question Bank
         private void OnCancelDeleteBankClicked(object sender, EventArgs e)
         {
-            //Hide delete student form
+            //Reset Picker inside the form
+            BankPicker.SelectedIndex = -1;
+            SelectedBank = null;
+            OnPropertyChanged(nameof(SelectedBank));
+            //Hide delete forms
+            DeleteConfirmationPopup.IsVisible = false;
             DeleteBankPopup.IsVisible = false;
         }
-        //Event handler for adding quiz question through form (Add Question button)
+        //Event handler for adding quiz question through form 
         private void OnAddQuestionClicked(object sender, EventArgs e)
         {
             //Toggle the Add Question form visibility
@@ -257,9 +278,9 @@ namespace ProfessorApp.Pages
                     Option3Entry.Text = string.Empty;
                     Option4Entry.Text = string.Empty;
                     AnswerEntry.Text = null;
+                    BankPicker.SelectedIndex = -1;
                     SelectedBank = null;
-                    BankPicker.SelectedItem = null;
-                    QuestionTextList.Clear();
+                    OnPropertyChanged(nameof(SelectedBank));
                     AddQuestionPopup.IsVisible = false;
                     await OnSelectedBankChangedAsync();
                 }
@@ -274,7 +295,7 @@ namespace ProfessorApp.Pages
             }
         }
         //Cancel adding question button
-        private void OnCancelClicked(object sender, EventArgs e)
+        private void OnCancelAddQuestionClicked(object sender, EventArgs e)
         {
             //Clear all fields
             QuestionTextEntry.Text = string.Empty;
@@ -283,16 +304,20 @@ namespace ProfessorApp.Pages
             Option3Entry.Text = string.Empty;
             Option4Entry.Text = string.Empty;
             AnswerEntry.Text = null;
+            BankPicker.SelectedIndex = -1;
             SelectedBank = null;
+            OnPropertyChanged(nameof(SelectedBank));
             //Hide the form
             AddQuestionPopup.IsVisible = false;
         }
 
+        //Method to notify that there has been a change in the pickers
         private void OnBankPickerSelectedIndexChanged(object sender, EventArgs e)
         {
             OnSelectedBankChangedAsync();
         }
 
+        //Method to help load the questions to the checkboxes
         private async Task OnSelectedBankChangedAsync()
         {
             if (SelectedBank != null)
@@ -303,18 +328,34 @@ namespace ProfessorApp.Pages
                 {
                     //Fetch questions based on the bank ID
                     var questions = await _clientService.GetQuestionsByBankIdAsync(bankId);
+                    QuestionCollectionView.IsVisible = true;
 
                     //Map the questions to a list of QuestionWithSelection 
                     QuestionTextList = questions?.Select(q => new QuestionWithSelection
                     {
                         QuestionText = q.QuestionText,
-                        //Initially, all checkboxes are unchecked
+                        //Initially all checkboxes are unchecked
                         IsChecked = false
                     }).ToList() ?? new List<QuestionWithSelection>();
 
                     OnPropertyChanged(nameof(QuestionTextList));
                 }
             }
+        }
+
+        //Button to toggle form for creating a quiz
+        private void OnCreateQuizClicked(object sender, EventArgs e)
+        {
+            //Toggle the Add Quiz form visibility
+            CreateQuizPopup.IsVisible = !AddQuestionPopup.IsVisible;
+        }
+        private void OnCancelCreateQuizClicked(object sender, EventArgs e)
+        {
+            //Reset the picker and checkbox
+            BankPicker.SelectedIndex = -1;
+            QuestionCollectionView.IsVisible = false;
+            //Hide create quiz form
+            CreateQuizPopup.IsVisible = false;
         }
         //Method to save the selected questions to a list
         private void OnSubmitSelectedQuestionsClicked(object sender, EventArgs e)
@@ -329,6 +370,13 @@ namespace ProfessorApp.Pages
 
             string selectedQuestionTexts = string.Join("\n", selectedQuestions.Select(q => q.QuestionText));
             DisplayAlert("Selected Questions", selectedQuestionTexts, "OK");
+            foreach (var question in QuestionTextList)
+            {
+                question.IsChecked = false; 
+            }
+            BankPicker.SelectedIndex = -1;
+            QuestionCollectionView.IsVisible = false;
+            CreateQuizPopup.IsVisible = false;
 
         }
 

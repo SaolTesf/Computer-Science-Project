@@ -1,24 +1,63 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ProfessorApp.Views.RegisterPage"
-             Title="Attendance Manager"
-             BackgroundColor="#222">
-    <StackLayout Padding="30" VerticalOptions="Center" Spacing="20">
-        
-        <Label Text="Register Account" FontSize="Large" TextColor="White" HorizontalOptions="Center" FontAttributes="Bold" Margin="0,0,0,30" />
+<ContentPage
+    x:Class="ProfessorApp.Views.RegisterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Attendance Manager"
+    BackgroundColor="#222">
+    <StackLayout
+        Padding="30"
+        Spacing="20"
+        VerticalOptions="Center">
 
-        <Frame Padding="10" BorderColor="DarkOrange" BackgroundColor="#333" MaximumWidthRequest="600" CornerRadius="10" HasShadow="True">
+        <Label
+            Margin="0,0,0,30"
+            FontAttributes="Bold"
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="Register Account"
+            TextColor="White" />
+
+        <Frame
+            Padding="10"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
+            CornerRadius="10"
+            HasShadow="True"
+            MaximumWidthRequest="600">
             <StackLayout Spacing="10">
-                <Entry x:Name="idEntry" MaxLength="10" Placeholder="ID" TextChanged="IDTextChanged" Keyboard="Numeric" />
+                <Entry
+                    x:Name="idEntry"
+                    Keyboard="Numeric"
+                    MaxLength="10"
+                    Placeholder="ID"
+                    TextChanged="IDTextChanged" />
                 <Entry x:Name="firstNameEntry" Placeholder="First Name" />
                 <Entry x:Name="lastNameEntry" Placeholder="Last Name" />
                 <Entry x:Name="usernameEntry" Placeholder="Username" />
                 <Entry x:Name="emailEntry" Placeholder="Email Address" />
-                <Entry x:Name="passwordEntry" Placeholder="Password" IsPassword="True" />
-                <Button Text="Register Account" BackgroundColor="Green" Clicked="OnRegisterClicked" Margin="0,10,0,0" TextColor="White" MaximumWidthRequest="400" />
-                <Button Text="Go To Login" BackgroundColor="Grey" Clicked="GoToLogin" Margin="0,10,0,0" TextColor="White" MaximumWidthRequest="400" />
-                <Label x:Name="statusLabel" TextColor="Red" HorizontalOptions="Center" />
+                <Entry
+                    x:Name="passwordEntry"
+                    IsPassword="True"
+                    Placeholder="Password" />
+                <Button
+                    Margin="0,10,0,0"
+                    BackgroundColor="Green"
+                    Clicked="OnRegisterClicked"
+                    MaximumWidthRequest="400"
+                    Text="Register Account"
+                    TextColor="White" />
+                <Button
+                    Margin="0,10,0,0"
+                    BackgroundColor="Grey"
+                    Clicked="GoToLogin"
+                    MaximumWidthRequest="400"
+                    Text="Go To Login"
+                    TextColor="White" />
+                <Label
+                    x:Name="statusLabel"
+                    HorizontalOptions="Center"
+                    TextColor="Red" />
             </StackLayout>
         </Frame>
     </StackLayout>

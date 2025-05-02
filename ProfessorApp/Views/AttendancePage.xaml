@@ -7,53 +7,109 @@
     BackgroundColor="#222">
 
     <Grid>
+        <ScrollView Grid.Row="1">
+            <!--  Main Content  -->
+            <VerticalStackLayout Padding="20" Spacing="10">
 
-        <!--  Main Content  -->
-        <VerticalStackLayout Padding="20" Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="Attendance Records"
+                    TextColor="White" />
 
-            <Label
-                FontAttributes="Bold"
-                FontSize="24"
-                HorizontalOptions="Center"
-                Text="Attendance Records"
-                TextColor="White" />
+                <!--  Filters  -->
+                <HorizontalStackLayout Spacing="10">
+                    <Picker
+                        x:Name="SessionFilterPicker"
+                        Title="Session"
+                        SelectedIndexChanged="OnFilterChanged"
+                        TextColor="White" />
+                    <Entry
+                        x:Name="FirstNameFilterEntry"
+                        Placeholder="First Name"
+                        TextChanged="OnFilterTextChanged"
+                        TextColor="White" />
+                    <Entry
+                        x:Name="LastNameFilterEntry"
+                        Placeholder="Last Name"
+                        TextChanged="OnFilterTextChanged"
+                        TextColor="White" />
+                    <Entry
+                        x:Name="UTDIDFilterEntry"
+                        Placeholder="UTDID"
+                        TextChanged="OnFilterTextChanged"
+                        TextColor="White" />
+                    <Picker
+                        x:Name="TypeFilterPicker"
+                        Title="Type"
+                        SelectedIndexChanged="OnFilterChanged"
+                        TextColor="White" />
+                    <VerticalStackLayout Spacing="2">
+                        <Label
+                            FontSize="12"
+                            Text="From"
+                            TextColor="White" />
+                        <DatePicker
+                            x:Name="FromDatePicker"
+                            DateSelected="OnDateFilterChanged"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="2">
+                        <Label
+                            FontSize="12"
+                            Text="To"
+                            TextColor="White" />
+                        <DatePicker
+                            x:Name="ToDatePicker"
+                            DateSelected="OnDateFilterChanged"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnClearFiltersClicked"
+                        Text="Clear"
+                        TextColor="White" />
+                </HorizontalStackLayout>
 
-            <!-- Filters -->
-            <HorizontalStackLayout Spacing="10">
-                <Picker x:Name="SessionFilterPicker" Title="Session" TextColor="White" SelectedIndexChanged="OnFilterChanged" />
-                <Entry x:Name="FirstNameFilterEntry" Placeholder="First Name" TextColor="White" TextChanged="OnFilterTextChanged" />
-                <Entry x:Name="LastNameFilterEntry" Placeholder="Last Name" TextColor="White" TextChanged="OnFilterTextChanged" />
-                <Entry x:Name="UTDIDFilterEntry" Placeholder="UTDID" TextColor="White" TextChanged="OnFilterTextChanged" />
-                <Picker x:Name="TypeFilterPicker" Title="Type" TextColor="White" SelectedIndexChanged="OnFilterChanged" />
-                <VerticalStackLayout Spacing="2">
-                    <Label Text="From" TextColor="White" FontSize="12" />
-                    <DatePicker x:Name="FromDatePicker" TextColor="White" DateSelected="OnDateFilterChanged" />
-                </VerticalStackLayout>
-                <VerticalStackLayout Spacing="2">
-                    <Label Text="To" TextColor="White" FontSize="12" />
-                    <DatePicker x:Name="ToDatePicker" TextColor="White" DateSelected="OnDateFilterChanged" />
-                </VerticalStackLayout>
-                <Button Text="Clear" BackgroundColor="Gray" TextColor="White" Clicked="OnClearFiltersClicked" />
-            </HorizontalStackLayout>
+                <!--  Records  -->
+                <CollectionView x:Name="AttendanceCollectionView" HeightRequest="400">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Margin="0,5"
+                                Padding="10"
+                                BackgroundColor="#333"
+                                CornerRadius="8">
+                                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="{Binding FirstName}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding LastName}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="2"
+                                        Text="{Binding UTDID}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="3"
+                                        Text="{Binding SubmissionTime}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="4"
+                                        Text="{Binding AttendanceType}"
+                                        TextColor="White" />
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <!-- Records -->
-            <CollectionView x:Name="AttendanceCollectionView" HeightRequest="400">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame BackgroundColor="#333" CornerRadius="8" Padding="10" Margin="0,5">
-                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10">
-                                <Label Text="{Binding FirstName}" TextColor="White" Grid.Column="0" />
-                                <Label Text="{Binding LastName}" TextColor="White" Grid.Column="1" />
-                                <Label Text="{Binding UTDID}" TextColor="White" Grid.Column="2" />
-                                <Label Text="{Binding SubmissionTime}" TextColor="White" Grid.Column="3" />
-                                <Label Text="{Binding AttendanceType}" TextColor="White" Grid.Column="4" />
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
 
     </Grid>
 </ContentPage>

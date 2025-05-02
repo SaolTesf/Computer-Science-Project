@@ -136,7 +136,12 @@ namespace ProfessorApp.Pages
                     return;
                 }
                 statusLabel.TextColor = Colors.Green;
-                statusLabel.Text = "Added session!";
+                await DisplayAlert("Success", "Quiz Bank added successfully.", "OK");
+                Password.Text = string.Empty;
+                QuizPicker.SelectedIndex = -1;
+                StartTime.Time = default;
+                EndTime.Time = default;
+                AddSessionPopup.IsVisible = false;
                 OnAppearing();
             }
             catch (Exception ex)
@@ -149,8 +154,13 @@ namespace ProfessorApp.Pages
         //Cancel adding student button
         private void OnCancelSessionClicked(object sender, EventArgs e)
         {
-            //Hide the form
+            //Hide the form and reset fields
+            Password.Text = string.Empty;
+            QuizPicker.SelectedIndex = -1;
+            StartTime.Time = default;
+            EndTime.Time = default;
             AddSessionPopup.IsVisible = false;
+            OnAppearing();
         }
     }
 }
