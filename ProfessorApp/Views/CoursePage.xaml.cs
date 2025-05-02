@@ -35,7 +35,7 @@ namespace ProfessorApp.Pages
         {
             var course = e.CurrentSelection.FirstOrDefault() as CourseDTO;
             if (course == null) return;
-            await Navigation.PushAsync(new StudentManagement(_clientService, course.CourseID));
+            await Navigation.PushAsync(new CourseNavigation(_clientService, course.CourseID));
             CourseCollectionView.SelectedItem = null; // clear selection
         }
 
@@ -159,8 +159,13 @@ namespace ProfessorApp.Pages
                         return;
                     }
                     statusLabel.TextColor = Colors.Green;
-                    statusLabel.Text = "Created course!";
+                    await DisplayAlert("Success", "Course Created successfully.", "OK");
                     OnAppearing();
+                    courseSubjectEntry.Text = string.Empty;
+                    courseNumberEntry.Text = string.Empty;
+                    courseNameEntry.Text = string.Empty;
+                    sectionEntry.Text = string.Empty;
+                    AddCoursePopUp.IsVisible = false;
                 }
                 catch (Exception ex)
                 {
@@ -176,7 +181,12 @@ namespace ProfessorApp.Pages
         }
         private void GoToCourses(object sender, EventArgs e)
         {
-            AddCoursePopUp.IsVisible = !AddCoursePopUp.IsVisible;
+            OnAppearing();
+            courseSubjectEntry.Text = string.Empty;
+            courseNumberEntry.Text = string.Empty;
+            courseNameEntry.Text = string.Empty;
+            sectionEntry.Text = string.Empty;
+            AddCoursePopUp.IsVisible = false;
         }
     }
 }

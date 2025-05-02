@@ -234,6 +234,13 @@
         // validate StudentID and that all questions are answered
         if (context.Validate() && questions.All(q => !string.IsNullOrEmpty(q.SelectedAnswer)))
         {
+            if (string.IsNullOrEmpty(formData.StudentID))
+            {
+                errorMessage = "Student ID is required.";
+                showValidationError = true;
+                return;
+            }
+            
             var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
             if (student != null)
             {

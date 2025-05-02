@@ -3,87 +3,184 @@
     x:Class="ProfessorApp.Pages.QuizPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    BackgroundColor="Black">
+    Title="Quiz Management"
+    BackgroundColor="#222">
 
     <Grid>
-        <!--  Main Content  -->
-        <VerticalStackLayout Padding="20" Spacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="10">
 
-            <Label
-                Margin="0,20,0,10"
-                FontAttributes="Bold"
-                FontSize="24"
-                HorizontalOptions="Center"
-                Text="Quizzes"
-                TextColor="White"
-                VerticalOptions="Start" />
+                <Button
+                    Margin="0,30,0,30"
+                    BackgroundColor="DarkOrange"
+                    Clicked="OnAddBankClicked"
+                    Text="Add Question Bank"
+                    TextColor="White" />
 
-            <!--  Button to trigger Add Bank Form  -->
-            <Button
-                Margin="0,30,0,30"
-                BackgroundColor="Green"
-                Clicked="OnAddBankClicked"
-                Text="Add Question Bank"
-                TextColor="White" />
-            <Frame
-                x:Name="AddBankPopup"
-                Padding="15"
-                BackgroundColor="White"
-                BorderColor="Green"
-                CornerRadius="12"
-                HeightRequest="150"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                VerticalOptions="Center"
-                WidthRequest="400">
+                <Button
+                    Margin="0,15,0,15"
+                    BackgroundColor="Red"
+                    Clicked="OnDeleteBankClicked"
+                    Text="Delete Question Bank"
+                    TextColor="White"
+                    WidthRequest="400" />
 
-                <StackLayout Spacing="2">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="20"
-                        HorizontalOptions="Center"
-                        Text="Add Question Bank" />
-                    <Entry
-                        x:Name="BankNameEntry"
-                        Placeholder="Bank Name:"
-                        TextColor="Black" />
+                <Button
+                    Margin="0,30,0,30"
+                    BackgroundColor="DarkOrange"
+                    Clicked="OnAddQuestionClicked"
+                    Text="Add Question"
+                    TextColor="White" />
 
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                        <Button
-                            BackgroundColor="Green"
-                            Clicked="OnSubmitQuizBankClicked"
-                            Text="Submit"
-                            TextColor="White" />
-                        <Button
-                            BackgroundColor="Gray"
-                            Clicked="OnCancelQuizBankClicked"
-                            Text="Cancel"
-                            TextColor="White" />
-                    </HorizontalStackLayout>
-                </StackLayout>
-            </Frame>
+                <Button
+                    Margin="0,30,0,30"
+                    BackgroundColor="DarkOrange"
+                    Clicked="OnCreateQuizClicked"
+                    Text="Create Quiz"
+                    TextColor="White" />
+            </VerticalStackLayout>
+        </ScrollView>
 
-            <!--  Button to trigger Add Question Form  -->
-            <Button
-                Margin="0,30,0,30"
-                BackgroundColor="Green"
-                Clicked="OnAddQuestionClicked"
-                Text="Add Question"
-                TextColor="White" />
+        <!--  Add Question Bank Popup  -->
+        <Frame
+            x:Name="AddBankPopup"
+            Grid.Row="2"
+            Padding="15"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
+            CornerRadius="12"
+            HeightRequest="150"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="400"
+            ZIndex="999">
 
-            <!--  Modal-style Add Question Popup  -->
-            <Frame
-                x:Name="AddQuestionPopup"
-                Padding="15"
-                BackgroundColor="White"
-                BorderColor="Green"
-                CornerRadius="12"
-                HeightRequest="400"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                VerticalOptions="Center"
-                WidthRequest="400">
+            <StackLayout Spacing="2">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Add Question Bank" />
+                <Entry
+                    x:Name="BankNameEntry"
+                    Placeholder="Bank Name:"
+                    TextColor="White" />
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button
+                        BackgroundColor="DarkGreen"
+                        Clicked="OnSubmitQuizBankClicked"
+                        Text="Submit"
+                        TextColor="White" />
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnCancelQuizBankClicked"
+                        Text="Cancel"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </Frame>
 
+        <!--  Delete Question Bank Popup  -->
+        <Frame
+            x:Name="DeleteBankPopup"
+            Grid.Row="2"
+            Padding="15"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
+            CornerRadius="12"
+            HeightRequest="200"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="200"
+            ZIndex="999">
+
+            <StackLayout Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Delete Quiz Bank"
+                    TextColor="White" />
+                <Picker
+                    x:Name="DeleteQuestionBankPicker"
+                    Title="Select Question Bank"
+                    BackgroundColor="DarkOrange"
+                    ItemsSource="{Binding BankList}"
+                    SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
+                    TextColor="Black" />
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button
+                        BackgroundColor="DarkGreen"
+                        Clicked="OnSubmitDeleteBankClicked"
+                        Text="Confirm"
+                        TextColor="White" />
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnCancelDeleteBankClicked"
+                        Text="Cancel"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </Frame>
+
+        <Frame
+            x:Name="DeleteConfirmationPopup"
+            Grid.Row="3"
+            Padding="15"
+            BackgroundColor="#fff"
+            BorderColor="Red"
+            CornerRadius="12"
+            HeightRequest="200"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="400"
+            ZIndex="1000">
+
+            <StackLayout Spacing="10">
+                <Label
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Are you sure you want to delete this question bank? This will delete any questions associated with the chosen bank. This cannot be undone."
+                    TextColor="Black" />
+
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button
+                        BackgroundColor="Red"
+                        Clicked="OnConfirmDeleteBankClicked"
+                        Text="Confirm"
+                        TextColor="White" />
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnCancelDeleteBankClicked"
+                        Text="Cancel"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </Frame>
+
+        <!--  Add Question Popup  -->
+        <Frame
+            x:Name="AddQuestionPopup"
+            Grid.Row="2"
+            Padding="15"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
+            CornerRadius="12"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="400"
+            ZIndex="999">
+
+            <!--  ScrollView to make the content scrollable only when content overflows  -->
+            <ScrollView VerticalScrollBarVisibility="Default">
                 <StackLayout Spacing="2">
                     <Label
                         FontAttributes="Bold"
@@ -94,7 +191,7 @@
                     <Picker
                         x:Name="QuestionBankPicker"
                         Title="Select Question Bank"
-                        BackgroundColor="Orange"
+                        BackgroundColor="DarkOrange"
                         ItemsSource="{Binding BankList}"
                         SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
                         TextColor="Black" />
@@ -102,67 +199,114 @@
                     <Entry
                         x:Name="QuestionTextEntry"
                         Placeholder="Question:"
-                        TextColor="Black" />
+                        TextColor="White" />
+
                     <Entry
                         x:Name="Option1Entry"
                         Placeholder="Option 1"
-                        TextColor="Black" />
+                        TextColor="White" />
+
                     <Entry
                         x:Name="Option2Entry"
                         Placeholder="Option 2"
-                        TextColor="Black" />
+                        TextColor="White" />
+
                     <Entry
                         x:Name="Option3Entry"
                         Placeholder="Option 3 (Optional)"
-                        TextColor="Black" />
+                        TextColor="White" />
+
                     <Entry
                         x:Name="Option4Entry"
                         Placeholder="Option 4 (Optional)"
-                        TextColor="Black" />
+                        TextColor="White" />
+
+                    <Entry
+                        x:Name="AnswerEntry"
+                        Placeholder="Answer (Option #)"
+                        TextColor="White" />
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                         <Button
-                            BackgroundColor="Green"
+                            BackgroundColor="DarkGreen"
                             Clicked="OnSubmitQuestionClicked"
                             Text="Submit"
                             TextColor="White" />
                         <Button
                             BackgroundColor="Gray"
-                            Clicked="OnCancelClicked"
+                            Clicked="OnCancelAddQuestionClicked"
                             Text="Cancel"
                             TextColor="White" />
                     </HorizontalStackLayout>
                 </StackLayout>
-            </Frame>
+            </ScrollView>
+        </Frame>
 
-            <!--  Picker for Quiz Banks  -->
-            <Picker
-                x:Name="BankPicker"
-                Title="Select a Question Bank"
-                BackgroundColor="Orange"
-                ItemsSource="{Binding BankList}"
-                SelectedIndexChanged="OnBankPickerSelectedIndexChanged"
-                SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
-                TextColor="Black" />
+        <!--  Create Quiz Popup  -->
+        <Frame
+            x:Name="CreateQuizPopup"
+            Grid.Row="2"
+            Padding="15"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
+            CornerRadius="12"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="400"
+            ZIndex="999">
 
+            <!--  ScrollView to make the content scrollable only when content overflows  -->
+            <ScrollView VerticalScrollBarVisibility="Default">
+                <StackLayout Spacing="2">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Add Question" />
+                    <Picker
+                        x:Name="BankPicker"
+                        Title="Select a Question Bank"
+                        BackgroundColor="DarkOrange"
+                        ItemsSource="{Binding BankList}"
+                        SelectedIndexChanged="OnBankPickerSelectedIndexChanged"
+                        SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
+                        TextColor="Black" />
 
-            <!--  CollectionView to display questions with checkboxes  -->
-            <CollectionView
-                x:Name="QuestionCollectionView"
-                Background="Orange"
-                ItemsSource="{Binding QuestionTextList}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsChecked}" />
-                            <Label Text="{Binding QuestionText}" VerticalOptions="Center" />
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                    <CollectionView
+                        x:Name="QuestionCollectionView"
+                        Background="DarkOrange"
+                        HeightRequest="225"
+                        ItemsSource="{Binding QuestionTextList}"
+                        WidthRequest="325">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsChecked}" />
+                                    <Label Text="{Binding QuestionText}" VerticalOptions="Center" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
-            <Button Clicked="OnSubmitSelectedQuestionsClicked" Text="Submit Selected Questions" />
+                    <HorizontalStackLayout
+                        Padding="0,10,0,0"
+                        HorizontalOptions="Center"
+                        Spacing="10">
+                        <Button
+                            BackgroundColor="DarkGreen"
+                            Clicked="OnSubmitSelectedQuestionsClicked"
+                            Text="Submit"
+                            TextColor="White" />
+                        <Button
+                            BackgroundColor="Gray"
+                            Clicked="OnCancelCreateQuizClicked"
+                            Text="Cancel"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </StackLayout>
+            </ScrollView>
+        </Frame>
 
-        </VerticalStackLayout>
     </Grid>
 </ContentPage>
