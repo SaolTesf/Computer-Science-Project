@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Student Management"
-    BackgroundColor="{DynamicResource SecondaryColor}">
+    BackgroundColor="#222">
 
     <Grid>
 
@@ -23,7 +23,7 @@
 
             <!--  Button to Choose Files  -->
             <Button
-                BackgroundColor="Orange"
+                BackgroundColor="DarkOrange"
                 Clicked="OnSelectFileClicked"
                 Text="Choose File"
                 TextColor="White" />
@@ -34,7 +34,7 @@
                 TextColor="White" />
 
             <Button
-                BackgroundColor="Orange"
+                BackgroundColor="DarkOrange"
                 Clicked="OnSubmitFilesClicked"
                 Text="Submit"
                 TextColor="White"
@@ -112,8 +112,8 @@
         <Frame
             x:Name="AddStudentPopup"
             Padding="15"
-            BackgroundColor="White"
-            BorderColor="Green"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
             CornerRadius="12"
             HeightRequest="400"
             HorizontalOptions="Center"
@@ -132,22 +132,22 @@
                 <Entry
                     x:Name="FirstNameEntry"
                     Placeholder="First Name"
-                    TextColor="Black" />
+                    TextColor="White" />
 
                 <Entry
                     x:Name="LastNameEntry"
                     Placeholder="Last Name"
-                    TextColor="Black" />
+                    TextColor="White" />
                 <Entry
                     x:Name="UsernameEntry"
                     MaxLength="9"
                     Placeholder="NETID"
-                    TextColor="Black" />
+                    TextColor="White" />
                 <Entry
                     x:Name="AddStudentUTDIDEntry"
                     MaxLength="10"
                     Placeholder="UTDID"
-                    TextColor="Black" />
+                    TextColor="White" />
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                     <Button
@@ -167,7 +167,7 @@
         <Frame
             x:Name="DeleteStudentPopup"
             Padding="15"
-            BackgroundColor="White"
+            BackgroundColor="#333"
             BorderColor="Red"
             CornerRadius="12"
             HeightRequest="200"
@@ -187,7 +187,7 @@
                 <Entry
                     x:Name="DeleteUTDIDEntry"
                     Placeholder="UTDID"
-                    TextColor="Black" />
+                    TextColor="White" />
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                     <Button

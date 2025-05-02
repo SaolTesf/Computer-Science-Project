@@ -35,7 +35,7 @@ namespace ProfessorApp.Pages
         {
             var course = e.CurrentSelection.FirstOrDefault() as CourseDTO;
             if (course == null) return;
-            await Navigation.PushAsync(new StudentManagement(_clientService, course.CourseID));
+            await Navigation.PushAsync(new CourseNavigation(_clientService, course.CourseID));
             CourseCollectionView.SelectedItem = null; // clear selection
         }
 

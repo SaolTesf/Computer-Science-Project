@@ -1,6 +1,9 @@
 CREATE DATABASE AttendanceSystem;
 USE AttendanceSystem;
 
+-- Disable FK checks to allow referencing before definition
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Users with login credentials
 CREATE TABLE Professor (
     ProfessorID INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +53,18 @@ CREATE TABLE ClassSession (
     QuizEndTime DATETIME NOT NULL,
     QuestionBankID INT NOT NULL,
     CourseID INT NOT NULL,
+    AccessCode VARCHAR(36) NOT NULL DEFAULT (UUID()) UNIQUE, -- this value is automatically generated and will be used as the access code for the session (EX: http://localhost:5225/123e4567-e89b-12d3-a456-426614174000)
     FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
+);
+
+-- Map questions to sessions (which questions used in each session)
+CREATE TABLE SessionQuestion (
+    SessionQuestionID INT AUTO_INCREMENT PRIMARY KEY,
+    SessionID INT NOT NULL,
+    QuestionID INT NOT NULL,
+    FOREIGN KEY (SessionID) REFERENCES ClassSession(SessionID) ON DELETE CASCADE,
+    FOREIGN KEY (QuestionID) REFERENCES QuizQuestion(QuestionID) ON DELETE CASCADE,
+    UNIQUE KEY (SessionID, QuestionID)
 );
 
 -- Group of questions for a session
@@ -98,6 +112,9 @@ CREATE TABLE QuizResponse (
 );
 
 -- Sample Data Insertion
+
+-- Re-enable FK checks
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Insert Professors (no dependencies)
 INSERT INTO Professor (ProfessorID, ID, FirstName, LastName, Username, Email, PasswordHash)
@@ -161,6 +178,15 @@ VALUES
     (8, 4, '2100000003', '2025-04-04 15:10:00', '192.168.1.103', 'Present'),
     (9, 1, '2100000004', '2025-03-24 10:00:00', '192.168.1.104', 'Unexcused'),
     (10, 2, '2100000003', '2025-03-31 10:30:00', '192.168.1.103', 'Excused');
+
+-- Sample mapping of questions to sessions
+INSERT INTO SessionQuestion (SessionID, QuestionID)
+VALUES
+    (1, 1), -- session 1 uses question 1
+    (1, 2), -- session 1 uses question 2
+    (2, 3), -- session 2 uses question 3
+    (3, 4), -- session 3 uses question 4
+    (4, 5); -- session 4 uses question 5
 
 -- Insert QuizResponses (depends on Attendance and QuizQuestion)
 INSERT INTO QuizResponse (ResponseID, AttendanceID, QuestionID, SelectedOption)

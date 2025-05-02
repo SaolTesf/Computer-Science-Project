@@ -11,7 +11,7 @@ namespace ProfessorApp.Pages
 {
     public class QuestionWithSelection
     {
-        public string QuestionText { get; set; }
+        public string QuestionText { get; set; } = string.Empty;
         public bool IsChecked { get; set; }
     }
     public partial class QuizPage : ContentPage
@@ -124,14 +124,14 @@ namespace ProfessorApp.Pages
             AddBankPopup.IsVisible = false;
         }
         //Method to delete a student by UTDID
-        private async void OnDeleteBankClicked(object sender, EventArgs e)
+        private void OnDeleteBankClicked(object sender, EventArgs e)
         {
             //Toggle the Delete Student form visibility
             DeleteBankPopup.IsVisible = !DeleteBankPopup.IsVisible;
         }
 
         //Method to Delete Bank and All the questions within it
-        private async void OnSubmitDeleteBankClicked(object sender, EventArgs e)
+        private void OnSubmitDeleteBankClicked(object sender, EventArgs e)
         {
             if (SelectedBank == null)
             {

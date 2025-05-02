@@ -1,6 +1,10 @@
 ﻿/*Diego Cabanas
  Functions to Manage students, Add through file, Add manually, or Delete
-Delete also deletes any attendance statistics/facts that are associated with the student*/
+Delete also deletes any attendance statistics/facts that are associated with the student
+ */
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
 using AttendanceShared.DTOs;
@@ -56,7 +60,11 @@ namespace ProfessorApp.Pages
         private async void OnSelectFileClicked(object sender, EventArgs e)
         {
             //Open file picker to select file
-            var file = await FilePicker.PickAsync();
+            var pickOptions = new PickOptions
+            {
+                PickerTitle = "Select Student File"
+            };
+            var file = await FilePicker.PickAsync(pickOptions);
             if (file != null)
             {
                 try
@@ -295,34 +303,6 @@ namespace ProfessorApp.Pages
             }
         }
 
-        // Open deletion pop up
-        private void ConfirmDelete(object sender, EventArgs e)
-        {
-            // Show the form
-            ConfirmDeletePopUp.IsVisible = true;
-        }
-
-        // Cancel deletion
-        private void OnConfirmCancelClicked(object sender, EventArgs e)
-        {
-            // Hide the form
-            ConfirmDeletePopUp.IsVisible = false;
-        }
-
-        // deletes course
-        private async void OnDeleteCourseClicked(object sender, EventArgs e)
-        {
-            string? message = await _clientService.DeleteCourseByIDAsync(_courseId);
-            if (message != null)
-            {
-                await DisplayAlert("Success", "The course has been deleted.", "OK");
-                await Navigation.PopAsync();
-            } else
-            {
-                await DisplayAlert("Error", "Course deletion failed.", "OK");
-            }
-        }
-
         //Submit Deletion form
         private async void OnSubmitDeleteClicked(object sender, EventArgs e)
         {
@@ -382,6 +362,33 @@ namespace ProfessorApp.Pages
             if (course == null) return;
 
             await Navigation.PushAsync(new QuizPage(_clientService, course));
+        }
+
+        // Open deletion confirmation popup
+        private void ConfirmDelete(object sender, EventArgs e)
+        {
+            ConfirmDeletePopUp.IsVisible = true;
+        }
+
+        // Cancel deletion
+        private void OnConfirmCancelClicked(object sender, EventArgs e)
+        {
+            ConfirmDeletePopUp.IsVisible = false;
+        }
+
+        // Delete course action
+        private async void OnDeleteCourseClicked(object sender, EventArgs e)
+        {
+            var message = await _clientService.DeleteCourseByIDAsync(_courseId);
+            if (message != null)
+            {
+                await DisplayAlert("Success", "Course deleted.", "OK");
+                await Navigation.PopAsync();
+            }
+            else
+            {
+                await DisplayAlert("Error", "Failed to delete course.", "OK");
+            }
         }
     }
 }
