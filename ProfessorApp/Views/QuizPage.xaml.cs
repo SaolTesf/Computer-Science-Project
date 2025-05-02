@@ -5,6 +5,7 @@ using AttendanceShared.DTOs;
 using ProfessorApp.Services;
 using Microsoft.Maui.Controls;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace ProfessorApp.Pages
 {
@@ -16,7 +17,7 @@ namespace ProfessorApp.Pages
     public partial class QuizPage : ContentPage
     {
         private readonly ClientService _clientService;
-        public List<string> BankList { get; set; } = new List<string>();
+        public ObservableCollection<string> BankList { get; set; } = new ObservableCollection<string>();
         public string? SelectedBank { get; set; }
         public List<QuestionWithSelection> QuestionTextList { get; set; } = new List<QuestionWithSelection>();
         private StackLayout QuestionsCheckBoxLayout;
@@ -43,18 +44,12 @@ namespace ProfessorApp.Pages
             //Fetch banks associated with the specific course
             var bankNames = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
 
-            BankList = bankNames?.Select(b => b.BankName).ToList() ?? new List<string>();
-
-            if (BankList.Count > 0)
+            BankList.Clear();
+            foreach (var bankName in bankNames)
             {
-                SelectedBank = BankList.Contains(SelectedBank) ? SelectedBank : BankList[0];
+                BankList.Add(bankName.BankName);
             }
-            else 
-            {
-                SelectedBank = null;
-            }
-
-                OnPropertyChanged(nameof(BankList));
+            OnPropertyChanged(nameof(BankList));
             OnPropertyChanged(nameof(SelectedBank));
         }
 
@@ -106,8 +101,9 @@ namespace ProfessorApp.Pages
                     await DisplayAlert("Success", "Quiz Bank added successfully.", "OK");
 
                     //Close the form and refresh the list of banks
+                    BankPicker.SelectedItem = null;
                     AddBankPopup.IsVisible = false;
-                    LoadBankNamesAsync(); 
+                    LoadBankNamesAsync();
                 }
                 else
                 {
@@ -138,18 +134,19 @@ namespace ProfessorApp.Pages
         private async void OnSubmitDeleteBankClicked(object sender, EventArgs e)
         {
             if (SelectedBank == null)
-            { 
+            {
                 await DisplayAlert("Error", "Please select a bank to delete.", "OK");
             }
-            var selected =  await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
+            var selected = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
             var deleteBankResponse = await _clientService.DeleteQuizQuestionBankAsync(selected);
             if (deleteBankResponse)
             {
                 LoadBankNamesAsync();
                 await Application.Current.MainPage.DisplayAlert("Success", "Bank deleted successfully.", "OK");
                 DeleteBankPopup.IsVisible = false;
+                LoadBankNamesAsync();
             }
-            else 
+            else
             {
                 await DisplayAlert("Error", $"Failed to delete bank.", "OK");
             }
@@ -173,10 +170,10 @@ namespace ProfessorApp.Pages
                 Option2Entry.Text = string.Empty;
                 Option3Entry.Text = string.Empty;
                 Option4Entry.Text = string.Empty;
+                AnswerEntry.Text = null;
                 SelectedBank = null;
             }
         }
-        //Submit question data to database based on manual
         private async void OnSubmitQuestionClicked(object sender, EventArgs e)
         {
             var questionText = QuestionTextEntry.Text?.Trim();
@@ -184,6 +181,8 @@ namespace ProfessorApp.Pages
             var option2 = Option2Entry.Text?.Trim();
             var option3 = Option3Entry.Text?.Trim();
             var option4 = Option4Entry.Text?.Trim();
+            var answer = AnswerEntry.Text?.Trim();
+            var parsed = 0;
             //Checking to see if the question, and at least 2 answer fields are filled in
             if (string.IsNullOrEmpty(questionText) ||
                 string.IsNullOrEmpty(option1) || string.IsNullOrEmpty(option2))
@@ -191,15 +190,41 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Input Error", "Please fill in all fields.", "OK");
                 return;
             }
+            else if (!int.TryParse(answer, out int parsedAnswer) || parsedAnswer < 1 || parsedAnswer > 4)
+            {
+                await DisplayAlert("Input Error", "Answer must be a number between 1 and 4.", "OK");
+                return;
+            }
+            else
+            {
+                parsed = parsedAnswer;
+
+                //Check if the selected answer option is filled
+                string selectedOptionText = parsed switch
+                {
+                    1 => option1,
+                    2 => option2,
+                    3 => option3,
+                    4 => option4,
+                    _ => null
+                };
+
+                if (string.IsNullOrWhiteSpace(selectedOptionText))
+                {
+                    await DisplayAlert("Input Error", $"Option {parsed} is empty. Please fill it in or select a different option for an answer.", "OK");
+                    return;
+                }
+            }
 
             //Getting BankID by using the Bank Name chosen from the picker
-            int? questionBankID = SelectedBank != null? await _clientService.GetQuestionBankIdByNameAsync(SelectedBank) : (int?)null;
+            int? questionBankID = SelectedBank != null ? await _clientService.GetQuestionBankIdByNameAsync(SelectedBank) : (int?)null;
 
             if (questionBankID == null)
             {
                 await DisplayAlert("Error", $"Could not find ID for bank '{SelectedBank}'.", "OK");
                 return;
             }
+
             //Creating question item
             var question = new QuizQuestionDTO
             {
@@ -209,6 +234,7 @@ namespace ProfessorApp.Pages
                 Option2 = option2,
                 Option3 = option3,
                 Option4 = option4,
+                Answer = parsed
             };
 
             try
@@ -224,8 +250,12 @@ namespace ProfessorApp.Pages
                     Option2Entry.Text = string.Empty;
                     Option3Entry.Text = string.Empty;
                     Option4Entry.Text = string.Empty;
+                    AnswerEntry.Text = null;
                     SelectedBank = null;
+                    BankPicker.SelectedItem = null;
+                    QuestionTextList.Clear();
                     AddQuestionPopup.IsVisible = false;
+                    await OnSelectedBankChangedAsync();
                 }
                 else
                 {
@@ -246,6 +276,7 @@ namespace ProfessorApp.Pages
             Option2Entry.Text = string.Empty;
             Option3Entry.Text = string.Empty;
             Option4Entry.Text = string.Empty;
+            AnswerEntry.Text = null;
             SelectedBank = null;
             //Hide the form
             AddQuestionPopup.IsVisible = false;
@@ -253,10 +284,10 @@ namespace ProfessorApp.Pages
 
         private void OnBankPickerSelectedIndexChanged(object sender, EventArgs e)
         {
-            OnSelectedBankChanged();
+            OnSelectedBankChangedAsync();
         }
 
-        private async void OnSelectedBankChanged()
+        private async Task OnSelectedBankChangedAsync()
         {
             if (SelectedBank != null)
             {
@@ -272,7 +303,7 @@ namespace ProfessorApp.Pages
                     {
                         QuestionText = q.QuestionText,
                         //Initially, all checkboxes are unchecked
-                        IsChecked = false  
+                        IsChecked = false
                     }).ToList() ?? new List<QuestionWithSelection>();
 
                     OnPropertyChanged(nameof(QuestionTextList));

@@ -62,6 +62,7 @@ CREATE TABLE QuizQuestionBank (
 );
 
 -- Quiz Questions - Multiple-choice
+-- Quiz Questions - Multiple-choice
 CREATE TABLE QuizQuestion (
     QuestionID INT AUTO_INCREMENT PRIMARY KEY,
     QuestionBankID INT NOT NULL,
@@ -70,6 +71,7 @@ CREATE TABLE QuizQuestion (
     Option2 TEXT NOT NULL,
     Option3 TEXT,
     Option4 TEXT,
+    Answer INT NOT NULL,
     FOREIGN KEY (QuestionBankID) REFERENCES QuizQuestionBank(QuestionBankID) ON DELETE CASCADE
 );
 
@@ -130,13 +132,13 @@ VALUES
     (4, 'Final Review', 3);
 
 -- Insert QuizQuestions (depends on QuizQuestionBank)
-INSERT INTO QuizQuestion (QuestionID, QuestionBankID, QuestionText, Option1, Option2, Option3, Option4)
+INSERT INTO QuizQuestion (QuestionID, QuestionBankID, QuestionText, Option1, Option2, Option3, Option4, Answer)
 VALUES
-    (1, 1, 'Sample question 1 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (2, 1, 'Sample question 2 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (3, 2, 'Sample question 1 for Week 2?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (4, 3, 'Sample question 1 for Midterm Review?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (5, 4, 'Sample question 1 for Final Review?', 'Option A', 'Option B', 'Option C', 'Option D');
+    (1, 1, 'Sample question 1 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D', 2),
+    (2, 1, 'Sample question 2 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D', 4),
+    (3, 2, 'Sample question 1 for Week 2?', 'Option A', 'Option B', 'Option C', 'Option D', 1),
+    (4, 3, 'Sample question 1 for Midterm Review?', 'Option A', 'Option B', 'Option C', 'Option D', 1),
+    (5, 4, 'Sample question 1 for Final Review?', 'Option A', 'Option B', 'Option C', 'Option D', 3);
 
 -- Insert ClassSessions (depends on Course and QuizQuestionBank)
 INSERT INTO ClassSession (SessionID, SessionDateTime, Password, QuizStartTime, QuizEndTime, QuestionBankID, CourseID)

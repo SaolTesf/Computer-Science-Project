@@ -130,7 +130,7 @@
                 BackgroundColor="White"
                 BorderColor="Green"
                 CornerRadius="12"
-                HeightRequest="400"
+                HeightRequest="450"
                 HorizontalOptions="Center"
                 IsVisible="False"
                 VerticalOptions="Center"
@@ -170,6 +170,10 @@
                     <Entry
                         x:Name="Option4Entry"
                         Placeholder="Option 4 (Optional)"
+                        TextColor="Black" />
+                    <Entry
+                        x:Name="AnswerEntry"
+                        Placeholder="Answer (Option #)"
                         TextColor="Black" />
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
