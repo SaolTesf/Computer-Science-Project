@@ -36,6 +36,17 @@
                     MaximumWidthRequest="600"
                     Text="Courses"
                     TextColor="White" />
+
+                <Label
+                    x:Name="SessionsLabel"
+                    Margin="0,20,0,10"
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="Today's Sessions:"
+                    TextColor="White"
+                    VerticalOptions="Start" />
+
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

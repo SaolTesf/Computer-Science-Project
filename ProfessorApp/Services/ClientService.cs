@@ -236,6 +236,8 @@ namespace ProfessorApp.Services
         // get course sessions by the course's ID
         public async Task<List<ClassSessionDTO>?> GetSessionsByCourseIDAsync(int? courseID)
             => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/course/{courseID}");
+        public async Task<List<ClassSessionDTO>?> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime)
+           => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/datetime/{SessionDateTime}");
 
         public async Task<List<ClassSessionDTO>?> GetSessionsAsync()
             => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>("api/classsession/");
@@ -261,5 +263,6 @@ namespace ProfessorApp.Services
         // Attendance methods by course
         public async Task<List<AttendanceDTO>?> GetAttendancesByCourseIDAsync(int? courseID)
             => await _httpClient.GetFromJsonAsync<List<AttendanceDTO>>($"api/attendance/course/{courseID}");
+
     }
 }
