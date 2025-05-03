@@ -48,7 +48,7 @@
                     x:Name="ShowQuestionBankPicker"
                     BackgroundColor="DarkOrange"
                     ItemsSource="{Binding BankList}"
-                    SelectedItem="{Binding ShowQuestionBank, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
                     TextColor="Black"
                     WidthRequest="500" />
 

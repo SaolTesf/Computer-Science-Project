@@ -23,7 +23,6 @@ namespace ProfessorApp.Pages
         private readonly ClientService _clientService;
         public ObservableCollection<string> BankList { get; set; } = new ObservableCollection<string>();
         public string? SelectedBank { get; set; }
-        public string? ShowQuestionsBank { get; set; }
         public List<QuestionWithSelection> QuestionTextList { get; set; } = new List<QuestionWithSelection>();
         private StackLayout QuestionsCheckBoxLayout;
         private int? _courseID;
