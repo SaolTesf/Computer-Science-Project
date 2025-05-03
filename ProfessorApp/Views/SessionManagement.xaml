@@ -57,8 +57,9 @@
                                         BackgroundColor="DarkOrange"
                                         Clicked="OnRemoveSessionClicked"
                                         CommandParameter="{Binding SessionID}"
+                                        FontAttributes="Bold"
                                         Text="Remove Session"
-                                        TextColor="White" />
+                                        TextColor="DarkGreen" />
                                 </StackLayout>
                             </Frame>
                         </DataTemplate>

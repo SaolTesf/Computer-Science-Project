@@ -23,6 +23,7 @@ namespace ProfessorApp.Pages
         private readonly ClientService _clientService;
         public ObservableCollection<string> BankList { get; set; } = new ObservableCollection<string>();
         public string? SelectedBank { get; set; }
+        public string? ShowQuestionsBank { get; set; }
         public List<QuestionWithSelection> QuestionTextList { get; set; } = new List<QuestionWithSelection>();
         private StackLayout QuestionsCheckBoxLayout;
         private int? _courseID;
@@ -31,16 +32,18 @@ namespace ProfessorApp.Pages
         {
             InitializeComponent();
             _clientService = clientService;
-            _courseID = courseID; 
+            _courseID = courseID;
             BindingContext = this;
             QuestionsCheckBoxLayout = new StackLayout();
             LoadBankNamesAsync();
+            ShowAllQuestionsAsync();
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             //Reset the picker and checkbox
+            ShowQuestionBankPicker.SelectedIndex = -1;
             BankPicker.SelectedIndex = -1;
             QuestionCollectionView.IsVisible = false;
         }
@@ -372,7 +375,7 @@ namespace ProfessorApp.Pages
             DisplayAlert("Selected Questions", selectedQuestionTexts, "OK");
             foreach (var question in QuestionTextList)
             {
-                question.IsChecked = false; 
+                question.IsChecked = false;
             }
             BankPicker.SelectedIndex = -1;
             QuestionCollectionView.IsVisible = false;
@@ -380,5 +383,9 @@ namespace ProfessorApp.Pages
 
         }
 
+        private async Task ShowAllQuestionsAsync()
+        {
+            ShowQuestionCollectionView.IsVisible = true;
+        }
     }
 }

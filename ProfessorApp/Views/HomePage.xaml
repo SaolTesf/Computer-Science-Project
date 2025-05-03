@@ -33,20 +33,10 @@
                 <Button
                     BackgroundColor="DarkOrange"
                     Clicked="GoToCoursePage"
+                    FontAttributes="Bold"
                     MaximumWidthRequest="600"
                     Text="Courses"
-                    TextColor="White" />
-
-                <Label
-                    x:Name="SessionsLabel"
-                    Margin="0,20,0,10"
-                    FontAttributes="Bold"
-                    FontSize="24"
-                    HorizontalOptions="Center"
-                    Text="Today's Sessions:"
-                    TextColor="White"
-                    VerticalOptions="Start" />
-
+                    TextColor="DarkGreen" />
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

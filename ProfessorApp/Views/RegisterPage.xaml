@@ -3,57 +3,109 @@
     x:Class="ProfessorApp.Views.RegisterPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Attendance Manager"
-    BackgroundColor="#222">
+    BackgroundColor="#769576">
     <StackLayout
         Padding="30"
         Spacing="20"
         VerticalOptions="Center">
 
-        <Label
-            Margin="0,0,0,30"
-            FontAttributes="Bold"
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Register Account"
-            TextColor="White" />
-
         <Frame
             Padding="10"
-            BackgroundColor="#333"
-            BorderColor="DarkOrange"
+            BackgroundColor="White"
+            BorderColor="Transparent"
             CornerRadius="10"
             HasShadow="True"
             MaximumWidthRequest="600">
             <StackLayout Spacing="10">
-                <Entry
-                    x:Name="idEntry"
-                    Keyboard="Numeric"
-                    MaxLength="10"
-                    Placeholder="ID"
-                    TextChanged="IDTextChanged" />
-                <Entry x:Name="firstNameEntry" Placeholder="First Name" />
-                <Entry x:Name="lastNameEntry" Placeholder="Last Name" />
-                <Entry x:Name="usernameEntry" Placeholder="Username" />
-                <Entry x:Name="emailEntry" Placeholder="Email Address" />
-                <Entry
-                    x:Name="passwordEntry"
-                    IsPassword="True"
-                    Placeholder="Password" />
+
+                <Label
+                    Margin="0,0,0,30"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="Center"
+                    Text="Register Account"
+                    TextColor="DarkGreen" />
+                <Frame
+                    Padding="0"
+                    BackgroundColor="White"
+                    BorderColor="Black"
+                    CornerRadius="10">
+                    <Entry
+                        x:Name="idEntry"
+                        Keyboard="Numeric"
+                        MaxLength="10"
+                        Placeholder="ID"
+                        TextChanged="IDTextChanged"
+                        TextColor="Black" />
+                </Frame>
+                <Frame
+                    Padding="0"
+                    BackgroundColor="White"
+                    BorderColor="Black"
+                    CornerRadius="10">
+                    <Entry
+                        x:Name="firstNameEntry"
+                        Placeholder="First Name"
+                        TextColor="Black" />
+                </Frame>
+                <Frame
+                    Padding="0"
+                    BackgroundColor="White"
+                    BorderColor="Black"
+                    CornerRadius="10">
+                    <Entry
+                        x:Name="lastNameEntry"
+                        Placeholder="Last Name"
+                        TextColor="Black" />
+                </Frame>
+                <Frame
+                    Padding="0"
+                    BackgroundColor="White"
+                    BorderColor="Black"
+                    CornerRadius="10">
+                    <Entry
+                        x:Name="usernameEntry"
+                        Placeholder="Username"
+                        TextColor="Black" />
+                </Frame>
+                <Frame
+                    Padding="0"
+                    BackgroundColor="White"
+                    BorderColor="Black"
+                    CornerRadius="10">
+                    <Entry
+                        x:Name="emailEntry"
+                        Placeholder="Email Address"
+                        TextColor="Black" />
+                </Frame>
+                <Frame
+                    Padding="0"
+                    BackgroundColor="White"
+                    BorderColor="Black"
+                    CornerRadius="10">
+                    <Entry
+                        x:Name="passwordEntry"
+                        IsPassword="True"
+                        Placeholder="Password"
+                        TextColor="Black" />
+                </Frame>
                 <Button
                     Margin="0,10,0,0"
-                    BackgroundColor="Green"
+                    BackgroundColor="Orange"
                     Clicked="OnRegisterClicked"
                     MaximumWidthRequest="400"
                     Text="Register Account"
-                    TextColor="White" />
-                <Button
-                    Margin="0,10,0,0"
-                    BackgroundColor="Grey"
-                    Clicked="GoToLogin"
-                    MaximumWidthRequest="400"
-                    Text="Go To Login"
-                    TextColor="White" />
+                    TextColor="Black" />
+                <Label
+                    Margin="0,0,0,0"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    Text="Return to Log In Page"
+                    TextColor="Green">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="GoToLogin" />
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label
                     x:Name="statusLabel"
                     HorizontalOptions="Center"
