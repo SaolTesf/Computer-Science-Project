@@ -85,5 +85,15 @@ namespace AttendanceSystem.Controllers
             await _classSessionService.DeleteSessionAsync(id);
             return NoContent();
         }
+
+        // GET: api/classsession/{dateTime}
+        [HttpGet("{sessionDateTime}")]
+        public async Task<ActionResult<ClassSession>> GetSessionBySessionDateTime(DateTime SessionDateTime)
+        {
+            var session = await _classSessionService.GetSessionBySessionDateTimeAsync(SessionDateTime);
+            if (session == null)
+                return NotFound();
+            return Ok(session);
+        }
     }
 }

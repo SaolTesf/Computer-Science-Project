@@ -1,4 +1,5 @@
 using AttendanceSystem.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,5 +14,6 @@ namespace AttendanceSystem.Data.Repositories
         Task AddSessionAsync(ClassSession session); // Add a new session.
         Task UpdateSessionAsync(ClassSession session); // Update an existing session.
         Task DeleteSessionAsync(ClassSession session); // Delete a session.
+        Task<IEnumerable<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime);
     }
 }
