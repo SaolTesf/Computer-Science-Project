@@ -2,26 +2,114 @@
 <ContentPage
     x:Class="ProfessorApp.Pages.AttendancePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    BackgroundColor="Black">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    BackgroundColor="#222">
 
-    <!--  Main Content  -->
-    <VerticalStackLayout Padding="20" Spacing="10">
+    <Grid>
+        <ScrollView Grid.Row="1">
+            <!--  Main Content  -->
+            <VerticalStackLayout Padding="20" Spacing="10">
 
-        <Label
-            Margin="0,20,0,10"
-            FontAttributes="Bold"
-            FontSize="24"
-            HorizontalOptions="Center"
-            Text="Attendance Page"
-            TextColor="White"
-            VerticalOptions="Start" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="Attendance Records"
+                    TextColor="White" />
 
-        <Button
-            BackgroundColor="Orange"
-            Clicked="OngetAttendanceClicked"
-            Text="Get Student Attendance"
-            TextColor="White" />
+                <!--  Filters  -->
+                <HorizontalStackLayout Spacing="10">
+                    <Picker
+                        x:Name="SessionFilterPicker"
+                        Title="Session"
+                        SelectedIndexChanged="OnFilterChanged"
+                        TextColor="White" />
+                    <Entry
+                        x:Name="FirstNameFilterEntry"
+                        Placeholder="First Name"
+                        TextChanged="OnFilterTextChanged"
+                        TextColor="White" />
+                    <Entry
+                        x:Name="LastNameFilterEntry"
+                        Placeholder="Last Name"
+                        TextChanged="OnFilterTextChanged"
+                        TextColor="White" />
+                    <Entry
+                        x:Name="UTDIDFilterEntry"
+                        Placeholder="UTDID"
+                        TextChanged="OnFilterTextChanged"
+                        TextColor="White" />
+                    <Picker
+                        x:Name="TypeFilterPicker"
+                        Title="Type"
+                        SelectedIndexChanged="OnFilterChanged"
+                        TextColor="White" />
+                    <VerticalStackLayout Spacing="2">
+                        <Label
+                            FontSize="12"
+                            Text="From"
+                            TextColor="White" />
+                        <DatePicker
+                            x:Name="FromDatePicker"
+                            DateSelected="OnDateFilterChanged"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="2">
+                        <Label
+                            FontSize="12"
+                            Text="To"
+                            TextColor="White" />
+                        <DatePicker
+                            x:Name="ToDatePicker"
+                            DateSelected="OnDateFilterChanged"
+                            TextColor="White" />
+                    </VerticalStackLayout>
+                    <Button
+                        BackgroundColor="Gray"
+                        Clicked="OnClearFiltersClicked"
+                        Text="Clear"
+                        TextColor="White" />
+                </HorizontalStackLayout>
 
-    </VerticalStackLayout>
+                <!--  Records  -->
+                <CollectionView x:Name="AttendanceCollectionView" HeightRequest="400">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Margin="0,5"
+                                Padding="10"
+                                BackgroundColor="#333"
+                                CornerRadius="8">
+                                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="{Binding FirstName}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding LastName}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="2"
+                                        Text="{Binding UTDID}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="3"
+                                        Text="{Binding SubmissionTime}"
+                                        TextColor="White" />
+                                    <Label
+                                        Grid.Column="4"
+                                        Text="{Binding AttendanceType}"
+                                        TextColor="White" />
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
 </ContentPage>

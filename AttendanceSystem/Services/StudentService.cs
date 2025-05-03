@@ -25,9 +25,8 @@ namespace AttendanceSystem.Services {
       }
       catch{
         Student? existingStudent = await _studentRepository.GetStudentByUTDIdAsync(student.UTDID);
-        if (existingStudent != null) {
+        if (existingStudent != null)
           return true;
-        }
         return false;
       }
     }

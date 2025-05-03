@@ -2,6 +2,8 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories; // Assumes IClassSessionRepository exists
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AttendanceSystem.Services
 {
@@ -17,6 +19,12 @@ namespace AttendanceSystem.Services
         public async Task<List<ClassSession>> GetAllSessionsAsync()
         {
             var sessions = await _sessionRepository.GetAllSessionsAsync();
+            return new List<ClassSession>(sessions);
+        }
+
+        public async Task<List<ClassSession>> GetByCourseIDAsync(int courseID)
+        {
+            var sessions = await _sessionRepository.GetByCourseIDAsync(courseID);
             return new List<ClassSession>(sessions);
         }
 
@@ -42,6 +50,11 @@ namespace AttendanceSystem.Services
             {
                 await _sessionRepository.DeleteSessionAsync(session);
             }
+        }
+        public async Task<List<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime)
+        {
+            var sessions = await _sessionRepository.GetSessionBySessionDateTimeAsync(SessionDateTime);
+            return new List<ClassSession>(sessions);
         }
     }
 }

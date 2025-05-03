@@ -33,10 +33,5 @@ namespace ProfessorApp.Pages
         {
             await Navigation.PushAsync(new CoursePage(_clientService));
         }
-
-        private async void GoToAttPage(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new AttendancePage());
-        }
     }
 }
