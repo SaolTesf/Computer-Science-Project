@@ -8,6 +8,7 @@ using System.Text;
 using AttendanceSystem.Components;
 using AttendanceSystem.Data;
 using AttendanceSystem.Data.Repositories;
+using AttendanceSystem.Repositories;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -76,6 +77,8 @@ builder.Services.AddScoped<IQuizResponseService, QuizResponseService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ISelectedQuizQuestionRepository, SelectedQuizQuestionRepository>();
+builder.Services.AddScoped<ISelectedQuizQuestionService, SelectedQuizQuestionService>();
 
 // Register course enrollment repository & service
 builder.Services.AddScoped<ICourseEnrollmentRepository, CourseEnrollmentRepository>();

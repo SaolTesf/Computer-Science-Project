@@ -34,7 +34,6 @@ namespace ProfessorApp.Pages
         }
 
         private readonly HttpClient _httpClient;
-        private const string AttendanceApiBaseUrl = "http://localhost:5225/api/attendance";
         private async void OngetAttendanceClicked(object sender, EventArgs e)
         {
             await DisplayAlert("Success", "Student added successfully.", "OK");
