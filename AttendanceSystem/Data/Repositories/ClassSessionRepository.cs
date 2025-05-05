@@ -47,5 +47,10 @@ namespace AttendanceSystem.Data.Repositories
             _context.ClassSessions.Remove(session);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime)
+        => await _context.ClassSessions
+                    .Where(e => e.SessionDateTime == SessionDateTime)
+                    .ToListAsync();
     }
 }

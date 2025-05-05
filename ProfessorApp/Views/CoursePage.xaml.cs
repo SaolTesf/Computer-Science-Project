@@ -29,6 +29,7 @@ namespace ProfessorApp.Pages
             base.OnAppearing();
             var courses = await _clientService.GetCoursesByProfessorAsync();
             CourseCollectionView.ItemsSource = courses;
+            statusLabel.Text = null;
         }
 
         private async void OnCourseSelected(object sender, SelectionChangedEventArgs e)

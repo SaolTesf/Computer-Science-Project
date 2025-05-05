@@ -12,7 +12,11 @@ namespace ProfessorApp.Views
             InitializeComponent();
             _clientService = clientService;
         }
-
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            statusLabel.Text = null;
+        }
         private async void OnLoginClicked(object sender, EventArgs e)
         {
             string identifier = identifierEntry.Text ?? "";
@@ -21,6 +25,8 @@ namespace ProfessorApp.Views
             if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(password))
             {
                 statusLabel.Text = "Please enter both identifier and password";
+                statusLabel.TextColor = Colors.Red;
+                statusLabel.IsVisible = true;
                 return;
             }     
             try 
@@ -30,6 +36,8 @@ namespace ProfessorApp.Views
                 {
                     statusLabel.TextColor = Colors.Green;
                     statusLabel.Text = "Login successful!";
+                    identifierEntry.Text = string.Empty;
+                    passwordEntry.Text = string.Empty;
                     await Navigation.PushAsync(new HomePage(_clientService));
                 }
                 else
@@ -37,11 +45,13 @@ namespace ProfessorApp.Views
                     statusLabel.TextColor = Colors.Red;
                     statusLabel.Text = "Invalid credentials";
                 }
+                statusLabel.IsVisible = true;
             }
             catch (Exception ex)
             {
                 statusLabel.TextColor = Colors.Red;
                 statusLabel.Text = $"{ex.Message}";
+                statusLabel.IsVisible = true;
             }
         }
         private async void GoToRegister(object sender, EventArgs e)

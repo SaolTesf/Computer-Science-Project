@@ -3,6 +3,7 @@ using AttendanceSystem.Data.Repositories; // Assumes IClassSessionRepository exi
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AttendanceSystem.Services
 {
@@ -49,6 +50,11 @@ namespace AttendanceSystem.Services
             {
                 await _sessionRepository.DeleteSessionAsync(session);
             }
+        }
+        public async Task<List<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime)
+        {
+            var sessions = await _sessionRepository.GetSessionBySessionDateTimeAsync(SessionDateTime);
+            return new List<ClassSession>(sessions);
         }
     }
 }

@@ -18,11 +18,13 @@
                     Margin="0,30,0,30"
                     BackgroundColor="DarkOrange"
                     Clicked="OnAddBankClicked"
+                    FontAttributes="Bold"
                     Text="Add Question Bank"
-                    TextColor="White" />
+                    TextColor="Black"
+                    WidthRequest="500" />
 
                 <Button
-                    Margin="0,15,0,15"
+                    Margin="0,-25,0,15"
                     BackgroundColor="Red"
                     Clicked="OnDeleteBankClicked"
                     Text="Delete Question Bank"
@@ -34,14 +36,39 @@
                     BackgroundColor="DarkOrange"
                     Clicked="OnAddQuestionClicked"
                     Text="Add Question"
-                    TextColor="White" />
+                    TextColor="White"
+                    WidthRequest="500" />
+
+                <Label
+                    FontSize="20"
+                    HorizontalTextAlignment="Center"
+                    Text="Available Questions" />
+
+                <CollectionView
+                    x:Name="AllQuestionsCollectionView"
+                    Background="DarkOrange"
+                    ItemsSource="{Binding AllQuestionsList}"
+                    MaximumHeightRequest="300"
+                    WidthRequest="325">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Orientation="Horizontal">
+                                <Label
+                                    Text="{Binding QuestionText}"
+                                    TextColor="White"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
                 <Button
                     Margin="0,30,0,30"
-                    BackgroundColor="DarkOrange"
+                    BackgroundColor="Green"
                     Clicked="OnCreateQuizClicked"
                     Text="Create Quiz"
-                    TextColor="White" />
+                    TextColor="White"
+                    WidthRequest="500" />
             </VerticalStackLayout>
         </ScrollView>
 
@@ -53,7 +80,6 @@
             BackgroundColor="#333"
             BorderColor="DarkOrange"
             CornerRadius="12"
-            HeightRequest="150"
             HorizontalOptions="Center"
             IsVisible="False"
             VerticalOptions="Center"
@@ -70,7 +96,10 @@
                     x:Name="BankNameEntry"
                     Placeholder="Bank Name:"
                     TextColor="White" />
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <HorizontalStackLayout
+                    Margin="0,10,0,0"
+                    HorizontalOptions="Center"
+                    Spacing="10">
                     <Button
                         BackgroundColor="DarkGreen"
                         Clicked="OnSubmitQuizBankClicked"
@@ -91,7 +120,7 @@
             Grid.Row="2"
             Padding="15"
             BackgroundColor="#333"
-            BorderColor="DarkOrange"
+            BorderColor="Red"
             CornerRadius="12"
             HeightRequest="200"
             HorizontalOptions="Center"
@@ -133,7 +162,7 @@
             x:Name="DeleteConfirmationPopup"
             Grid.Row="3"
             Padding="15"
-            BackgroundColor="#fff"
+            BackgroundColor="#333"
             BorderColor="Red"
             CornerRadius="12"
             HeightRequest="200"
@@ -148,7 +177,7 @@
                     FontSize="20"
                     HorizontalOptions="Center"
                     Text="Are you sure you want to delete this question bank? This will delete any questions associated with the chosen bank. This cannot be undone."
-                    TextColor="Black" />
+                    TextColor="White" />
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                     <Button
@@ -226,7 +255,10 @@
                         Placeholder="Answer (Option #)"
                         TextColor="White" />
 
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <HorizontalStackLayout
+                        Margin="0,10,0,0"
+                        HorizontalOptions="Center"
+                        Spacing="10">
                         <Button
                             BackgroundColor="DarkGreen"
                             Clicked="OnSubmitQuestionClicked"
@@ -276,8 +308,8 @@
                     <CollectionView
                         x:Name="QuestionCollectionView"
                         Background="DarkOrange"
-                        HeightRequest="225"
                         ItemsSource="{Binding QuestionTextList}"
+                        MaximumHeightRequest="225"
                         WidthRequest="325">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
