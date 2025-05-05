@@ -236,14 +236,12 @@ namespace ProfessorApp.Services
         // get course sessions by the course's ID
         public async Task<List<ClassSessionDTO>?> GetSessionsByCourseIDAsync(int? courseID)
             => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/course/{courseID}");
-        public async Task<List<ClassSessionDTO>?> GetSessionBySessionDateTimeAsync(DateTime sessionDateTime)
-        {
-            var formattedDate = sessionDateTime.ToString("yyyy-MM-dd"); // Ensure correct format
-            return await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/date/{formattedDate}");
-        }
 
         public async Task<List<ClassSessionDTO>?> GetSessionsAsync()
             => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>("api/classsession/");
+        public async Task<List<ClassSessionDTO>?> GetSessionBySessionDateTimeAsync(DateTime sessionDateTime)
+             => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/datetime/{sessionDateTime:yyyy-MM-dd}");
+
 
         // add a class session
         public async Task<bool> AddClassSessionAsync(ClassSessionDTO dto)

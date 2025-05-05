@@ -88,7 +88,7 @@ namespace AttendanceSystem.Controllers
 
         // GET: api/classsession/{dateTime}
         [HttpGet("datetime/{sessionDateTime}")]
-        public async Task<ActionResult<ClassSession>> GetSessionBySessionDateTime(DateTime SessionDateTime)
+        public async Task<ActionResult<IEnumerable<ClassSession>>> GetSessionBySessionDateTime(DateTime SessionDateTime)
         {
             var session = await _classSessionService.GetSessionBySessionDateTimeAsync(SessionDateTime);
             if (session == null)

@@ -44,28 +44,18 @@
                     HorizontalTextAlignment="Center"
                     Text="Available Questions" />
 
-                <Picker
-                    x:Name="ShowQuestionBankPicker"
-                    BackgroundColor="DarkOrange"
-                    ItemsSource="{Binding BankList}"
-                    SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
-                    TextColor="Black"
-                    WidthRequest="500" />
-
                 <CollectionView
-                    x:Name="ShowQuestionCollectionView"
-                    Background="Black"
-                    IsVisible="true"
-                    ItemsSource="{Binding QuestionTextList}"
-                    MaximumHeightRequest="225"
-                    WidthRequest="500">
+                    x:Name="AllQuestionsCollectionView"
+                    Background="DarkOrange"
+                    ItemsSource="{Binding AllQuestionsList}"
+                    MaximumHeightRequest="300"
+                    WidthRequest="325">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout Orientation="Horizontal">
                                 <Label
-                                    Margin="10,5,0,5"
                                     Text="{Binding QuestionText}"
-                                    TextColor="DarkOrange"
+                                    TextColor="White"
                                     VerticalOptions="Center" />
                             </StackLayout>
                         </DataTemplate>
