@@ -111,6 +111,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
        
     });
 
+    modelBuilder.Entity<SessionQuestion>(e => {
+      e.ToTable("SessionQuestion");
+      e.HasKey(e => e.SessionQuestionID);
+      e.Property(e => e.SessionQuestionID).ValueGeneratedOnAdd();
+      e.Property(e => e.QuestionID).IsRequired();
+      e.Property(e => e.SessionID).IsRequired();
+      e.HasOne(e => e.ClassSession)
+        .WithMany(cs => cs.SessionQuestions)
+        .HasForeignKey(e => e.SessionID)
+        .OnDelete(DeleteBehavior.Cascade);
+      e.HasOne(e => e.QuizQuestion)
+        .WithMany(q => q.SessionQuestions)
+        .HasForeignKey(e => e.QuestionID)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      base.OnModelCreating(modelBuilder);
+    });
+
     // Configure QuizQuestionBank entity
     modelBuilder.Entity<QuizQuestionBank>(entity =>
     {

@@ -36,6 +36,10 @@ namespace AttendanceSystem.Models
         [JsonIgnore]
         public Course? Course { get; set; } = null!;
 
+        // Navigation property to the associated SessionQuestions
+        [JsonIgnore]
+        public ICollection<SessionQuestion> SessionQuestions { get; set; } = new List<SessionQuestion>();
+
         public ICollection<Attendance> Attendance { get; set; } = new List<Attendance>();
     }
 }
