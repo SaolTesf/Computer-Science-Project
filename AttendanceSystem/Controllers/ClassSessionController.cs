@@ -108,6 +108,5 @@ namespace AttendanceSystem.Controllers
 
             return Ok(currentSession);
         }
-
     }
 }

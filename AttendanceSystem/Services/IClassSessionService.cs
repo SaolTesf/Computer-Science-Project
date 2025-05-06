@@ -17,7 +17,5 @@ namespace AttendanceSystem.Services
         Task DeleteSessionAsync(int sessionId);                       // Delete a session by ID
         Task<List<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime);
         Task<ClassSession?> GetCurrentSessionAsync();
-
-
     }
 }
