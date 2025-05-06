@@ -18,7 +18,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
   public DbSet<QuizResponse> QuizResponses { get; set; } = null!;
   public DbSet<Student> Students { get; set; } = null!;
   public DbSet<CourseEnrollment> CourseEnrollments { get; set; } = null!;
-  public DbSet<SelectedQuizQuestion> SelectedQuizQuestions { get; set; }
+  public DbSet<SelectedQuizQuestion> SelectedQuizQuestions { get; set; } = null!;
+  public DbSet<SessionQuestion> SessionQuestions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

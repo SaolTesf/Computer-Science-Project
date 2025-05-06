@@ -84,6 +84,10 @@ builder.Services.AddScoped<ISelectedQuizQuestionService, SelectedQuizQuestionSer
 builder.Services.AddScoped<ICourseEnrollmentRepository, CourseEnrollmentRepository>();
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
 
+// Register session-question repository & service
+builder.Services.AddScoped<ISessionQuestionRepository, SessionQuestionRepository>();
+builder.Services.AddScoped<ISessionQuestionService, SessionQuestionService>();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<GetIPService>();
