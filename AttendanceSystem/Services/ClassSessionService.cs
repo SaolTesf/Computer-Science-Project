@@ -59,10 +59,11 @@ namespace AttendanceSystem.Services
         public async Task<ClassSession?> GetCurrentSessionAsync()
         {
             var currentTime = DateTime.UtcNow;
-            var sessions = await _sessionRepository.GetAllSessionsAsync();
-
-            return sessions.FirstOrDefault(session =>
-                session.QuizStartTime <= currentTime && session.QuizEndTime >= currentTime);
+            return await _sessionRepository.GetCurrentSessionAsync(currentTime);
         }
+
+
+
+
     }
 }

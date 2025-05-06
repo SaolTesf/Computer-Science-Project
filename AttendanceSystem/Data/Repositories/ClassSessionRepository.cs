@@ -52,5 +52,18 @@ namespace AttendanceSystem.Data.Repositories
         => await _context.ClassSessions
                     .Where(e => e.SessionDateTime == SessionDateTime)
                     .ToListAsync();
+
+        public async Task<ClassSession?> GetCurrentSessionAsync(DateTime currentTime)
+        {
+            return await _context.ClassSessions
+                .Where(session =>
+                    session.QuizStartTime <= currentTime &&
+                    session.QuizEndTime >= currentTime &&
+                    session.QuizStartTime.Date == currentTime.Date) // Add this condition
+                .FirstOrDefaultAsync();
+        }
+
+
+
     }
 }
