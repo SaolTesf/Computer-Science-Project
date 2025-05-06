@@ -96,6 +96,7 @@ namespace AttendanceSystem.Controllers
             return Ok(session);
         }
         // GET: api/classsession/current
+
         [HttpGet("current")]
         public async Task<ActionResult<ClassSession>> GetCurrentSession()
         {
@@ -103,10 +104,12 @@ namespace AttendanceSystem.Controllers
 
             if (currentSession == null)
             {
-                return NotFound("No active session found for the current time.");
+                return NotFound($"No active session found for current time: {DateTime.UtcNow}");
             }
 
             return Ok(currentSession);
         }
+
+
     }
 }
