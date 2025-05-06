@@ -83,6 +83,9 @@ builder.Services.AddScoped<ISelectedQuizQuestionService, SelectedQuizQuestionSer
 // Register course enrollment repository & service
 builder.Services.AddScoped<ICourseEnrollmentRepository, CourseEnrollmentRepository>();
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
+builder.Services.AddScoped<AttendanceBackgroundService>(); // Scoped service
+builder.Services.AddHostedService<AttendanceBackgroundService>();
+
 
 builder.Services.AddHttpContextAccessor();
 

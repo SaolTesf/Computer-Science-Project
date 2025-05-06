@@ -265,5 +265,18 @@ namespace ProfessorApp.Services
         public async Task<List<AttendanceDTO>?> GetAttendancesByCourseIDAsync(int? courseID)
             => await _httpClient.GetFromJsonAsync<List<AttendanceDTO>>($"api/attendance/course/{courseID}");
 
+        public async Task<bool> UpdateAttendanceAsync(int AttendanceID, AttendanceDTO attendance)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/attendance/{attendance.AttendanceID}", attendance);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<List<AttendanceDTO>> GetAttendanceByUtdIdAsync(string utdId)
+        {
+            var response = await _httpClient.GetAsync($"api/attendance/GetByUtdId/{utdId}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<AttendanceDTO>>();
+        }
+
     }
 }
