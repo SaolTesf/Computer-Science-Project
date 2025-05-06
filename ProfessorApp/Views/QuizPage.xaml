@@ -18,11 +18,13 @@
                     Margin="0,30,0,30"
                     BackgroundColor="DarkOrange"
                     Clicked="OnAddBankClicked"
+                    FontAttributes="Bold"
                     Text="Add Question Bank"
-                    TextColor="White" />
+                    TextColor="Black"
+                    WidthRequest="500" />
 
                 <Button
-                    Margin="0,15,0,15"
+                    Margin="0,-25,0,15"
                     BackgroundColor="Red"
                     Clicked="OnDeleteBankClicked"
                     Text="Delete Question Bank"
@@ -34,14 +36,39 @@
                     BackgroundColor="DarkOrange"
                     Clicked="OnAddQuestionClicked"
                     Text="Add Question"
-                    TextColor="White" />
+                    TextColor="White"
+                    WidthRequest="500" />
+
+                <Label
+                    FontSize="20"
+                    HorizontalTextAlignment="Center"
+                    Text="Available Questions" />
+
+                <CollectionView
+                    x:Name="AllQuestionsCollectionView"
+                    Background="DarkOrange"
+                    ItemsSource="{Binding AllQuestionsList}"
+                    MaximumHeightRequest="300"
+                    WidthRequest="325">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Orientation="Horizontal">
+                                <Label
+                                    Text="{Binding QuestionText}"
+                                    TextColor="White"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
                 <Button
                     Margin="0,30,0,30"
-                    BackgroundColor="DarkOrange"
+                    BackgroundColor="Green"
                     Clicked="OnCreateQuizClicked"
                     Text="Create Quiz"
-                    TextColor="White" />
+                    TextColor="White"
+                    WidthRequest="500" />
             </VerticalStackLayout>
         </ScrollView>
 
@@ -281,8 +308,8 @@
                     <CollectionView
                         x:Name="QuestionCollectionView"
                         Background="DarkOrange"
-                        HeightRequest="225"
                         ItemsSource="{Binding QuestionTextList}"
+                        MaximumHeightRequest="225"
                         WidthRequest="325">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>

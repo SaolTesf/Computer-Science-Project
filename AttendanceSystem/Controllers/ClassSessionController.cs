@@ -87,13 +87,27 @@ namespace AttendanceSystem.Controllers
         }
 
         // GET: api/classsession/{dateTime}
-        [HttpGet("{sessionDateTime}")]
-        public async Task<ActionResult<ClassSession>> GetSessionBySessionDateTime(DateTime SessionDateTime)
+        [HttpGet("datetime/{sessionDateTime}")]
+        public async Task<ActionResult<IEnumerable<ClassSession>>> GetSessionBySessionDateTime(DateTime SessionDateTime)
         {
             var session = await _classSessionService.GetSessionBySessionDateTimeAsync(SessionDateTime);
             if (session == null)
                 return NotFound();
             return Ok(session);
+        }
+
+        // GET: api/classsession/current
+        [HttpGet("current")]
+        public async Task<ActionResult<ClassSession>> GetCurrentSession()
+        {
+            var currentSession = await _classSessionService.GetCurrentSessionAsync();
+
+            if (currentSession == null)
+            {
+                return NotFound("No active session found for the current time.");
+            }
+
+            return Ok(currentSession);
         }
     }
 }

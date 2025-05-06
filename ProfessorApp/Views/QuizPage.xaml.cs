@@ -24,6 +24,9 @@ namespace ProfessorApp.Pages
         public ObservableCollection<string> BankList { get; set; } = new ObservableCollection<string>();
         public string? SelectedBank { get; set; }
         public List<QuestionWithSelection> QuestionTextList { get; set; } = new List<QuestionWithSelection>();
+        public ObservableCollection<QuestionWithSelection> AllQuestionsList { get; set; } = new ObservableCollection<QuestionWithSelection>();
+        public string? SelectedFilterBank { get; set; }
+        public ObservableCollection<QuestionWithSelection> FilteredQuestionsList { get; set; } = new ObservableCollection<QuestionWithSelection>();
         private StackLayout QuestionsCheckBoxLayout;
         private int? _courseID;
 
@@ -31,7 +34,7 @@ namespace ProfessorApp.Pages
         {
             InitializeComponent();
             _clientService = clientService;
-            _courseID = courseID; 
+            _courseID = courseID;
             BindingContext = this;
             QuestionsCheckBoxLayout = new StackLayout();
             LoadBankNamesAsync();
@@ -43,6 +46,7 @@ namespace ProfessorApp.Pages
             //Reset the picker and checkbox
             BankPicker.SelectedIndex = -1;
             QuestionCollectionView.IsVisible = false;
+            LoadAllQuestionsForCourseAsync();
         }
         //Method to load/refresh the banks on the pickers
         private async void LoadBankNamesAsync()
@@ -167,6 +171,7 @@ namespace ProfessorApp.Pages
                 DeleteConfirmationPopup.IsVisible = false;
                 DeleteBankPopup.IsVisible = false;
                 LoadBankNamesAsync();
+                await LoadAllQuestionsForCourseAsync();
             }
             else
             {
@@ -283,6 +288,7 @@ namespace ProfessorApp.Pages
                     OnPropertyChanged(nameof(SelectedBank));
                     AddQuestionPopup.IsVisible = false;
                     await OnSelectedBankChangedAsync();
+                    await LoadAllQuestionsForCourseAsync();
                 }
                 else
                 {
@@ -337,7 +343,6 @@ namespace ProfessorApp.Pages
                         //Initially all checkboxes are unchecked
                         IsChecked = false
                     }).ToList() ?? new List<QuestionWithSelection>();
-
                     OnPropertyChanged(nameof(QuestionTextList));
                 }
             }
@@ -372,13 +377,55 @@ namespace ProfessorApp.Pages
             DisplayAlert("Selected Questions", selectedQuestionTexts, "OK");
             foreach (var question in QuestionTextList)
             {
-                question.IsChecked = false; 
+                question.IsChecked = false;
             }
             BankPicker.SelectedIndex = -1;
             QuestionCollectionView.IsVisible = false;
             CreateQuizPopup.IsVisible = false;
 
         }
+        private async Task LoadAllQuestionsForCourseAsync()
+        {
+            if (_courseID == null)
+            {
+                await DisplayAlert("Error", "Course ID is not provided.", "OK");
+                return;
+            }
+
+            try
+            {
+                // Fetch all quiz banks for the current course
+                var quizBanks = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
+
+                if (quizBanks != null)
+                {
+                    AllQuestionsList.Clear();
+
+                    foreach (var bank in quizBanks)
+                    {
+                        // Fetch questions for each bank
+                        var questions = await _clientService.GetQuestionsByBankIdAsync(bank.QuestionBankID);
+
+                        if (questions != null)
+                        {
+                            foreach (var question in questions)
+                            {
+                                AllQuestionsList.Add(new QuestionWithSelection
+                                {
+                                    QuestionText = question.QuestionText,
+                                    IsChecked = false // Default value
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"An error occurred while loading questions: {ex.Message}", "OK");
+            }
+        }
+
 
     }
 }

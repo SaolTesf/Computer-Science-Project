@@ -12,12 +12,16 @@ namespace ProfessorApp.Pages
     {
         private readonly ClientService _clientService;
         private readonly int? _courseId;
+        private bool isStartTimeChangingProgrammatically = false;
+        private bool isEndTimeChangingProgrammatically = false;
 
         public SessionManagement(ClientService clientService, int? courseId)
         {
             InitializeComponent();
             _clientService = clientService;
             _courseId = courseId;
+            StartTime.PropertyChanged += StartTime_PropertyChanged;
+            EndTime.PropertyChanged += EndTime_PropertyChanged;
         }
 
         protected override async void OnAppearing()
@@ -28,6 +32,7 @@ namespace ProfessorApp.Pages
                 CourseLabel.Text = $"{course.CourseNumber}.{course.Section} - {course.CourseName}";
             await LoadSessionsAsync();
             await LoadQuizzesAsync();
+            statusLabel.Text = null;
         }
 
         // load list of sessions
@@ -136,7 +141,7 @@ namespace ProfessorApp.Pages
                     return;
                 }
                 statusLabel.TextColor = Colors.Green;
-                await DisplayAlert("Success", "Quiz Bank added successfully.", "OK");
+                await DisplayAlert("Success", "Session added successfully.", "OK");
                 Password.Text = string.Empty;
                 QuizPicker.SelectedIndex = -1;
                 StartTime.Time = default;
@@ -161,6 +166,47 @@ namespace ProfessorApp.Pages
             EndTime.Time = default;
             AddSessionPopup.IsVisible = false;
             OnAppearing();
+        }
+
+        private void StartTime_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(StartTime.Time) && !isStartTimeChangingProgrammatically)
+            {
+                var newStartTime = StartTime.Time;
+                var newEndTime = newStartTime.Add(new TimeSpan(0, 20, 0));
+
+       
+                if (newEndTime >= new TimeSpan(24, 0, 0))
+                {
+                    newEndTime = newEndTime.Subtract(new TimeSpan(24, 0, 0));
+                }
+
+                isStartTimeChangingProgrammatically = true;
+                EndTime.Time = newEndTime;
+                isStartTimeChangingProgrammatically = false;
+            }
+        }
+        private void EndTime_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(EndTime.Time) && !isEndTimeChangingProgrammatically)
+            {
+                if (EndTime.Time < StartTime.Time)
+                {
+                   
+                    var newEndTime = EndTime.Time;
+                    var newStartTime = newEndTime.Subtract(new TimeSpan(0, 20, 0));
+
+              
+                    if (newStartTime < TimeSpan.Zero)
+                    {
+                        newStartTime = newStartTime.Add(new TimeSpan(24, 0, 0));
+                    }
+
+                    isEndTimeChangingProgrammatically = true;
+                    StartTime.Time = newStartTime;
+                    isEndTimeChangingProgrammatically = false;
+                }
+            }
         }
     }
 }
