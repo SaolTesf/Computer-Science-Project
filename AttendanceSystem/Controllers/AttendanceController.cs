@@ -112,5 +112,19 @@ namespace AttendanceSystem.Controllers
             }
             return Ok(attendanceRecords);
         }
+
+        [HttpGet("session/{sessionId}/student/{utdId}/id")]
+        public async Task<ActionResult<int>> GetAttendanceIdBySessionAndUtdId(int sessionId, string utdId)
+        {
+            var attendanceId = await _attendanceService.GetAttendanceIdBySessionAndUtdIdAsync(sessionId, utdId);
+
+            if (!attendanceId.HasValue)
+            {
+                return NotFound($"No attendance ID found for session ID {sessionId} and UTD ID {utdId}.");
+            }
+
+            return Ok(attendanceId.Value);
+        }
+
     }
 }

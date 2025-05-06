@@ -20,6 +20,9 @@ namespace AttendanceSystem.Services
         Task<List<Attendance>> GetByCourseIDAsync(int courseID);
 
         Task<List<Attendance>> GetAttendanceByUtdIdAsync(string utdId);
+        Task<int?> GetAttendanceIdBySessionAndUtdIdAsync(int sessionId, string utdId);
+
+
 
 
     }
