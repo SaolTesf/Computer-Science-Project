@@ -56,5 +56,13 @@ namespace AttendanceSystem.Services
             var sessions = await _sessionRepository.GetSessionBySessionDateTimeAsync(SessionDateTime);
             return new List<ClassSession>(sessions);
         }
+        public async Task<ClassSession?> GetCurrentSessionAsync()
+        {
+            var currentTime = DateTime.UtcNow;
+            var sessions = await _sessionRepository.GetAllSessionsAsync();
+
+            return sessions.FirstOrDefault(session =>
+                session.QuizStartTime <= currentTime && session.QuizEndTime >= currentTime);
+        }
     }
 }
