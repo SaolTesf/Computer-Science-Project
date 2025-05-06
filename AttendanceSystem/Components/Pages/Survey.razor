@@ -269,6 +269,13 @@
                 return;
             }
 
+            var exists = await AttendanceService.GetAttendanceIdBySessionAndUtdIdAsync(currentSession.SessionID, formData.StudentID);
+            if (exists != null)
+            {
+                errorMessage = " You have already submitted attendance for this session.";
+                return; 
+            }
+
             bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
             if (confirmed)
             {

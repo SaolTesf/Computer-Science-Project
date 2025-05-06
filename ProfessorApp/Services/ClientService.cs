@@ -82,7 +82,7 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/student/{utdId}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync(); 
+                return await response.Content.ReadAsStringAsync();
             }
             return null;
         }
@@ -144,7 +144,7 @@ namespace ProfessorApp.Services
             return response;
         }
 
-       public async Task<List<QuizQuestionDTO>?> GetQuizQuestionByIdAsync(int questionId)
+        public async Task<List<QuizQuestionDTO>?> GetQuizQuestionByIdAsync(int questionId)
         {
             var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionDTO>>($"api/quizquestion/{questionId}");
             return response;
@@ -249,7 +249,7 @@ namespace ProfessorApp.Services
             var response = await _httpClient.PostAsJsonAsync("api/classsession", dto);
             return response.IsSuccessStatusCode;
         }
-        
+
         // remove a class session by ID
         public async Task<bool> RemoveClassSessionAsync(int sessionID)
         {
@@ -271,12 +271,20 @@ namespace ProfessorApp.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<List<AttendanceDTO>> GetAttendanceByUtdIdAsync(string utdId)
-        {
-            var response = await _httpClient.GetAsync($"api/attendance/GetByUtdId/{utdId}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<AttendanceDTO>>();
-        }
 
+        public async Task<int> GetAttendanceIdBySessionAndUtdIdAsync(int sessionId, string utdId)
+        {
+            var response = await _httpClient.GetAsync($"api/attendance/session/{sessionId}/student/{utdId}/id");
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response content as integer
+                var content = await response.Content.ReadAsStringAsync();
+                if (int.TryParse(content, out int attendanceId))
+                {
+                    return attendanceId;
+                }
+            }
+            return 0;
+        }
     }
 }

@@ -156,11 +156,12 @@ namespace ProfessorApp.Pages
         private async void OnConfirmChangeAttendanceClicked(object sender, EventArgs e)   
         {
             if (_selectedRecord == null) return;
+            int attendanceId = await _clientService.GetAttendanceIdBySessionAndUtdIdAsync(_selectedRecord.SessionID, _selectedRecord.UTDID);
             try
             {
                 var updated = new AttendanceDTO
                 {
-                    AttendanceID = 48,
+                    AttendanceID = attendanceId,
                     SessionID = _selectedRecord.SessionID,
                     UTDID = _selectedRecord.UTDID,
                     AttendanceType = _selectedAttendanceType,
@@ -168,7 +169,7 @@ namespace ProfessorApp.Pages
                     IPAddress = "N/A"
                 };
 
-                var success = await _clientService.UpdateAttendanceAsync(48,updated);
+                var success = await _clientService.UpdateAttendanceAsync(attendanceId,updated);
 
                 if (success)
                 {
