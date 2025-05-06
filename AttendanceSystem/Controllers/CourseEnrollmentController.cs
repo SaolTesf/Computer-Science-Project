@@ -53,5 +53,12 @@ namespace AttendanceSystem.Controllers
             await _service.UnenrollStudentAsync(enrollmentId);
             return NoContent();
         }
+
+        [HttpGet("course/{courseID}/student/{utdId}/id")]
+        public async Task<ActionResult<int?>> GetEnrollmentByCourseIDAndUtdIdAsync(int courseID, string utdId)
+        {
+            var attendanceId = await _service.GetEnrollmentByCourseIDAndUtdIdAsync(courseID, utdId);
+            return Ok(attendanceId); 
+        }
     }
 }

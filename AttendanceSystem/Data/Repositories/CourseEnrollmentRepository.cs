@@ -40,5 +40,12 @@ namespace AttendanceSystem.Data.Repositories
         await _context.SaveChangesAsync();
       }
     }
-  }
+
+    public async Task<CourseEnrollment?> GetByCourseNumberAndUtdIdAsync(int courseID, string utdId)
+    {
+        return await _context.CourseEnrollments
+            .Include(e => e.Student)
+            .FirstOrDefaultAsync(e => e.CourseID == courseID && e.Student!.UTDID == utdId);
+    }
+    }
 }

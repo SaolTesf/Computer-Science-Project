@@ -125,6 +125,5 @@ namespace AttendanceSystem.Controllers
 
             return Ok(attendanceId.Value);
         }
-
     }
 }

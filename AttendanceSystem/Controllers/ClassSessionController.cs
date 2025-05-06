@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using AttendanceShared.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace AttendanceSystem.Controllers
 {
@@ -98,16 +99,15 @@ namespace AttendanceSystem.Controllers
 
         // GET: api/classsession/current
         [HttpGet("current")]
-        public async Task<ActionResult<ClassSession>> GetCurrentSession()
+        public async Task<ClassSession?> GetCurrentSessionAsync()
         {
-            var currentSession = await _classSessionService.GetCurrentSessionAsync();
+            var currentTime = DateTime.Now;
+            var sessions = await _classSessionService.GetAllSessionsAsync();
 
-            if (currentSession == null)
-            {
-                return NotFound("No active session found for the current time.");
-            }
-
-            return Ok(currentSession);
+            return sessions
+                .Where(s => s.QuizStartTime <= currentTime && currentTime <= s.QuizEndTime)
+                .OrderByDescending(s => s.QuizStartTime) 
+                .FirstOrDefault();
         }
     }
 }
