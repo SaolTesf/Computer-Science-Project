@@ -33,6 +33,10 @@ namespace AttendanceSystem.Models
         [JsonIgnore]
         public QuizQuestionBank? QuizQuestionBank { get; set; } = null!;
 
+        // Navigation property to the associated SessionQuestions
+        [JsonIgnore]
+        public ICollection<SessionQuestion> SessionQuestions { get; set; } = new List<SessionQuestion>();
+
         // Navigation property to QuizResponses for this question
         public ICollection<QuizResponse> QuizResponses { get; set; } = new List<QuizResponse>();
     }

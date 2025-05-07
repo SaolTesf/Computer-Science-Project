@@ -29,12 +29,20 @@ namespace AttendanceSystem.Models
         [Required]
         public int QuestionBankID { get; set; } // Foreign key to QuizQuestionBank
         
+        [Required]
+        [StringLength(36)]
+        public string AccessCode { get; set; } = string.Empty;
+
         [JsonIgnore]
         public QuizQuestionBank? QuizQuestionBank { get; set; } = null!;
 
         // Navigation property to the associated Course
         [JsonIgnore]
         public Course? Course { get; set; } = null!;
+
+        // Navigation property to the associated SessionQuestions
+        [JsonIgnore]
+        public ICollection<SessionQuestion> SessionQuestions { get; set; } = new List<SessionQuestion>();
 
         public ICollection<Attendance> Attendance { get; set; } = new List<Attendance>();
     }

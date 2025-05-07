@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using AttendanceShared.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace AttendanceSystem.Controllers
 {
@@ -40,7 +41,7 @@ namespace AttendanceSystem.Controllers
 
         // GET: api/classsession/course/{courseID} (all sessions with course ID)
         [HttpGet("course/{courseID}")]
-        public async Task<ActionResult<IEnumerable<ClassSession>>> GetByCourseIDAsync(int courseID)
+        public async Task<ActionResult<IEnumerable<ClassSessionDTO>>> GetByCourseIDAsync(int courseID)
         {
             var sessions = await _classSessionService.GetByCourseIDAsync(courseID);
             var dto = sessions.Select(e => new ClassSessionDTO
@@ -51,7 +52,8 @@ namespace AttendanceSystem.Controllers
                 QuizStartTime = e.QuizStartTime,
                 QuizEndTime = e.QuizEndTime,
                 Password = e.Password,
-                QuestionBankID = e.QuestionBankID
+                QuestionBankID = e.QuestionBankID,
+                AccessCode = e.AccessCode
             }).ToList();
             return Ok(dto);
         }
@@ -95,5 +97,20 @@ namespace AttendanceSystem.Controllers
                 return NotFound();
             return Ok(session);
         }
+        // GET: api/classsession/current
+
+        [HttpGet("current")]
+        public async Task<ClassSession?> GetCurrentSessionAsync()
+        {
+            var currentTime = DateTime.Now;
+            var sessions = await _classSessionService.GetAllSessionsAsync();
+
+            return sessions
+                .Where(s => s.QuizStartTime <= currentTime && currentTime <= s.QuizEndTime)
+                .OrderByDescending(s => s.QuizStartTime) 
+                .FirstOrDefault();
+        }
+
+
     }
 }

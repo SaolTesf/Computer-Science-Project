@@ -15,5 +15,7 @@ namespace AttendanceSystem.Data.Repositories
         Task UpdateSessionAsync(ClassSession session); // Update an existing session.
         Task DeleteSessionAsync(ClassSession session); // Delete a session.
         Task<IEnumerable<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime);
+
+        Task<ClassSession?> GetCurrentSessionAsync(DateTime currentTime);
     }
 }

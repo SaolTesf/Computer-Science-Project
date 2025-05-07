@@ -21,6 +21,9 @@ namespace ProfessorApp.Pages
     {
         private readonly ClientService _clientService;
         private readonly int? _courseId;
+        private AttendanceViewModel _selectedRecord;
+        private AttendanceType _selectedAttendanceType;
+
         private List<AttendanceViewModel> _allRecords = new();
         private List<ClassSessionDTO> _sessions = new();
         private List<int> _sessionFilterIds = new();
@@ -28,13 +31,10 @@ namespace ProfessorApp.Pages
         public AttendancePage(ClientService clientService, int? courseId)
         {
             InitializeComponent();
-            _httpClient = new HttpClient();
             _clientService = clientService;
             _courseId = courseId;
         }
 
-        private readonly HttpClient _httpClient;
-        private const string AttendanceApiBaseUrl = "http://localhost:5225/api/attendance";
         private async void OngetAttendanceClicked(object sender, EventArgs e)
         {
             await DisplayAlert("Success", "Student added successfully.", "OK");
@@ -43,6 +43,7 @@ namespace ProfessorApp.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            ChangeAttendancePopUp.IsVisible = false;
             await LoadAttendanceAsync();
         }
 
@@ -140,6 +141,72 @@ namespace ProfessorApp.Pages
             public string SubmissionTime { get; set; } = string.Empty;
             public DateTime SubmissionDate { get; set; }
             public string AttendanceType { get; set; } = string.Empty;
+        }
+
+        private async void OnChangeAttendanceClicked(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.BindingContext is AttendanceViewModel record)
+            {
+                _selectedRecord = record;
+                ChangeAttendancePopUp.IsVisible = true;
+                AttendancePicker.SelectedItem = _selectedRecord.AttendanceType;
+            }
+        }
+
+        private async void OnConfirmChangeAttendanceClicked(object sender, EventArgs e)   
+        {
+            if (_selectedRecord == null) return;
+            int attendanceId = await _clientService.GetAttendanceIdBySessionAndUtdIdAsync(_selectedRecord.SessionID, _selectedRecord.UTDID);
+            try
+            {
+                var updated = new AttendanceDTO
+                {
+                    AttendanceID = attendanceId,
+                    SessionID = _selectedRecord.SessionID,
+                    UTDID = _selectedRecord.UTDID,
+                    AttendanceType = _selectedAttendanceType,
+                    SubmissionTime = DateTime.Parse(_selectedRecord.SubmissionTime),
+                    IPAddress = "N/A"
+                };
+
+                var success = await _clientService.UpdateAttendanceAsync(attendanceId,updated);
+
+                if (success)
+                {
+                    await DisplayAlert("Success", "Attendance updated successfully", "OK");
+                    await LoadAttendanceAsync(); 
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Failed to update attendance", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to update attendance: {ex.Message}", "OK");
+            }
+            finally
+            {
+                ChangeAttendancePopUp.IsVisible = false;
+                _selectedRecord = null;
+            }
+        }
+
+        private void OnCancelChangeAttendanceClicked(object sender, EventArgs e)
+        {
+            ChangeAttendancePopUp.IsVisible = false;
+            _selectedRecord = null;
+        }
+
+        private void OnAttendanceTypeChanged(object sender, EventArgs e)
+        {
+            if (AttendancePicker.SelectedItem is string selectedType)
+            {
+                if (Enum.TryParse(selectedType, out AttendanceType attendanceType))
+                {
+                    _selectedAttendanceType = attendanceType;
+                }
+            }
         }
     }
 }

@@ -73,5 +73,20 @@ namespace AttendanceSystem.Controllers
             }
             return Ok(questions);
         }
+
+        // GET: api/quizquestion/GetQuestionIdByText?text=someText
+        [HttpGet("GetQuestionIdByText")]
+        public async Task<ActionResult<int?>> GetQuestionIdByText([FromQuery] string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return BadRequest("Question text is required.");
+
+            var questionId = await _quizQuestionService.GetQuestionIdByTextAsync(text);
+
+            if (questionId == null)
+                return NotFound("Question not found.");
+
+            return Ok(questionId);
+        }
     }
 }

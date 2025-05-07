@@ -15,6 +15,8 @@
  @using AttendanceSystem.Services
  @inject IAttendanceService AttendanceService;
  @inject IStudentService StudentService;
+ @inject IClassSessionService SessionService;
+ @inject ICourseEnrollmentService CourseEnrollmentService;
  @inject GetIPService GetIPService;
 
 <!-- CSS  -->
@@ -175,6 +177,8 @@
     private string errorMessage = string.Empty;
     private EditForm? editForm;
     private string clientIp = string.Empty;
+    private ClassSession? currentSession;
+    private int? currentCourse;
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -194,19 +198,26 @@
     private bool showValidationError = false;
 
     // parse question bank - split question bank into parts
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         clientIp = GetIPService.GetClientIp();
+
+        // Initialize questions
         questions = rawQuestions.Select(q =>
         {
             var parts = q.Split('\t');
             return new SurveyQuestion
-            {
-                QuestionText = parts[0],
-                Choices = parts.Skip(1).ToList(),
-                SelectedAnswer = null
-            };
+                {
+                    QuestionText = parts[0],
+                    Choices = parts.Skip(1).ToList(),
+                    SelectedAnswer = null
+                };
         }).ToList();
+        currentSession = await SessionService.GetCurrentSessionAsync();
+        if (currentSession != null)
+        {
+            currentCourse = currentSession.CourseID;    
+        }
     }
 
     // initializing varibales for question
@@ -229,9 +240,10 @@
     private async Task HandleSubmit(EditContext context)
     {
         showValidationError = false;
+        errorMessage = string.Empty;
         StateHasChanged();
 
-        // validate StudentID and that all questions are answered
+        // Validate form and questions
         if (context.Validate() && questions.All(q => !string.IsNullOrEmpty(q.SelectedAnswer)))
         {
             if (string.IsNullOrEmpty(formData.StudentID))
@@ -240,40 +252,66 @@
                 showValidationError = true;
                 return;
             }
-            
+
             var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
-            if (student != null)
+            if (student == null)
             {
-                bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
-                if (confirmed)
+                errorMessage = $"No student found with UTDID {formData.StudentID}.";
+                return;
+            }
+            if (currentSession != null)
+            {
+                var isInCourse = await CourseEnrollmentService.GetEnrollmentByCourseIDAndUtdIdAsync(currentSession.CourseID.Value, formData.StudentID);
+                if (isInCourse == null)
                 {
-                    var attendanceSubmission = new Attendance{
-                        SessionID = 1,
+                    errorMessage = $"No student found with UTDID {formData.StudentID} in the course.";
+                    return;
+                }
+            }
+
+            // Verify we have a current session
+            if (currentSession == null)
+            {
+                errorMessage = "No active session found. Attendance cannot be recorded.";
+                return;
+            }
+
+            // Verify submission is within quiz time window
+            var now = DateTime.Now;
+            if (now < currentSession.QuizStartTime || now > currentSession.QuizEndTime)
+            {
+                errorMessage = $"Attendance can only be submitted between {currentSession.QuizStartTime:t} and {currentSession.QuizEndTime:t}.";
+                return;
+            }
+
+            bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
+            if (confirmed)
+            {
+                var attendanceSubmission = new Attendance
+                    {
+                        SessionID = currentSession.SessionID,
                         UTDID = formData.StudentID,
-                        SubmissionTime = DateTime.Now,
-                        IPAddress = "192.168.1.101",
+                        SubmissionTime = now,
+                        IPAddress = clientIp,
                         AttendanceType = AttendanceType.Present
                     };
 
+                try
+                {
                     await AttendanceService.CreateAttendanceAsync(attendanceSubmission);
-
-                    Console.WriteLine($"Submitted: {formData.StudentID}");
-                    foreach (var q in questions)
-                    {
-                        Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
-                    }
                     NavigationManager.NavigateTo("/home");
                 }
-            }
-            else
-            {
-                errorMessage = $"No student found with UTDID {formData.StudentID}.";
+                catch (Exception ex)
+                {
+                    errorMessage = "Error submitting attendance. Please try again.";
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
         }
         else
         {
             showValidationError = true;
-            Console.WriteLine("Form validation failed");
         }
+    }
 }
 }
