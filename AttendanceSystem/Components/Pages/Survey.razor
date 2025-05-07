@@ -16,6 +16,7 @@
  @inject IAttendanceService AttendanceService;
  @inject IStudentService StudentService;
  @inject IClassSessionService SessionService;
+ @inject ICourseEnrollmentService CourseEnrollmentService;
  @inject GetIPService GetIPService;
 
 <!-- CSS  -->
@@ -177,6 +178,7 @@
     private EditForm? editForm;
     private string clientIp = string.Empty;
     private ClassSession? currentSession;
+    private int? currentCourse;
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -212,6 +214,10 @@
                 };
         }).ToList();
         currentSession = await SessionService.GetCurrentSessionAsync();
+        if (currentSession != null)
+        {
+            currentCourse = currentSession.CourseID;    
+        }
     }
 
     // initializing varibales for question
@@ -253,6 +259,15 @@
                 errorMessage = $"No student found with UTDID {formData.StudentID}.";
                 return;
             }
+            if (currentSession != null)
+            {
+                var isInCourse = await CourseEnrollmentService.GetEnrollmentByCourseIDAndUtdIdAsync(currentSession.CourseID.Value, formData.StudentID);
+                if (isInCourse == null)
+                {
+                    errorMessage = $"No student found with UTDID {formData.StudentID} in the course.";
+                    return;
+                }
+            }
 
             // Verify we have a current session
             if (currentSession == null)
@@ -267,13 +282,6 @@
             {
                 errorMessage = $"Attendance can only be submitted between {currentSession.QuizStartTime:t} and {currentSession.QuizEndTime:t}.";
                 return;
-            }
-
-            var exists = await AttendanceService.GetAttendanceIdBySessionAndUtdIdAsync(currentSession.SessionID, formData.StudentID);
-            if (exists != null)
-            {
-                errorMessage = " You have already submitted attendance for this session.";
-                return; 
             }
 
             bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");

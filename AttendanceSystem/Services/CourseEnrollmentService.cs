@@ -25,5 +25,11 @@ namespace AttendanceSystem.Services
 
     public async Task UnenrollStudentAsync(int enrollmentId)
       => await _courseEnrollmentRepository.DeleteAsync(enrollmentId);
-  }
+
+    public async Task<int?> GetEnrollmentByCourseIDAndUtdIdAsync(int courseID, string utdId)
+        {
+            var enrollment = await _courseEnrollmentRepository.GetByCourseNumberAndUtdIdAsync(courseID, utdId);
+            return enrollment?.EnrollmentID;
+        }
+    }
 }
