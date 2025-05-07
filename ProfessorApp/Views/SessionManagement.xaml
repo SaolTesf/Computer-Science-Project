@@ -53,6 +53,18 @@
                                         Text="Quiz"
                                         TextColor="White" />
                                     <Label Text="{Binding Quiz}" TextColor="White" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="Access Code"
+                                        TextColor="White" />
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <Label Text="{Binding AccessCode}" TextColor="LightBlue" />
+                                        <Button
+                                            Text="Copy"
+                                            Clicked="OnCopyAccessCodeClicked"
+                                            CommandParameter="{Binding AccessCode}" />
+                                    </StackLayout>
                                     <Button
                                         BackgroundColor="DarkOrange"
                                         Clicked="OnRemoveSessionClicked"

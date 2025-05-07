@@ -41,7 +41,7 @@ namespace AttendanceSystem.Controllers
 
         // GET: api/classsession/course/{courseID} (all sessions with course ID)
         [HttpGet("course/{courseID}")]
-        public async Task<ActionResult<IEnumerable<ClassSession>>> GetByCourseIDAsync(int courseID)
+        public async Task<ActionResult<IEnumerable<ClassSessionDTO>>> GetByCourseIDAsync(int courseID)
         {
             var sessions = await _classSessionService.GetByCourseIDAsync(courseID);
             var dto = sessions.Select(e => new ClassSessionDTO
@@ -52,7 +52,8 @@ namespace AttendanceSystem.Controllers
                 QuizStartTime = e.QuizStartTime,
                 QuizEndTime = e.QuizEndTime,
                 Password = e.Password,
-                QuestionBankID = e.QuestionBankID
+                QuestionBankID = e.QuestionBankID,
+                AccessCode = e.AccessCode
             }).ToList();
             return Ok(dto);
         }

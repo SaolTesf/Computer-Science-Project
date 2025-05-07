@@ -5,6 +5,7 @@ Add or remove class sessions
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
 using System.Diagnostics;
+using Microsoft.Maui.Storage;
 
 namespace ProfessorApp.Pages
 {
@@ -59,7 +60,8 @@ namespace ProfessorApp.Pages
                             Password = session.Password,
                             Quiz = quiz.BankName,
                             SessionID = session.SessionID,
-                            SessionNumber = sessionNumber
+                            SessionNumber = sessionNumber,
+                            AccessCode = session.AccessCode
                         };
                         formattedSessions.Add(format);
                     }
@@ -206,6 +208,15 @@ namespace ProfessorApp.Pages
                     StartTime.Time = newStartTime;
                     isEndTimeChangingProgrammatically = false;
                 }
+            }
+        }
+
+        private async void OnCopyAccessCodeClicked(object sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.CommandParameter is string code)
+            {
+                await Clipboard.Default.SetTextAsync(code);
+                await DisplayAlert("Copied", "Access code copied to clipboard", "OK");
             }
         }
     }
