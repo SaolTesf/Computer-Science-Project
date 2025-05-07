@@ -61,9 +61,9 @@
                                     <StackLayout Orientation="Horizontal" Spacing="10">
                                         <Label Text="{Binding AccessCode}" TextColor="LightBlue" />
                                         <Button
-                                            Text="Copy"
                                             Clicked="OnCopyAccessCodeClicked"
-                                            CommandParameter="{Binding AccessCode}" />
+                                            CommandParameter="{Binding AccessCode}"
+                                            Text="Copy" />
                                     </StackLayout>
                                     <Button
                                         BackgroundColor="DarkOrange"

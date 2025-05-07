@@ -296,6 +296,20 @@
                         FontSize="20"
                         HorizontalOptions="Center"
                         Text="Add Question" />
+                    <DatePicker
+                        x:Name="SessionDate"
+                        Date="{Binding SelectedDate, Mode=TwoWay}"
+                        TextColor="White" />
+
+                    <Picker
+                        x:Name="SessionPicker"
+                        Title="Select a Quiz"
+                        BackgroundColor="DarkOrange"
+                        ItemDisplayBinding="{Binding QuizStartTime, StringFormat='{0:g}'}"
+                        ItemsSource="{Binding FilteredSessionList}"
+                        SelectedIndexChanged="OnSessionPickerIndexChanged"
+                        SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
+                        TextColor="Black" />
                     <Picker
                         x:Name="BankPicker"
                         Title="Select a Question Bank"
@@ -308,6 +322,7 @@
                     <CollectionView
                         x:Name="QuestionCollectionView"
                         Background="DarkOrange"
+                        IsVisible="True"
                         ItemsSource="{Binding QuestionTextList}"
                         MaximumHeightRequest="225"
                         WidthRequest="325">

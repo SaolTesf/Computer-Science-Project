@@ -78,7 +78,6 @@ namespace AttendanceSystem.Controllers
             return Ok(bankNames);
 
         }
-
         [HttpGet("GetBankIdByName")]
         public async Task<IActionResult> GetBankIdByName([FromQuery] string bankName)
         {
