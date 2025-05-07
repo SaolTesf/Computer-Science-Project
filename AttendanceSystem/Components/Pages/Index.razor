@@ -1,0 +1,38 @@
+@page "/"
+@using Microsoft.AspNetCore.Components.Web
+@inject NavigationManager NavigationManager
+
+<style>
+    .container { display:flex;justify-content:center;align-items:center;height:100vh;background:#f0f0f0; }
+    .form-box { width:90%;max-width:400px;background:#fff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.2);overflow:hidden; }
+    .title { background:#ff9800;color:#fff;padding:12px;font-size:18px;text-align:center; }
+    .content { padding:20px;display:flex;flex-direction:column;gap:10px; }
+    .input-field { padding:8px;border:1px solid #ccc;border-radius:4px;font-size:16px; }
+    .submit-btn { padding:10px;background:#ff9800;color:#fff;border:none;border-radius:4px;font-size:16px;cursor:pointer; }
+    .submit-btn:hover { background:#e68900; }
+</style>
+
+<div class="container">
+  <div class="form-box">
+    <div class="title">Enter Session Access Code</div>
+    <div class="content">
+      <input @bind="accessCode" @onkeydown="HandleKeyPress" class="input-field" maxlength="36" placeholder="Access Code" />
+      <button type="button" class="submit-btn" @onclick="OnSubmit">Go</button>
+    </div>
+  </div>
+</div>
+
+@code {
+    private string accessCode = string.Empty;
+    private void OnSubmit()
+    {
+        if (!string.IsNullOrWhiteSpace(accessCode))
+            NavigationManager.NavigateTo($"/survey/{accessCode}");
+    }
+
+    private void HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            OnSubmit();
+    }
+}

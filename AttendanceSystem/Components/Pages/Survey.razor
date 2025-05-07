@@ -1,7 +1,5 @@
 <!-- yxl200067  -->
-@page "/survey"
-<!-- starting page  -->
-@page "/"
+@page "/survey/{accessCode}"
 <!-- sets render mode for interactions -->
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
@@ -113,6 +111,7 @@
     <div class="form-box">
         <div class="title">Student Attendance Survey</div>
         <div class="content">
+            <h1>Session: @accessCode</h1>
             <!-- allows data validation within [], allows making error messages -->
             <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
                 <!-- allows data validation within [], allows making error messages -->
@@ -174,6 +173,9 @@
 </div>
 
 @code {
+    [Parameter]
+    public string accessCode { get; set; } = string.Empty;
+
     private string errorMessage = string.Empty;
     private EditForm? editForm;
     private string clientIp = string.Empty;
@@ -313,5 +315,4 @@
             showValidationError = true;
         }
     }
-}
 }

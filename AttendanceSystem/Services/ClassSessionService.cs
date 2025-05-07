@@ -66,5 +66,8 @@ namespace AttendanceSystem.Services
                 .OrderByDescending(s => s.QuizStartTime) 
                 .FirstOrDefault();
         }
+
+        public async Task<ClassSession?> GetByAccessCodeAsync(string accessCode)
+            => await _sessionRepository.GetByAccessCodeAsync(accessCode);
     }
 }

@@ -17,5 +17,6 @@ namespace AttendanceSystem.Data.Repositories
         Task<IEnumerable<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime);
 
         Task<ClassSession?> GetCurrentSessionAsync(DateTime currentTime);
+        Task<ClassSession?> GetByAccessCodeAsync(string accessCode);
     }
 }
