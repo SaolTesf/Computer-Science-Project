@@ -17,6 +17,8 @@
  @inject IStudentService StudentService;
  @inject IClassSessionService SessionService;
  @inject ICourseEnrollmentService CourseEnrollmentService;
+ @inject ISessionQuestionService SessionQuestionService;
+ @inject IQuizQuestionService QuizQuestionService;
  @inject GetIPService GetIPService;
 
 <!-- CSS  -->
@@ -179,6 +181,7 @@
     private string clientIp = string.Empty;
     private ClassSession? currentSession;
     private int? currentCourse;
+    private List<SurveyQuestion> questions = new();
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -188,7 +191,6 @@
         "What are Benefits of Design by Contract?\t SOLID’s “single responsibility” principle at method level\t“Pseudocode Programming Process\tBasis for “Programming by Intent”\tunit testing\tAll of the above"
     };
 
-    private List<SurveyQuestion> questions = new();
 
     private FormData formData = new FormData()
     {
@@ -197,28 +199,50 @@
 
     private bool showValidationError = false;
 
-    // parse question bank - split question bank into parts
     protected override async Task OnInitializedAsync()
     {
         clientIp = GetIPService.GetClientIp();
 
-        // Initialize questions
-        questions = rawQuestions.Select(q =>
-        {
-            var parts = q.Split('\t');
-            return new SurveyQuestion
-                {
-                    QuestionText = parts[0],
-                    Choices = parts.Skip(1).ToList(),
-                    SelectedAnswer = null
-                };
-        }).ToList();
         currentSession = await SessionService.GetCurrentSessionAsync();
+
         if (currentSession != null)
         {
-            currentCourse = currentSession.CourseID;    
+            questions = new List<SurveyQuestion>();
+
+            var sessionQuestionsList = await SessionQuestionService.GetBySessionIdAsync(currentSession.SessionID);
+
+            foreach (var s in sessionQuestionsList)
+            {
+                if (s != null)
+                {
+                    var quizQuestion = await QuizQuestionService.GetQuestionByIdAsync(s.QuestionID);
+
+                    if (quizQuestion != null)
+                    {
+                        var survey = new SurveyQuestion
+                            {
+                                QuestionText = quizQuestion.QuestionText,
+                                Choices = new List<string?>
+                        {
+                            quizQuestion.Option1,
+                            quizQuestion.Option2,
+                            quizQuestion.Option3,
+                            quizQuestion.Option4
+                        },
+                                SelectedAnswer = null
+                            };
+
+                        questions.Add(survey);
+                    }
+                }
+            }
+        }
+        else
+        {
+            questions.Clear();
         }
     }
+    
 
     // initializing varibales for question
     public class SurveyQuestion
