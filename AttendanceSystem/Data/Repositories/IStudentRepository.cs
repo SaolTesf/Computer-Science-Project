@@ -1,5 +1,5 @@
 using AttendanceSystem.Models;
-
+/*Diego Cabanas:*/
 namespace AttendanceSystem.Data.Repositories;
 
 public interface IStudentRepository {

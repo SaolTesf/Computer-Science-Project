@@ -34,7 +34,9 @@ namespace ProfessorApp.Pages
         {
             await Navigation.PushAsync(new CoursePage(_clientService));
         }
-
+        /*Diego Cabanas:
+         Code for getting the CollectionView running by retrieving the sessions happening on the current date and displaying them
+         Took most of the code from Sawyer and edited it to retrieve from all courses but filter by date*/
         private async Task LoadSessionsAsync()
         {
             DateTime today = DateTime.Today;

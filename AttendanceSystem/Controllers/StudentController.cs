@@ -1,7 +1,7 @@
 using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
-
+/*Diego Cabanas: Created controller in order to use student data*/
 namespace AttendanceSystem.Controllers
 {
     [Route("api/[controller]")]

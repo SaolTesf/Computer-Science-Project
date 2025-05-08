@@ -1,6 +1,6 @@
 using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
-
+/*Diego Cabanas:*/
 namespace AttendanceSystem.Data.Repositories;
 
 public class StudentRepository(AppDbContext context) : IStudentRepository {

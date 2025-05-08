@@ -130,7 +130,8 @@ namespace ProfessorApp.Pages
                 QuizStartTime = quizStart,
                 QuizEndTime = quizEnd,
                 Password = password,
-                QuestionBankID = quizID
+                QuestionBankID = quizID,
+                AccessCode = GenerateUniqueAccessCode()
             };
 
             try
@@ -218,6 +219,11 @@ namespace ProfessorApp.Pages
                 await Clipboard.Default.SetTextAsync(code);
                 await DisplayAlert("Copied", "Access code copied to clipboard", "OK");
             }
+        }
+
+        public string GenerateUniqueAccessCode()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }

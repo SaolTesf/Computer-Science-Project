@@ -50,6 +50,10 @@ namespace AttendanceSystem.Services
             return questions?.ToList() ?? new List<QuizQuestion>();
         }
 
+        public async Task<int?> GetQuestionIdByTextAsync(string questionText)
+        {
+            return await _questionRepository.GetQuestionIdByTextAsync(questionText);
+        }
     }
 
 }

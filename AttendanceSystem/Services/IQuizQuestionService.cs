@@ -15,5 +15,6 @@ namespace AttendanceSystem.Services
         Task DeleteQuestionAsync(int questionId);   // Delete a quiz question by ID
 
         Task<List<QuizQuestion>> GetQuestionsByBankIdAsync(int bankId);
+        Task<int?> GetQuestionIdByTextAsync(string questionText);
     }
 }

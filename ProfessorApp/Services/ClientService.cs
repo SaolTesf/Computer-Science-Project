@@ -187,6 +187,17 @@ namespace ProfessorApp.Services
             }
         }
 
+        public async Task<int?> GetQuestionIdByTextAsync(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return null;
+
+            var response = await _httpClient.GetAsync($"api/quizquestion/GetQuestionIdByText?text={Uri.EscapeDataString(text)}");
+            return response.IsSuccessStatusCode
+                ? await response.Content.ReadFromJsonAsync<int?>()
+                : null;
+        }
+
+
         // Courses
         public async Task<List<CourseDTO>?> GetAllCoursesAsync()
             => await _httpClient.GetFromJsonAsync<List<CourseDTO>>("api/course");
@@ -211,7 +222,7 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/course/{id}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync(); // returns "<Name> has been removed."
+                return await response.Content.ReadAsStringAsync(); 
             }
             return null;
         }
@@ -285,6 +296,18 @@ namespace ProfessorApp.Services
                 }
             }
             return 0;
+        }
+
+        //Session Question
+        public async Task<SessionQuestionDTO?> CreateSessionQuestionAsync(SessionQuestionDTO sessionQuestion)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/sessionquestion", sessionQuestion);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<SessionQuestionDTO>();
+            }
+            return null;
         }
     }
 }

@@ -23,12 +23,16 @@ namespace ProfessorApp.Pages
         private readonly ClientService _clientService;
         public ObservableCollection<string> BankList { get; set; } = new ObservableCollection<string>();
         public string? SelectedBank { get; set; }
+        public ClassSessionDTO SelectedSession { get; set; } = new ClassSessionDTO();
+        public List<ClassSessionDTO> ClassSessionList { get; set; } = new List<ClassSessionDTO>();
         public List<QuestionWithSelection> QuestionTextList { get; set; } = new List<QuestionWithSelection>();
         public ObservableCollection<QuestionWithSelection> AllQuestionsList { get; set; } = new ObservableCollection<QuestionWithSelection>();
         public string? SelectedFilterBank { get; set; }
         public ObservableCollection<QuestionWithSelection> FilteredQuestionsList { get; set; } = new ObservableCollection<QuestionWithSelection>();
         private StackLayout QuestionsCheckBoxLayout;
         private int? _courseID;
+        private DateTime? _selectedDate;
+        public ObservableCollection<ClassSessionDTO> FilteredSessionList { get; set; } = new ObservableCollection<ClassSessionDTO>();
 
         public QuizPage(ClientService clientService, int? courseID)
         {
@@ -39,12 +43,25 @@ namespace ProfessorApp.Pages
             QuestionsCheckBoxLayout = new StackLayout();
             LoadBankNamesAsync();
         }
+        //Helper class for selected date inside the create quiz button
+        public DateTime? SelectedDate
+        {
+            get => _selectedDate;
+            set
+            {
+                _selectedDate = value;
+                FilterSessionsByDate();
+                OnPropertyChanged(nameof(SelectedDate));
+            }
+        }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             //Reset the picker and checkbox
             BankPicker.SelectedIndex = -1;
+            SelectedDate = DateTime.Today;
+            FilterSessionsByDate();
             QuestionCollectionView.IsVisible = false;
             LoadAllQuestionsForCourseAsync();
         }
@@ -57,14 +74,30 @@ namespace ProfessorApp.Pages
                 return;
             }
 
-            //Fetch banks associated with the specific course
-            var bankNames = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
+            // Clear existing data
+            ClassSessionList.Clear();
+            FilteredSessionList.Clear();
 
+            //Fetch banks
+            var bankNames = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
             BankList.Clear();
             foreach (var bankName in bankNames)
             {
                 BankList.Add(bankName.BankName);
             }
+
+            //Fetch sessions
+            var sessions = await _clientService.GetSessionsByCourseIDAsync((int)_courseID);
+            foreach (var session in sessions)
+            {
+                ClassSessionList.Add(session);
+                FilteredSessionList.Add(session); 
+            }
+
+            // Notify UI of changes
+            OnPropertyChanged(nameof(ClassSessionList));
+            OnPropertyChanged(nameof(FilteredSessionList));
+            OnPropertyChanged(nameof(SelectedSession));
             OnPropertyChanged(nameof(BankList));
             OnPropertyChanged(nameof(SelectedBank));
         }
@@ -347,6 +380,43 @@ namespace ProfessorApp.Pages
                 }
             }
         }
+        //Method to notify that the picker for the session was changed
+        private void OnSessionPickerIndexChanged(object sender, EventArgs e)
+        {
+            if (SessionPicker.SelectedItem is ClassSessionDTO selectedSession)
+            {
+                SelectedSession = selectedSession;
+            }
+        }
+        //Filters the sessions by date using date picker
+        private void FilterSessionsByDate()
+        {
+            FilteredSessionList.Clear();
+
+            if (SelectedDate == null)
+            {
+                //Show all sessions if no date is selected
+                foreach (var session in ClassSessionList)
+                {
+                    FilteredSessionList.Add(session);
+                }
+            }
+            else
+            {
+                //Filter sessions by the selected date
+                var filteredSessions = ClassSessionList
+                    .Where(s => s.QuizStartTime.Date == SelectedDate.Value.Date)
+                    .ToList();
+
+                foreach (var session in filteredSessions)
+                {
+                    FilteredSessionList.Add(session);
+                }
+            }
+
+            OnPropertyChanged(nameof(FilteredSessionList));
+        }
+
 
         //Button to toggle form for creating a quiz
         private void OnCreateQuizClicked(object sender, EventArgs e)
@@ -359,31 +429,54 @@ namespace ProfessorApp.Pages
             //Reset the picker and checkbox
             BankPicker.SelectedIndex = -1;
             QuestionCollectionView.IsVisible = false;
+            SelectedSession = null;
+            SessionPicker.SelectedIndex = -1;
             //Hide create quiz form
             CreateQuizPopup.IsVisible = false;
         }
         //Method to save the selected questions to a list
-        private void OnSubmitSelectedQuestionsClicked(object sender, EventArgs e)
+        private async void OnSubmitSelectedQuestionsClicked(object sender, EventArgs e)
         {
+            //Get only the questions that are checked
             var selectedQuestions = QuestionTextList.Where(q => q.IsChecked).ToList();
 
+            // If no questions are selected, show an alert
             if (selectedQuestions.Count == 0)
             {
                 DisplayAlert("No Selection", "Please select at least one question.", "OK");
                 return;
             }
 
+            //Join the selected question texts into a string for display
             string selectedQuestionTexts = string.Join("\n", selectedQuestions.Select(q => q.QuestionText));
             DisplayAlert("Selected Questions", selectedQuestionTexts, "OK");
-            foreach (var question in QuestionTextList)
+
+            //Process each selected question
+            foreach (var question in selectedQuestions)
             {
+                int questionId = await _clientService.GetQuestionIdByTextAsync(question.QuestionText) ?? 0;
+
+                var sessQuestion = new SessionQuestionDTO
+                {
+                    SessionID = SelectedSession.SessionID,
+                    QuestionID = questionId, 
+                };
+
+                //Add the session question via the service
+                await _clientService.CreateSessionQuestionAsync(sessQuestion);
+
+                //Optionally, reset the IsChecked flag after processing
                 question.IsChecked = false;
             }
+
+            //Reset UI elements after submission
             BankPicker.SelectedIndex = -1;
             QuestionCollectionView.IsVisible = false;
             CreateQuizPopup.IsVisible = false;
-
+            SelectedSession = null;
+            SessionPicker.SelectedIndex = -1;
         }
+        //Loads all the questions on the page when the page is loaded
         private async Task LoadAllQuestionsForCourseAsync()
         {
             if (_courseID == null)
@@ -391,10 +484,9 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Error", "Course ID is not provided.", "OK");
                 return;
             }
-
             try
             {
-                // Fetch all quiz banks for the current course
+                //Fetch all quiz banks for the current course
                 var quizBanks = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
 
                 if (quizBanks != null)
@@ -403,9 +495,8 @@ namespace ProfessorApp.Pages
 
                     foreach (var bank in quizBanks)
                     {
-                        // Fetch questions for each bank
+                        //Fetch questions for each bank
                         var questions = await _clientService.GetQuestionsByBankIdAsync(bank.QuestionBankID);
-
                         if (questions != null)
                         {
                             foreach (var question in questions)
@@ -413,7 +504,7 @@ namespace ProfessorApp.Pages
                                 AllQuestionsList.Add(new QuestionWithSelection
                                 {
                                     QuestionText = question.QuestionText,
-                                    IsChecked = false // Default value
+                                    IsChecked = false 
                                 });
                             }
                         }

@@ -15,73 +15,98 @@
             CornerRadius="10"
             HasShadow="True"
             MaximumWidthRequest="450">
-            <VerticalStackLayout Spacing="20" Padding="20">
-                <Grid HeightRequest="150">
-                    <Image
-                        Source="login_background.png"
-                        Aspect="AspectFill"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill"
-                        InputTransparent="True" />
-                    <Image
-                        Source="utdlogo.png"
-                        HeightRequest="100"
-                        WidthRequest="350"
+            <Grid RowDefinitions="*,*,4*">
+                <Image
+                    Grid.Row="0"
+                    Aspect="AspectFill"
+                    HorizontalOptions="FillAndExpand"
+                    MaximumHeightRequest="150"
+                    Source="login_background.png"
+                    VerticalOptions="FillAndExpand" />
+
+                <Image
+                    Grid.Row="0"
+                    HeightRequest="100"
+                    HorizontalOptions="Center"
+                    Source="utdlogo.png"
+                    VerticalOptions="Center"
+                    WidthRequest="350" />
+
+                <BoxView
+                    Grid.Row="0"
+                    HeightRequest="50"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="End">
+                    <BoxView.Background>
+                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                            <GradientStop Offset="0" Color="White" />
+                            <GradientStop Offset="1" Color="Transparent" />
+                        </LinearGradientBrush>
+                    </BoxView.Background>
+                </BoxView>
+
+                <StackLayout
+                    Grid.Row="1"
+                    Padding="20"
+                    Spacing="20">
+                    <Label
+                        Margin="0,0,0,10"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
                         HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        InputTransparent="True" />
-                    <BoxView
-                        HeightRequest="50"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="End"
-                        InputTransparent="True">
-                        <BoxView.Background>
-                            <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
-                                <GradientStop Offset="0" Color="White" />
-                                <GradientStop Offset="1" Color="Transparent" />
-                            </LinearGradientBrush>
-                        </BoxView.Background>
-                    </BoxView>
-                </Grid>
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="Medium"
-                    HorizontalOptions="Center"
-                    Text="Welcome Back"
-                    TextColor="DarkGreen" />
-                <Label
-                    FontSize="15"
-                    HorizontalOptions="Center"
-                    Text="Please sign in or register a new account"
-                    TextColor="Black" />
-                <Entry
-                    x:Name="identifierEntry"
-                    Placeholder="ID, Email or Username"
-                    TextColor="Black" />
-                <Entry
-                    x:Name="passwordEntry"
-                    IsPassword="True"
-                    Placeholder="Password"
-                    TextColor="Black" />
-                <Button
-                    BackgroundColor="Orange"
-                    Clicked="OnLoginClicked"
-                    Text="Sign In"
-                    TextColor="Black" />
-                <Label
-                    FontAttributes="Bold"
-                    HorizontalOptions="Center"
-                    Text="Register new account"
-                    TextColor="Green">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="GoToRegister" />
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label
-                    x:Name="statusLabel"
-                    HorizontalOptions="Center"
-                    TextColor="Red" />
-            </VerticalStackLayout>
+                        Text="Welcome Back"
+                        TextColor="DarkGreen" />
+                    <Label
+                        Margin="0,0,0,10"
+                        FontSize="15"
+                        HorizontalOptions="Center"
+                        Text="Please sign in or register a new account"
+                        TextColor="Black" />
+                    <Frame
+                        Padding="0"
+                        BackgroundColor="White"
+                        BorderColor="Black"
+                        CornerRadius="10">
+                        <Entry
+                            x:Name="identifierEntry"
+                            Placeholder="ID, Email or Username"
+                            TextColor="Black"
+                            Visual="Material" />
+                    </Frame>
+                    <Frame
+                        Padding="0"
+                        BackgroundColor="White"
+                        BorderColor="Black"
+                        CornerRadius="10">
+                        <Entry
+                            x:Name="passwordEntry"
+                            IsPassword="True"
+                            Placeholder="Password"
+                            TextColor="Black" />
+                    </Frame>
+                    <Button
+                        Margin="0,10,0,0"
+                        BackgroundColor="Orange"
+                        Clicked="OnLoginClicked"
+                        MaximumWidthRequest="400"
+                        Text="Sign In"
+                        TextColor="Black" />
+                    <Label
+                        Margin="0,0,0,-10"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        Text="Register new account"
+                        TextColor="Green">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="GoToRegister" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label
+                        x:Name="statusLabel"
+                        HorizontalOptions="Center"
+                        TextColor="Red" />
+                </StackLayout>
+            </Grid>
         </Frame>
     </StackLayout>
 </ContentPage>
