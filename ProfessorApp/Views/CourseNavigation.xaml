@@ -37,9 +37,9 @@
 
                 <Button
                     BackgroundColor="DarkOrange"
-                    Clicked="GoToStudentManagmentPage"
+                    Clicked="GoToStudentManagementPage"
                     MaximumWidthRequest="600"
-                    Text="Student Managment"
+                    Text="Student Management"
                     TextColor="White" />
                 <Button
                     BackgroundColor="DarkOrange"

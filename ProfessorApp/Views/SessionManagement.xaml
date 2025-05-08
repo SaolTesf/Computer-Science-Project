@@ -67,10 +67,10 @@
                                     </StackLayout>
                                     <Button
                                         BackgroundColor="DarkOrange"
-                                        Clicked="OnRemoveSessionClicked"
+                                        Clicked="OnUpdateSessionClicked"
                                         CommandParameter="{Binding SessionID}"
                                         FontAttributes="Bold"
-                                        Text="Remove Session"
+                                        Text="Update Session"
                                         TextColor="DarkGreen" />
                                 </StackLayout>
                             </Frame>
@@ -164,6 +164,92 @@
 
                     <Label
                         x:Name="statusLabel"
+                        HorizontalOptions="Center"
+                        TextColor="Red" />
+
+                </StackLayout>
+            </ScrollView>
+        </Frame>
+
+        <!--  Modal-style Update Session Popup  -->
+        <Frame
+            x:Name="UpdateSessionPopup"
+            Grid.Row="2"
+            Padding="15"
+            BackgroundColor="#333"
+            BorderColor="DarkOrange"
+            CornerRadius="12"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            VerticalOptions="Center"
+            WidthRequest="400">
+            <ScrollView VerticalScrollBarVisibility="Default">
+                <StackLayout Spacing="5">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Update Session"
+                        TextColor="White" />
+                    
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Date"
+                        TextColor="White" />
+                    <DatePicker x:Name="NewSessionDate" TextColor="White" />
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Quiz Start Time"
+                        TextColor="White" />
+                    <TimePicker x:Name="NewStartTime" TextColor="White" />
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Quiz End Time"
+                        TextColor="White" />
+                    <TimePicker x:Name="NewEndTime" TextColor="White" />
+
+                    <Entry
+                        x:Name="NewPassword"
+                        MaxLength="255"
+                        Placeholder="Password"
+                        TextColor="White" />
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Text="Quiz"
+                        TextColor="White" />
+                    <Picker
+                        x:Name="NewQuizPicker"
+                        FontAttributes="Bold"
+                        ItemDisplayBinding="{Binding BankName}"
+                        TextColor="White" />
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                        <Button
+                            BackgroundColor="Green"
+                            Clicked="OnSubmitUpdateSessionClicked"
+                            Text="Update"
+                            TextColor="White" />
+                        <Button
+                            BackgroundColor="Gray"
+                            Clicked="OnCancelUpdateSessionClicked"
+                            Text="Cancel"
+                            TextColor="White" />
+                        <Button
+                            BackgroundColor="Red"
+                            Clicked="OnRemoveSessionClicked"
+                            Text="Delete"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+
+                    <Label
+                        x:Name="updateStatusLabel"
                         HorizontalOptions="Center"
                         TextColor="Red" />
 
