@@ -18,9 +18,19 @@
  @inject IClassSessionService SessionService;
  @inject ICourseEnrollmentService CourseEnrollmentService;
  @inject GetIPService GetIPService;
-
+ @inject ICourseService CourseService;
+ @using AttendanceSystem.Models.DTOs;
 <!-- CSS  -->
 <style>
+
+    /* getting rid of default padding and white border */
+    html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #f0f0f0;
+    }
+
     /* background */
     .container {
     display: flex;
@@ -28,6 +38,7 @@
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
+    font-family: 'Roboto', sans-serif;
     }
 
     /* middle box */
@@ -56,7 +67,7 @@
 
     /* Student ID */
     .input-field {
-    width: 100%;
+    width: calc(100% - 16px);
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -108,10 +119,15 @@
     }
 </style>
 
+<!-- link to font  -->
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
 
 <div class="container">
     <div class="form-box">
-        <div class="title">Student Attendance Survey</div>
+        <div class="title">@classSectionName Student Attendance Survey</div>
         <div class="content">
             <!-- allows data validation within [], allows making error messages -->
             <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
@@ -179,6 +195,9 @@
     private string clientIp = string.Empty;
     private ClassSession? currentSession;
     private int? currentCourse;
+    private CourseDTO? currentCourseDetails;
+
+    private string classSectionName = "..."; // placeholder when class section info is loading
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -217,6 +236,23 @@
         if (currentSession != null)
         {
             currentCourse = currentSession.CourseID;    
+            if (currentCourse.HasValue)
+            {
+                currentCourseDetails = await CourseService.GetCourseByIDAsync(currentCourse.Value);
+                if (currentCourseDetails != null)
+                {
+                    classSectionName = currentCourseDetails.CourseNumber + "." + currentCourseDetails.Section;
+                }
+                else
+                {
+                    // null CourseDTO class, section name String stays "..."
+                }
+            }
+            else
+            {
+                // null courseID, class section name String stays "..."
+            }
+            
         }
     }
 
@@ -313,5 +349,4 @@
             showValidationError = true;
         }
     }
-}
 }
