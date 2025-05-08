@@ -228,12 +228,23 @@
     };
 
     private bool showValidationError = false;
-    /*Diego Cabanas: Created method to get API and load in questions using the current course/session found*/
+    /*Diego Cabanas: Created method to get API and load in questions using the current course/session found
+     * in addition to automatically redirecting if an IP already has an attendance during current session
+     */
     protected override async Task OnInitializedAsync()
     {
         clientIp = GetIPService.GetClientIp();
 
         currentSession = await SessionService.GetCurrentSessionAsync();
+
+        if (currentSession != null)
+        {
+            var existsbyIP = await AttendanceService.GetAttendanceIdByIpAndSessionAsync(clientIp, currentSession.SessionID);
+            if (existsbyIP != null)
+            {
+                NavigationManager.NavigateTo("/home");
+            }
+        }
 
         if (currentSession != null)
         {

@@ -3,6 +3,9 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.EntityFrameworkCore;
 
+/*Diego Cabanas:
+ Background service which is used to check if students have submitted an attendance before the end of quiz time
+if not they get an unexcused abscence*/
 public class AttendanceBackgroundService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
