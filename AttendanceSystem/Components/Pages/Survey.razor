@@ -19,10 +19,21 @@
  @inject ICourseEnrollmentService CourseEnrollmentService;
  @inject ISessionQuestionService SessionQuestionService;
  @inject IQuizQuestionService QuizQuestionService;
+ @inject ICourseService CourseService;
+ @using AttendanceSystem.Models.DTOs;
  @inject GetIPService GetIPService;
 
 <!-- CSS  -->
 <style>
+
+    /* getting rid of default padding and white border */
+    html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #f0f0f0;
+    }
+
     /* background */
     .container {
     display: flex;
@@ -30,16 +41,21 @@
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
+    font-family: 'Roboto', sans-serif;
     }
 
     /* middle box */
     .form-box {
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column; /*stack vertically*/
     width: 90%;
     max-width: 600px;
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    height: 85%;
     }
 
     /* title  */
@@ -53,14 +69,17 @@
     }
 
     .content {
-    padding: 20px;
+    padding: 22px;
+    overflow-y: auto; /*scroll within box for questions*/
+    flex-grow: 1;
     }
 
     /* Student ID */
     .input-field {
-    width: 100%;
+    width: calc(100% - 16px);
     padding: 8px;
-    margin-top: 5px;
+    margin-top: -5px;
+    margin-bottom: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
@@ -110,10 +129,15 @@
     }
 </style>
 
+<!-- link to font  -->
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
 
 <div class="container">
     <div class="form-box">
-        <div class="title">Student Attendance Survey</div>
+        <div class="title">@classSectionName Student Attendance Survey</div>
         <div class="content">
             <!-- allows data validation within [], allows making error messages -->
             <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
@@ -158,12 +182,16 @@
                         @($"{qIndex + 1}. {q.QuestionText}")
                     </div>
                     <InputRadioGroup @bind-Value="q.SelectedAnswer" TValue="string" Name=@($"question-{qIndex}")>
-                        @for (int i = 0; i < q.Choices.Count; i++)
+                        @for (int i = 0, labelIndex = 0; i < q.Choices.Count; i++)
                         {
-                            <label style="display: block; margin-bottom: 5px;">
-                                <InputRadio Value="@q.Choices[i]" @key="@q.Choices[i]" />
-                                @($"{(char)('a' + i)}) {q.Choices[i]}")
-                            </label>
+                            if (!string.IsNullOrWhiteSpace(q.Choices[i]))
+                            {
+                                <label style="display: block; margin-bottom: 5px;">
+                                    <InputRadio Value="@q.Choices[i]" @key="@q.Choices[i]" />
+                                    @($"{(char)('a' + labelIndex)}) {q.Choices[i]}")
+                                </label>
+                                labelIndex++;
+                            }
                         }
                     </InputRadioGroup>
                     <br />
@@ -182,6 +210,8 @@
     private ClassSession? currentSession;
     private int? currentCourse;
     private List<SurveyQuestion> questions = new();
+    private CourseDTO? currentCourseDetails;
+    private string classSectionName = "..."; // placeholder when class section info is loading
 
     // temp example question box
     private List<string> rawQuestions = new List<string>
@@ -204,6 +234,29 @@
         clientIp = GetIPService.GetClientIp();
 
         currentSession = await SessionService.GetCurrentSessionAsync();
+
+        if (currentSession != null)
+        {
+            currentCourse = currentSession.CourseID; 
+        }
+
+        if (currentCourse.HasValue)
+        {
+            currentCourseDetails = await CourseService.GetCourseByIDAsync(currentCourse.Value);
+            if (currentCourseDetails != null)
+            {
+                classSectionName = currentCourseDetails.CourseNumber + "." + currentCourseDetails.Section;
+            }
+            else
+            {
+                // null CourseDTO class, section name String stays "..."
+            }
+        }
+        else
+        {
+            // null courseID, class section name String stays "..."
+        }
+
 
         if (currentSession != null)
         {
@@ -300,6 +353,17 @@
             {
                 errorMessage = "No active session found. Attendance cannot be recorded.";
                 return;
+            }
+
+            //Diego Cabanas: if a student is able to access page again and resubmit attendance notify them that they have already submitted
+            if (currentSession != null)
+            {
+                var exists = await AttendanceService.GetAttendanceIdBySessionAndUtdIdAsync(currentSession.SessionID, formData.StudentID);
+                if (exists != 0)
+                {
+                    errorMessage = "Attendance for this UTDID has already been recorded.";
+                    return;
+                }
             }
 
             var now = DateTime.Now;
