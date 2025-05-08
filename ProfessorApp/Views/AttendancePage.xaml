@@ -117,7 +117,7 @@
                 </CollectionView>
             </VerticalStackLayout>
         </ScrollView>
-
+        <!--  Diego Cabanas: Button to change attendance type  -->
         <Frame
             x:Name="ChangeAttendancePopUp"
             Grid.Row="3"

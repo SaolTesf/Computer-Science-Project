@@ -8,7 +8,7 @@
 
     <Grid>
         <ScrollView Grid.Row="1">
-            <!--  Main Content  -->
+            <!--  Diego Cabanas: UI for Student Management Page  -->
             <VerticalStackLayout Padding="20" Spacing="10">
 
                 <Label

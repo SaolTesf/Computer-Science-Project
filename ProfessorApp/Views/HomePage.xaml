@@ -37,7 +37,7 @@
                     MaximumWidthRequest="600"
                     Text="Courses"
                     TextColor="DarkGreen" />
-
+                <!--  Diego Cabanas: Created CollectionView to show the sessions happening on the current day  -->
                 <Label
                     x:Name="Sessions"
                     Margin="0,20,0,10"

@@ -142,7 +142,7 @@ namespace ProfessorApp.Pages
             public DateTime SubmissionDate { get; set; }
             public string AttendanceType { get; set; } = string.Empty;
         }
-
+        /*Diego Cabanas: Code to change the picker and save selection for using the button to change attendance type for a student*/
         private async void OnChangeAttendanceClicked(object sender, EventArgs e)
         {
             if (sender is Button button && button.BindingContext is AttendanceViewModel record)

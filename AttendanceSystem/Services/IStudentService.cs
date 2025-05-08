@@ -1,6 +1,6 @@
 using AttendanceSystem.Models;
 namespace AttendanceSystem.Services;
-
+/*Diego Cabanas:*/
 public interface IStudentService {
   Task<IEnumerable<Student>> GetAllStudentsAsync();
   Task<Student?> GetStudentByUTDIdAsync(String id);

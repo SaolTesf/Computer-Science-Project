@@ -198,7 +198,7 @@
     };
 
     private bool showValidationError = false;
-
+    /*Diego Cabanas: Created method to get API and load in questions using the current course/session found*/
     protected override async Task OnInitializedAsync()
     {
         clientIp = GetIPService.GetClientIp();
@@ -242,7 +242,7 @@
             questions.Clear();
         }
     }
-    
+
 
     // initializing varibales for question
     public class SurveyQuestion
@@ -283,6 +283,8 @@
                 errorMessage = $"No student found with UTDID {formData.StudentID}.";
                 return;
             }
+
+            //Diego Cabanas: if a student with a different UTDID submits the form and they are not enrolled in the course of the current session
             if (currentSession != null)
             {
                 var isInCourse = await CourseEnrollmentService.GetEnrollmentByCourseIDAndUtdIdAsync(currentSession.CourseID.Value, formData.StudentID);
@@ -293,21 +295,14 @@
                 }
             }
 
-            // Verify we have a current session
+            //Diego Cabanas: if no active sessions are found and the form is submitted
             if (currentSession == null)
             {
                 errorMessage = "No active session found. Attendance cannot be recorded.";
                 return;
             }
 
-            // Verify submission is within quiz time window
             var now = DateTime.Now;
-            if (now < currentSession.QuizStartTime || now > currentSession.QuizEndTime)
-            {
-                errorMessage = $"Attendance can only be submitted between {currentSession.QuizStartTime:t} and {currentSession.QuizEndTime:t}.";
-                return;
-            }
-
             bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
             if (confirmed)
             {

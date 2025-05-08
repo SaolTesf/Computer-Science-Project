@@ -380,7 +380,7 @@ namespace ProfessorApp.Pages
                 }
             }
         }
-
+        //Method to notify that the picker for the session was changed
         private void OnSessionPickerIndexChanged(object sender, EventArgs e)
         {
             if (SessionPicker.SelectedItem is ClassSessionDTO selectedSession)
@@ -388,6 +388,7 @@ namespace ProfessorApp.Pages
                 SelectedSession = selectedSession;
             }
         }
+        //Filters the sessions by date using date picker
         private void FilterSessionsByDate()
         {
             FilteredSessionList.Clear();
@@ -475,6 +476,7 @@ namespace ProfessorApp.Pages
             SelectedSession = null;
             SessionPicker.SelectedIndex = -1;
         }
+        //Loads all the questions on the page when the page is loaded
         private async Task LoadAllQuestionsForCourseAsync()
         {
             if (_courseID == null)
@@ -482,7 +484,6 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Error", "Course ID is not provided.", "OK");
                 return;
             }
-
             try
             {
                 //Fetch all quiz banks for the current course
@@ -494,9 +495,8 @@ namespace ProfessorApp.Pages
 
                     foreach (var bank in quizBanks)
                     {
-                        // Fetch questions for each bank
+                        //Fetch questions for each bank
                         var questions = await _clientService.GetQuestionsByBankIdAsync(bank.QuestionBankID);
-
                         if (questions != null)
                         {
                             foreach (var question in questions)

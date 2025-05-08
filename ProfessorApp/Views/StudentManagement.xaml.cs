@@ -1,6 +1,6 @@
 ﻿/*Diego Cabanas
  Functions to Manage students, Add through file, Add manually, or Delete
-Delete also deletes any attendance statistics/facts that are associated with the student
+    Delete also deletes any attendance statistics/facts that are associated with the student
  */
 using System;
 using System.Collections.Generic;

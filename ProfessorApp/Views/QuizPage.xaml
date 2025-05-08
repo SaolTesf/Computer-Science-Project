@@ -12,6 +12,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ScrollView Grid.Row="1">
+            <!--  Diego Cabanas: UI for Quiz Management Page  -->
             <VerticalStackLayout Padding="20" Spacing="10">
 
                 <Button
