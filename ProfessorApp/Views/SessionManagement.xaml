@@ -83,9 +83,15 @@
                     Margin="0,15,0,15"
                     BackgroundColor="Green"
                     Clicked="OnAddSessionClicked"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
                     Text="Add Session"
                     TextColor="White"
-                    WidthRequest="400" />
+                    WidthRequest="400">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="K" />
+                    </Button.ImageSource>
+                </Button>
 
             </VerticalStackLayout>
         </ScrollView>

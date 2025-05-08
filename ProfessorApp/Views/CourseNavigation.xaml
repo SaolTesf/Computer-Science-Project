@@ -22,40 +22,81 @@
 
                 <!--  Navigation Buttons  -->
                 <Button
+                    Margin="0,5,0,5"
                     BackgroundColor="DarkOrange"
                     Clicked="GoToSessionPage"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    HeightRequest="55"
                     MaximumWidthRequest="600"
                     Text="Sessions"
-                    TextColor="White" />
+                    TextColor="White">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="C" />
+                    </Button.ImageSource>
+                </Button>
 
                 <Button
+                    Margin="0,5,0,5"
                     BackgroundColor="DarkOrange"
                     Clicked="GoToAttPage"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    HeightRequest="55"
                     MaximumWidthRequest="600"
                     Text="Attendance"
-                    TextColor="White" />
+                    TextColor="White">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="F" />
+                    </Button.ImageSource>
+                </Button>
 
                 <Button
+                    Margin="0,5,0,5"
                     BackgroundColor="DarkOrange"
                     Clicked="GoToStudentManagementPage"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    HeightRequest="55"
                     MaximumWidthRequest="600"
                     Text="Student Management"
-                    TextColor="White" />
+                    TextColor="White">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="B" />
+                    </Button.ImageSource>
+                </Button>
+
                 <Button
+                    Margin="0,5,0,5"
                     BackgroundColor="DarkOrange"
                     Clicked="GoToQuizPage"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    HeightRequest="55"
                     MaximumWidthRequest="600"
                     Text="Quiz Management"
-                    TextColor="White" />
+                    TextColor="White">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="A" />
+                    </Button.ImageSource>
+                </Button>
+
 
                 <!--  Delete Course Button  -->
                 <Button
                     Margin="0,15,0,35"
                     BackgroundColor="Red"
                     Clicked="ConfirmDelete"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    HeightRequest="55"
                     Text="Delete Course"
                     TextColor="White"
-                    WidthRequest="400" />
+                    WidthRequest="400">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="E" />
+                    </Button.ImageSource>
+                </Button>
 
             </VerticalStackLayout>
         </ScrollView>
