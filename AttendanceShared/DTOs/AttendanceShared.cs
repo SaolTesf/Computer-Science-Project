@@ -114,6 +114,7 @@ public class ClassSessionFormatDTO
     public string Quiz { get; set; } = string.Empty;
     public int SessionID { get; set; }
     public string SessionNumber { get; set; } = string.Empty;
+    public string AccessCode { get; set; } = string.Empty;
 }
 
 // DTO for session-question mapping
@@ -136,6 +137,7 @@ public class QuizQuestionDTO{
     public string QuestionText { get; set; } = string.Empty;
     public string Option1 { get; set; } = string.Empty;
     public string Option2 { get; set; } = string.Empty;
+    public int Answer { get; set; } = 0;
     // Option3 and Option4 are optional
     public string? Option3 { get; set; }
     public string? Option4 { get; set; }

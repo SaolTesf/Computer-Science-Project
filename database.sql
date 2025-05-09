@@ -84,6 +84,7 @@ CREATE TABLE QuizQuestion (
     Option2 TEXT NOT NULL,
     Option3 TEXT,
     Option4 TEXT,
+    Answer INT NOT NULL,
     FOREIGN KEY (QuestionBankID) REFERENCES QuizQuestionBank(QuestionBankID) ON DELETE CASCADE
 );
 
@@ -117,7 +118,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Insert Professors (no dependencies)
 INSERT INTO Professor (ProfessorID, ID, FirstName, LastName, Username, Email, PasswordHash)
 VALUES
-   (1, '5400000001', 'John', 'Smith', 'jsmith', 'john.smith@example.com', 'hashedpassword1'),
+   (1, '5400000001', 'John', 'Smith', 'jsmith', 'john.smith@example.com', '$2a$11$mFhtH8Qi9XNaVBqVCVvX.O0HLHzNTR/Vuz8i27yQ74wennq7qfkYK'), -- "testpassword" is the password
    (2, '5400000002', 'Jane', 'Doe', 'jdoe', 'jane.doe@example.com', 'hashedpassword2'),
    (3, '5400000003', 'Robert', 'Johnson', 'rjohnson', 'robert.johnson@example.com', 'hashedpassword3');
 
@@ -147,21 +148,21 @@ VALUES
     (4, 'Final Review', 3);
 
 -- Insert QuizQuestions (depends on QuizQuestionBank)
-INSERT INTO QuizQuestion (QuestionID, QuestionBankID, QuestionText, Option1, Option2, Option3, Option4)
+INSERT INTO QuizQuestion (QuestionID, QuestionBankID, QuestionText, Option1, Option2, Option3, Option4, Answer)
 VALUES
-    (1, 1, 'Sample question 1 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (2, 1, 'Sample question 2 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (3, 2, 'Sample question 1 for Week 2?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (4, 3, 'Sample question 1 for Midterm Review?', 'Option A', 'Option B', 'Option C', 'Option D'),
-    (5, 4, 'Sample question 1 for Final Review?', 'Option A', 'Option B', 'Option C', 'Option D');
+    (1, 1, 'Sample question 1 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D', 2),
+    (2, 1, 'Sample question 2 for Week 1?', 'Option A', 'Option B', 'Option C', 'Option D', 4),
+    (3, 2, 'Sample question 1 for Week 2?', 'Option A', 'Option B', 'Option C', 'Option D', 1),
+    (4, 3, 'Sample question 1 for Midterm Review?', 'Option A', 'Option B', 'Option C', 'Option D', 1),
+    (5, 4, 'Sample question 1 for Final Review?', 'Option A', 'Option B', 'Option C', 'Option D', 3);
 
 -- Insert ClassSessions (depends on Course and QuizQuestionBank)
 INSERT INTO ClassSession (SessionID, SessionDateTime, Password, QuizStartTime, QuizEndTime, QuestionBankID, CourseID)
 VALUES
-    (1, '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-03-24 10:45:00', 1, 1),
-    (2, '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-03-31 10:45:00', 2, 1),
-    (3, '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-04-02 14:45:00', 3, 2),
-    (4, '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-04-04 15:45:00', 4, 3);
+    (1, '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-05-24 10:45:00', 1, 1),
+    (2, '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-05-31 10:45:00', 2, 1),
+    (3, '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-05-02 14:45:00', 3, 2),
+    (4, '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-05-04 15:45:00', 4, 3);
 
 -- Insert Attendance (depends on ClassSession and Student)
 INSERT INTO Attendance (AttendanceID, SessionID, UTDID, SubmissionTime, IPAddress, AttendanceType)
@@ -177,15 +178,6 @@ VALUES
     (9, 1, '2100000004', '2025-03-24 10:00:00', '192.168.1.104', 'Unexcused'),
     (10, 2, '2100000003', '2025-03-31 10:30:00', '192.168.1.103', 'Excused');
 
--- Sample mapping of questions to sessions
-INSERT INTO SessionQuestion (SessionID, QuestionID)
-VALUES
-    (1, 1), -- session 1 uses question 1
-    (1, 2), -- session 1 uses question 2
-    (2, 3), -- session 2 uses question 3
-    (3, 4), -- session 3 uses question 4
-    (4, 5); -- session 4 uses question 5
-
 -- Insert QuizResponses (depends on Attendance and QuizQuestion)
 INSERT INTO QuizResponse (ResponseID, AttendanceID, QuestionID, SelectedOption)
 VALUES
@@ -199,3 +191,27 @@ VALUES
     (8, 5, 3, 1),  -- Bob chose option 1 for question 3
     (9, 6, 4, 3),  -- Diana chose option 3 for question 4
     (10, 7, 4, 3); -- Ethan chose option 3 for question 4
+
+-- Insert CourseEnrollments (sample data)
+INSERT INTO CourseEnrollment (EnrollmentID, EnrollmentDate, CourseID, UTDID)
+VALUES
+    (1, '2025-03-23 09:00:00', 1, '2100000001'),
+    (2, '2025-03-23 09:05:00', 1, '2100000002'),
+    (3, '2025-03-23 09:10:00', 1, '2100000003'),
+    (4, '2025-03-30 09:00:00', 2, '2100000001'),
+    (5, '2025-03-30 09:05:00', 2, '2100000002'),
+    (6, '2025-04-02 13:55:00', 3, '2100000004'),
+    (7, '2025-04-02 13:56:00', 3, '2100000005'),
+    (8, '2025-04-04 14:50:00', 4, '2100000003');
+
+-- Insert SessionQuestion mappings (sample data)
+INSERT INTO SessionQuestion (SessionQuestionID, SessionID, QuestionID)
+VALUES
+    (1, 1, 1),
+    (2, 1, 2),
+    (3, 2, 1),
+    (4, 2, 2),
+    (5, 3, 3),
+    (6, 3, 5),
+    (7, 4, 4),
+    (8, 4, 5);

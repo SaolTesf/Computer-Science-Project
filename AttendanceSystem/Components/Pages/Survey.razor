@@ -15,10 +15,25 @@
  @using AttendanceSystem.Services
  @inject IAttendanceService AttendanceService;
  @inject IStudentService StudentService;
+ @inject IClassSessionService SessionService;
+ @inject ICourseEnrollmentService CourseEnrollmentService;
+ @inject ISessionQuestionService SessionQuestionService;
+ @inject IQuizQuestionService QuizQuestionService;
+ @inject ICourseService CourseService;
+ @using AttendanceSystem.Models.DTOs;
  @inject GetIPService GetIPService;
 
 <!-- CSS  -->
 <style>
+
+    /* getting rid of default padding and white border */
+    html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #f0f0f0;
+    }
+
     /* background */
     .container {
     display: flex;
@@ -26,16 +41,21 @@
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
+    font-family: 'Roboto', sans-serif;
     }
 
     /* middle box */
     .form-box {
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column; /*stack vertically*/
     width: 90%;
     max-width: 600px;
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    height: 85%;
     }
 
     /* title  */
@@ -49,14 +69,17 @@
     }
 
     .content {
-    padding: 20px;
+    padding: 22px;
+    overflow-y: auto; /*scroll within box for questions*/
+    flex-grow: 1;
     }
 
     /* Student ID */
     .input-field {
-    width: 100%;
+    width: calc(100% - 16px);
     padding: 8px;
-    margin-top: 5px;
+    margin-top: -5px;
+    margin-bottom: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
@@ -106,10 +129,15 @@
     }
 </style>
 
+<!-- link to font  -->
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
 
 <div class="container">
     <div class="form-box">
-        <div class="title">Student Attendance Survey</div>
+        <div class="title">@classSectionName Student Attendance Survey</div>
         <div class="content">
             <!-- allows data validation within [], allows making error messages -->
             <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
@@ -154,12 +182,16 @@
                         @($"{qIndex + 1}. {q.QuestionText}")
                     </div>
                     <InputRadioGroup @bind-Value="q.SelectedAnswer" TValue="string" Name=@($"question-{qIndex}")>
-                        @for (int i = 0; i < q.Choices.Count; i++)
+                        @for (int i = 0, labelIndex = 0; i < q.Choices.Count; i++)
                         {
-                            <label style="display: block; margin-bottom: 5px;">
-                                <InputRadio Value="@q.Choices[i]" @key="@q.Choices[i]" />
-                                @($"{(char)('a' + i)}) {q.Choices[i]}")
-                            </label>
+                            if (!string.IsNullOrWhiteSpace(q.Choices[i]))
+                            {
+                                <label style="display: block; margin-bottom: 5px;">
+                                    <InputRadio Value="@q.Choices[i]" @key="@q.Choices[i]" />
+                                    @($"{(char)('a' + labelIndex)}) {q.Choices[i]}")
+                                </label>
+                                labelIndex++;
+                            }
                         }
                     </InputRadioGroup>
                     <br />
@@ -175,16 +207,12 @@
     private string errorMessage = string.Empty;
     private EditForm? editForm;
     private string clientIp = string.Empty;
-
-    // temp example question box
-    private List<string> rawQuestions = new List<string>
-    {
-        "What is the region of diagram that consist of an operator or label?\tGRASP\tFrame\tUML\tCRC",
-        "True or False: Obligations can and do vary significantly by context.\tTrue\tFalse",
-        "What are Benefits of Design by Contract?\t SOLID’s “single responsibility” principle at method level\t“Pseudocode Programming Process\tBasis for “Programming by Intent”\tunit testing\tAll of the above"
-    };
-
+    private ClassSession? currentSession;
+    private int? currentCourse;
     private List<SurveyQuestion> questions = new();
+    private CourseDTO? currentCourseDetails;
+    private string classSectionName = "..."; // placeholder when class section info is loading
+
 
     private FormData formData = new FormData()
     {
@@ -192,22 +220,84 @@
     };
 
     private bool showValidationError = false;
-
-    // parse question bank - split question bank into parts
-    protected override void OnInitialized()
+    /*Diego Cabanas: Created method to get API and load in questions using the current course/session found
+     * in addition to automatically redirecting if an IP already has an attendance during current session*/
+    protected override async Task OnInitializedAsync()
     {
         clientIp = GetIPService.GetClientIp();
-        questions = rawQuestions.Select(q =>
+
+        currentSession = await SessionService.GetCurrentSessionAsync();
+
+        if (currentSession != null)
         {
-            var parts = q.Split('\t');
-            return new SurveyQuestion
+            var existsbyIP = await AttendanceService.GetAttendanceIdByIpAndSessionAsync(clientIp, currentSession.SessionID);
+            if (existsbyIP != null)
             {
-                QuestionText = parts[0],
-                Choices = parts.Skip(1).ToList(),
-                SelectedAnswer = null
-            };
-        }).ToList();
+                NavigationManager.NavigateTo("/home");
+            }
+        }
+
+        if (currentSession != null)
+        {
+            currentCourse = currentSession.CourseID; 
+        }
+
+        if (currentCourse.HasValue)
+        {
+            currentCourseDetails = await CourseService.GetCourseByIDAsync(currentCourse.Value);
+            if (currentCourseDetails != null)
+            {
+                classSectionName = currentCourseDetails.CourseNumber + "." + currentCourseDetails.Section;
+            }
+            else
+            {
+                // null CourseDTO class, section name String stays "..."
+            }
+        }
+        else
+        {
+            // null courseID, class section name String stays "..."
+        }
+
+
+        if (currentSession != null)
+        {
+            questions = new List<SurveyQuestion>();
+
+            var sessionQuestionsList = await SessionQuestionService.GetBySessionIdAsync(currentSession.SessionID);
+
+            foreach (var s in sessionQuestionsList)
+            {
+                if (s != null)
+                {
+                    var quizQuestion = await QuizQuestionService.GetQuestionByIdAsync(s.QuestionID);
+
+                    if (quizQuestion != null)
+                    {
+                        var survey = new SurveyQuestion
+                            {
+                                QuestionText = quizQuestion.QuestionText,
+                                Choices = new List<string?>
+                        {
+                            quizQuestion.Option1,
+                            quizQuestion.Option2,
+                            quizQuestion.Option3,
+                            quizQuestion.Option4
+                        },
+                                SelectedAnswer = null
+                            };
+
+                        questions.Add(survey);
+                    }
+                }
+            }
+        }
+        else
+        {
+            questions.Clear();
+        }
     }
+
 
     // initializing varibales for question
     public class SurveyQuestion
@@ -229,9 +319,10 @@
     private async Task HandleSubmit(EditContext context)
     {
         showValidationError = false;
+        errorMessage = string.Empty;
         StateHasChanged();
 
-        // validate StudentID and that all questions are answered
+        // Validate form and questions
         if (context.Validate() && questions.All(q => !string.IsNullOrEmpty(q.SelectedAnswer)))
         {
             if (string.IsNullOrEmpty(formData.StudentID))
@@ -240,30 +331,72 @@
                 showValidationError = true;
                 return;
             }
-            
+
             var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
-            if (student != null)
-            {
-                bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
-                if (confirmed)
-                {
-                    Console.WriteLine($"Submitted: {formData.StudentID}");
-                    foreach (var q in questions)
-                    {
-                        Console.WriteLine($"Q: {q.QuestionText} - A: {q.SelectedAnswer}");
-                    }
-                    NavigationManager.NavigateTo("/home");
-                }
-            }
-            else
+            if (student == null)
             {
                 errorMessage = $"No student found with UTDID {formData.StudentID}.";
+                return;
+            }
+
+            //Diego Cabanas: if a student with a different UTDID submits the form and they are not enrolled in the course of the current session
+            if (currentSession != null)
+            {
+                var isInCourse = await CourseEnrollmentService.GetEnrollmentByCourseIDAndUtdIdAsync(currentSession.CourseID.Value, formData.StudentID);
+                if (isInCourse == null)
+                {
+                    errorMessage = $"No student found with UTDID {formData.StudentID} in the course.";
+                    return;
+                }
+            }
+
+            //Diego Cabanas: if no active sessions are found and the form is submitted
+            if (currentSession == null)
+            {
+                errorMessage = "No active session found. Attendance cannot be recorded.";
+                return;
+            }
+
+            //Diego Cabanas: if a student is able to access page again and resubmit attendance notify them that they have already submitted
+            if (currentSession != null)
+            {
+                var exists = await AttendanceService.GetAttendanceIdBySessionAndUtdIdAsync(currentSession.SessionID, formData.StudentID);
+                if (exists != 0)
+                {
+                    errorMessage = "Attendance for this UTDID has already been recorded.";
+                    return;
+                }
+            }
+
+            var now = DateTime.Now;
+            bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
+            if (confirmed)
+            {
+                var attendanceSubmission = new Attendance
+                    {
+                        SessionID = currentSession.SessionID,
+                        UTDID = formData.StudentID,
+                        SubmissionTime = now,
+                        IPAddress = clientIp,
+                        AttendanceType = AttendanceType.Present
+                    };
+
+                try
+                {
+                    await AttendanceService.CreateAttendanceAsync(attendanceSubmission);
+                    NavigationManager.NavigateTo("/home");
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = "Error submitting attendance. Please try again.";
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
         }
         else
         {
             showValidationError = true;
-            Console.WriteLine("Form validation failed");
         }
+    }
 }
 }

@@ -1,7 +1,5 @@
 using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories; // Assumes IQuizQuestionRepository exists
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace AttendanceSystem.Services
 {
@@ -46,11 +44,15 @@ namespace AttendanceSystem.Services
             }
         }
 
-        public async Task<List<QuizQuestion>?> GetQuestionsByBankIdAsync(int bankId)
+        public async Task<List<QuizQuestion>> GetQuestionsByBankIdAsync(int bankId)
         {
             return await _questionRepository.GetQuestionsByBankIdAsync(bankId);
         }
 
+        public async Task<int?> GetQuestionIdByTextAsync(string questionText)
+        {
+            return await _questionRepository.GetQuestionIdByTextAsync(questionText);
+        }
     }
 
 }

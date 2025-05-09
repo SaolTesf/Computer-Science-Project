@@ -1,6 +1,6 @@
 ﻿/*Diego Cabanas
  Functions to Manage students, Add through file, Add manually, or Delete
-Delete also deletes any attendance statistics/facts that are associated with the student
+    Delete also deletes any attendance statistics/facts that are associated with the student
  */
 using System;
 using System.Collections.Generic;
@@ -292,12 +292,10 @@ namespace ProfessorApp.Pages
         }
 
         //Method to delete a student by UTDID
-        private async void OnDeleteStudentClicked(object sender, EventArgs e)
+        private void OnDeleteStudentClicked(object sender, EventArgs e)
         {
             //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;
-
-            await DisplayAlert("Error", "Deletion unsuccessful", "OK");
 
             if (DeleteStudentPopup.IsVisible)
             {
@@ -330,6 +328,7 @@ namespace ProfessorApp.Pages
                         await DisplayAlert("Success", resultMessage, "OK");
 
                         DeleteUTDIDEntry.Text = string.Empty;
+                        await LoadEnrollmentsAsync();
                         DeleteStudentPopup.IsVisible = false;
                     }
                     else
@@ -356,14 +355,6 @@ namespace ProfessorApp.Pages
 
             //Hide delete student form
             DeleteStudentPopup.IsVisible = false;
-        }
-
-        private async void OnGoToQuizPageClicked(object sender, EventArgs e)
-        {
-            var course = _courseId; 
-            if (course == null) return;
-
-            await Navigation.PushAsync(new QuizPage(_clientService, course));
         }
 
         // Open deletion confirmation popup

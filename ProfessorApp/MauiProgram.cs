@@ -18,6 +18,7 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                fonts.AddFont("ProjectFonts.ttf", "ProjectFonts");
             });
 
         // Register services for dependency injection

@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using AttendanceShared.DTOs;
+using Microsoft.EntityFrameworkCore;
+
+// Dinagaran Senthilkumar
+// ClassSessionController.cs file that handles HTTP requests related to class session records.  I added the links to help me test it on postman easier
 
 namespace AttendanceSystem.Controllers
 {
@@ -40,7 +44,7 @@ namespace AttendanceSystem.Controllers
 
         // GET: api/classsession/course/{courseID} (all sessions with course ID)
         [HttpGet("course/{courseID}")]
-        public async Task<ActionResult<IEnumerable<ClassSession>>> GetByCourseIDAsync(int courseID)
+        public async Task<ActionResult<IEnumerable<ClassSessionDTO>>> GetByCourseIDAsync(int courseID)
         {
             var sessions = await _classSessionService.GetByCourseIDAsync(courseID);
             var dto = sessions.Select(e => new ClassSessionDTO
@@ -51,7 +55,8 @@ namespace AttendanceSystem.Controllers
                 QuizStartTime = e.QuizStartTime,
                 QuizEndTime = e.QuizEndTime,
                 Password = e.Password,
-                QuestionBankID = e.QuestionBankID
+                QuestionBankID = e.QuestionBankID,
+                AccessCode = e.AccessCode
             }).ToList();
             return Ok(dto);
         }
@@ -85,5 +90,30 @@ namespace AttendanceSystem.Controllers
             await _classSessionService.DeleteSessionAsync(id);
             return NoContent();
         }
+
+        // GET: api/classsession/{dateTime}
+        [HttpGet("datetime/{sessionDateTime}")]
+        public async Task<ActionResult<IEnumerable<ClassSession>>> GetSessionBySessionDateTime(DateTime SessionDateTime)
+        {
+            var session = await _classSessionService.GetSessionBySessionDateTimeAsync(SessionDateTime);
+            if (session == null)
+                return NotFound();
+            return Ok(session);
+        }
+        // GET: api/classsession/current
+
+        [HttpGet("current")]
+        public async Task<ClassSession?> GetCurrentSessionAsync()
+        {
+            var currentTime = DateTime.Now;
+            var sessions = await _classSessionService.GetAllSessionsAsync();
+
+            return sessions
+                .Where(s => s.QuizStartTime <= currentTime && currentTime <= s.QuizEndTime)
+                .OrderByDescending(s => s.QuizStartTime) 
+                .FirstOrDefault();
+        }
+
+
     }
 }

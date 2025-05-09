@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+// Dinagaran Senthilkumar
+// This is basically the ClassSessionRepository.cs file that implements the IClassSessionRepository interface.
 
 namespace AttendanceSystem.Data.Repositories
 {
@@ -47,5 +49,23 @@ namespace AttendanceSystem.Data.Repositories
             _context.ClassSessions.Remove(session);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<ClassSession>> GetSessionBySessionDateTimeAsync(DateTime SessionDateTime)
+        => await _context.ClassSessions
+                    .Where(e => e.SessionDateTime == SessionDateTime)
+                    .ToListAsync();
+
+        public async Task<ClassSession?> GetCurrentSessionAsync(DateTime currentTime)
+        {
+            return await _context.ClassSessions
+                .Where(session =>
+                    session.QuizStartTime <= currentTime &&
+                    session.QuizEndTime >= currentTime &&
+                    session.QuizStartTime.Date == currentTime.Date) // Add this condition
+                .FirstOrDefaultAsync();
+        }
+
+
+
     }
 }

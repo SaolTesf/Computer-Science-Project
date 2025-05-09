@@ -15,5 +15,6 @@ namespace AttendanceSystem.Data.Repositories
     Task<IEnumerable<CourseEnrollment>> GetByCourseNumberAsync(int courseID);
     Task AddAsync(CourseEnrollment enrollment);
     Task DeleteAsync(int enrollmentId);
-  }
+    Task<CourseEnrollment?> GetByCourseNumberAndUtdIdAsync(int courseID, string utdId);
+    }
 }

@@ -29,6 +29,7 @@ namespace ProfessorApp.Pages
             base.OnAppearing();
             var courses = await _clientService.GetCoursesByProfessorAsync();
             CourseCollectionView.ItemsSource = courses;
+            statusLabel.Text = null;
         }
 
         private async void OnCourseSelected(object sender, SelectionChangedEventArgs e)
@@ -159,8 +160,13 @@ namespace ProfessorApp.Pages
                         return;
                     }
                     statusLabel.TextColor = Colors.Green;
-                    statusLabel.Text = "Created course!";
+                    await DisplayAlert("Success", "Course Created successfully.", "OK");
                     OnAppearing();
+                    courseSubjectEntry.Text = string.Empty;
+                    courseNumberEntry.Text = string.Empty;
+                    courseNameEntry.Text = string.Empty;
+                    sectionEntry.Text = string.Empty;
+                    AddCoursePopUp.IsVisible = false;
                 }
                 catch (Exception ex)
                 {
@@ -176,7 +182,12 @@ namespace ProfessorApp.Pages
         }
         private void GoToCourses(object sender, EventArgs e)
         {
-            AddCoursePopUp.IsVisible = !AddCoursePopUp.IsVisible;
+            OnAppearing();
+            courseSubjectEntry.Text = string.Empty;
+            courseNumberEntry.Text = string.Empty;
+            courseNameEntry.Text = string.Empty;
+            sectionEntry.Text = string.Empty;
+            AddCoursePopUp.IsVisible = false;
         }
     }
 }

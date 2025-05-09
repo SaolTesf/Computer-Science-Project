@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// Dinagaran Senthilkumar
+// QuizQuestionController.cs file that handles HTTP requests related to question records.  I added the links to help me test it on postman easier
 namespace AttendanceSystem.Controllers
 {
     [ApiController]
@@ -72,6 +74,21 @@ namespace AttendanceSystem.Controllers
                 return NotFound($"No questions found for bank ID {bankId}.");
             }
             return Ok(questions);
+        }
+
+        // GET: api/quizquestion/GetQuestionIdByText?text=someText
+        [HttpGet("GetQuestionIdByText")]
+        public async Task<ActionResult<int?>> GetQuestionIdByText([FromQuery] string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return BadRequest("Question text is required.");
+
+            var questionId = await _quizQuestionService.GetQuestionIdByTextAsync(text);
+
+            if (questionId == null)
+                return NotFound("Question not found.");
+
+            return Ok(questionId);
         }
     }
 }

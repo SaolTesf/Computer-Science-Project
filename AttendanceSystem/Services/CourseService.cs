@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using AttendanceSystem.Models.DTOs;
-
+//Dinagaran Senthilkumar
+// This is basically the CourseService.cs file that implements the ICourseService interface.
 namespace AttendanceSystem.Services
 {
     public class CourseService : ICourseService

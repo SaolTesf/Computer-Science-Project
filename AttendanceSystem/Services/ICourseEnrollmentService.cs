@@ -10,5 +10,6 @@ namespace AttendanceSystem.Services
     Task<List<CourseEnrollment>> GetEnrollmentsByCourseAsync(int courseID);
     Task EnrollStudentAsync(CourseEnrollment enrollment);
     Task UnenrollStudentAsync(int enrollmentId);
-  }
+    Task<int?> GetEnrollmentByCourseIDAndUtdIdAsync(int courseID, string utdId);
+    }
 }

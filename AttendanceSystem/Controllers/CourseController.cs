@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+// Dinagaran Senthilkumar
+// CourseControllers.cs file that handles HTTP requests related to course records.  I added the links to help me test it on postman easier
+
 namespace AttendanceSystem.Controllers
 {
     [ApiController]

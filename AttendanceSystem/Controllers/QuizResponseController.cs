@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// Dinagaran Senthilkumar
+// Quiz ResponseController.cs file that handles HTTP requests related to quizResponse records. I added the links to help me test it on Postman easier
 namespace AttendanceSystem.Controllers
 {
     [ApiController]

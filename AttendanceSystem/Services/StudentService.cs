@@ -1,7 +1,7 @@
 using AttendanceShared.DTOs;
 using AttendanceSystem.Data.Repositories;
 using AttendanceSystem.Models;
-
+/*Diego Cabanas:*/
 namespace AttendanceSystem.Services {
   public class StudentService(IStudentRepository studentRepository) : IStudentService {
     private readonly IStudentRepository _studentRepository = studentRepository;
@@ -25,9 +25,8 @@ namespace AttendanceSystem.Services {
       }
       catch{
         Student? existingStudent = await _studentRepository.GetStudentByUTDIdAsync(student.UTDID);
-        if (existingStudent != null) {
+        if (existingStudent != null)
           return true;
-        }
         return false;
       }
     }

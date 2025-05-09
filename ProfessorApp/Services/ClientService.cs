@@ -82,7 +82,7 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/student/{utdId}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync(); 
+                return await response.Content.ReadAsStringAsync();
             }
             return null;
         }
@@ -144,7 +144,7 @@ namespace ProfessorApp.Services
             return response;
         }
 
-       public async Task<List<QuizQuestionDTO>?> GetQuizQuestionByIdAsync(int questionId)
+        public async Task<List<QuizQuestionDTO>?> GetQuizQuestionByIdAsync(int questionId)
         {
             var response = await _httpClient.GetFromJsonAsync<List<QuizQuestionDTO>>($"api/quizquestion/{questionId}");
             return response;
@@ -187,6 +187,17 @@ namespace ProfessorApp.Services
             }
         }
 
+        public async Task<int?> GetQuestionIdByTextAsync(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return null;
+
+            var response = await _httpClient.GetAsync($"api/quizquestion/GetQuestionIdByText?text={Uri.EscapeDataString(text)}");
+            return response.IsSuccessStatusCode
+                ? await response.Content.ReadFromJsonAsync<int?>()
+                : null;
+        }
+
+
         // Courses
         public async Task<List<CourseDTO>?> GetAllCoursesAsync()
             => await _httpClient.GetFromJsonAsync<List<CourseDTO>>("api/course");
@@ -211,7 +222,7 @@ namespace ProfessorApp.Services
             var response = await _httpClient.DeleteAsync($"api/course/{id}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync(); // returns "<Name> has been removed."
+                return await response.Content.ReadAsStringAsync(); 
             }
             return null;
         }
@@ -239,6 +250,12 @@ namespace ProfessorApp.Services
 
         public async Task<List<ClassSessionDTO>?> GetSessionsAsync()
             => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>("api/classsession/");
+        public async Task<List<ClassSessionDTO>?> GetSessionBySessionDateTimeAsync(DateTime sessionDateTime)
+             => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/datetime/{sessionDateTime:yyyy-MM-dd}");
+
+        // get course session by the session ID
+        public async Task<ClassSessionDTO?> GetSessionByIDAsync(int? sessionID)
+            => await _httpClient.GetFromJsonAsync<ClassSessionDTO>($"api/classsession/{sessionID}");
 
         // add a class session
         public async Task<bool> AddClassSessionAsync(ClassSessionDTO dto)
@@ -246,7 +263,14 @@ namespace ProfessorApp.Services
             var response = await _httpClient.PostAsJsonAsync("api/classsession", dto);
             return response.IsSuccessStatusCode;
         }
-        
+
+        // update a class session
+        public async Task<bool> UpdateClassSessionAsync(ClassSessionDTO dto)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/classsession/{dto.SessionID}", dto);
+            return response.IsSuccessStatusCode;
+        }
+
         // remove a class session by ID
         public async Task<bool> RemoveClassSessionAsync(int sessionID)
         {
@@ -261,5 +285,39 @@ namespace ProfessorApp.Services
         // Attendance methods by course
         public async Task<List<AttendanceDTO>?> GetAttendancesByCourseIDAsync(int? courseID)
             => await _httpClient.GetFromJsonAsync<List<AttendanceDTO>>($"api/attendance/course/{courseID}");
+
+        public async Task<bool> UpdateAttendanceAsync(int AttendanceID, AttendanceDTO attendance)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/attendance/{attendance.AttendanceID}", attendance);
+            return response.IsSuccessStatusCode;
+        }
+
+
+        public async Task<int> GetAttendanceIdBySessionAndUtdIdAsync(int sessionId, string utdId)
+        {
+            var response = await _httpClient.GetAsync($"api/attendance/session/{sessionId}/student/{utdId}/id");
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response content as integer
+                var content = await response.Content.ReadAsStringAsync();
+                if (int.TryParse(content, out int attendanceId))
+                {
+                    return attendanceId;
+                }
+            }
+            return 0;
+        }
+
+        //Session Question
+        public async Task<SessionQuestionDTO?> CreateSessionQuestionAsync(SessionQuestionDTO sessionQuestion)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/sessionquestion", sessionQuestion);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<SessionQuestionDTO>();
+            }
+            return null;
+        }
     }
 }

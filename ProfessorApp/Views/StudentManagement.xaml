@@ -7,162 +7,185 @@
     BackgroundColor="#222">
 
     <Grid>
+        <ScrollView Grid.Row="1">
+            <!--  Diego Cabanas: UI for Student Management Page  -->
+            <VerticalStackLayout Padding="20" Spacing="10">
 
-        <!--  Main Content  -->
-        <VerticalStackLayout Padding="20" Spacing="10">
+                <Label
+                    x:Name="CourseLabel"
+                    Margin="0,20,0,10"
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="CourseName"
+                    TextColor="White"
+                    VerticalOptions="Start" />
 
-            <Label
-                x:Name="CourseLabel"
-                Margin="0,20,0,10"
-                FontAttributes="Bold"
-                FontSize="24"
-                HorizontalOptions="Center"
-                Text="CourseName"
-                TextColor="White"
-                VerticalOptions="Start" />
+                <!--  Button to Choose Files  -->
+                <Button
+                    BackgroundColor="DarkOrange"
+                    Clicked="OnSelectFileClicked"
+                    Text="Choose File"
+                    TextColor="White" />
 
-            <!--  Button to Choose Files  -->
-            <Button
-                BackgroundColor="DarkOrange"
-                Clicked="OnSelectFileClicked"
-                Text="Choose File"
-                TextColor="White" />
+                <Label
+                    x:Name="SelectedFilesLabel"
+                    Text="No files selected."
+                    TextColor="White" />
 
-            <Label
-                x:Name="SelectedFilesLabel"
-                Text="No files selected."
-                TextColor="White" />
+                <Button
+                    BackgroundColor="DarkOrange"
+                    Clicked="OnSubmitFilesClicked"
+                    Text="Submit"
+                    TextColor="White"
+                    WidthRequest="100" />
 
-            <Button
-                BackgroundColor="DarkOrange"
-                Clicked="OnSubmitFilesClicked"
-                Text="Submit"
-                TextColor="White"
-                WidthRequest="100" />
+                <Label
+                    Margin="0,0,0,0"
+                    Text="Enrolled Students:"
+                    TextColor="White" />
+                <CollectionView
+                    x:Name="EnrollmentCollectionView"
+                    HeightRequest="400"
+                    SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Margin="0,5"
+                                Padding="10"
+                                BackgroundColor="#333"
+                                CornerRadius="8">
+                                <StackLayout Orientation="Horizontal" Spacing="10">
+                                    <Label Text="{Binding Student.FirstName}" TextColor="White" />
+                                    <Label Text="{Binding Student.LastName}" TextColor="White" />
+                                    <Label Text="{Binding Student.UTDID}" TextColor="White" />
+                                    <Button
+                                        BackgroundColor="Red"
+                                        Clicked="OnUnenrollClicked"
+                                        CommandParameter="{Binding EnrollmentID}"
+                                        Text="Remove"
+                                        TextColor="White" />
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <!--  Button to trigger Add Student Form  -->
+                <Button
+                    Margin="0,15,0,15"
+                    BackgroundColor="Green"
+                    Clicked="OnAddStudentClicked"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    Text="Add Student"
+                    TextColor="White"
+                    WidthRequest="400">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="K" />
+                    </Button.ImageSource>
+                </Button>
 
-            <Label
-                Margin="0,0,0,0"
-                Text="Enrolled Students:"
-                TextColor="White" />
-            <CollectionView
-                x:Name="EnrollmentCollectionView"
-                HeightRequest="400"
-                SelectionMode="None">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame
-                            Margin="0,5"
-                            Padding="10"
-                            BackgroundColor="#333"
-                            CornerRadius="8">
-                            <StackLayout Orientation="Horizontal" Spacing="10">
-                                <Label Text="{Binding Student.FirstName}" TextColor="White" />
-                                <Label Text="{Binding Student.LastName}" TextColor="White" />
-                                <Label Text="{Binding Student.UTDID}" TextColor="White" />
-                                <Button
-                                    BackgroundColor="Red"
-                                    Clicked="OnUnenrollClicked"
-                                    CommandParameter="{Binding EnrollmentID}"
-                                    Text="Remove"
-                                    TextColor="White" />
-                            </StackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <!--  Delete Student Button  -->
+                <Button
+                    Margin="0,15,0,15"
+                    BackgroundColor="Red"
+                    Clicked="OnDeleteStudentClicked"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    Text="Delete Student"
+                    TextColor="White"
+                    WidthRequest="400">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="E" />
+                    </Button.ImageSource>
+                </Button>
 
-            <!--  Button to go to Quiz Page  -->
-            <Button
-                Margin="0,-75,0,15"
-                BackgroundColor="Blue"
-                Clicked="OnGoToQuizPageClicked"
-                Text="Manage Quiz"
-                TextColor="White"
-                WidthRequest="400" />
-            <!--  Button to trigger Add Student Form  -->
-            <Button
-                Margin="0,15,0,15"
-                BackgroundColor="Green"
-                Clicked="OnAddStudentClicked"
-                Text="Add Student"
-                TextColor="White"
-                WidthRequest="400" />
+                <!--  Delete Course Button  -->
+                <Button
+                    Margin="0,15,0,15"
+                    BackgroundColor="Red"
+                    Clicked="ConfirmDelete"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
+                    Text="Delete Course"
+                    TextColor="White"
+                    WidthRequest="400">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="E" />
+                    </Button.ImageSource>
+                </Button>
 
-            <!--  Delete Student Button  -->
-            <Button
-                Margin="0,15,0,15"
-                BackgroundColor="Red"
-                Clicked="OnDeleteStudentClicked"
-                Text="Delete Student"
-                TextColor="White"
-                WidthRequest="400" />
-
-            <!--  Delete Course Button  -->
-            <Button
-                Margin="0,15,0,15"
-                BackgroundColor="Red"
-                Clicked="ConfirmDelete"
-                Text="Delete Course"
-                TextColor="White"
-                WidthRequest="400" />
-
-        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
 
         <!--  Modal-style Add Student Popup  -->
         <Frame
             x:Name="AddStudentPopup"
+            Grid.Row="2"
             Padding="15"
             BackgroundColor="#333"
             BorderColor="DarkOrange"
             CornerRadius="12"
-            HeightRequest="400"
             HorizontalOptions="Center"
             IsVisible="False"
             VerticalOptions="Center"
             WidthRequest="400">
+            <!--  Remove fixed HeightRequest  -->
 
-            <StackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="20"
-                    HorizontalOptions="Center"
-                    Text="Add Student"
-                    TextColor="Black" />
-
-                <Entry
-                    x:Name="FirstNameEntry"
-                    Placeholder="First Name"
-                    TextColor="White" />
-
-                <Entry
-                    x:Name="LastNameEntry"
-                    Placeholder="Last Name"
-                    TextColor="White" />
-                <Entry
-                    x:Name="UsernameEntry"
-                    MaxLength="9"
-                    Placeholder="NETID"
-                    TextColor="White" />
-                <Entry
-                    x:Name="AddStudentUTDIDEntry"
-                    MaxLength="10"
-                    Placeholder="UTDID"
-                    TextColor="White" />
-
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                    <Button
-                        BackgroundColor="Green"
-                        Clicked="OnSubmitStudentClicked"
-                        Text="Submit"
+            <!--  Wrap content in ScrollView  -->
+            <ScrollView VerticalScrollBarVisibility="Default">
+                <StackLayout Spacing="10">
+                    <Label
+                        Margin="0,10,0,0"
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Add Student"
                         TextColor="White" />
-                    <Button
-                        BackgroundColor="Gray"
-                        Clicked="OnCancelClicked"
-                        Text="Cancel"
+
+                    <!--  Form Entries  -->
+                    <Entry
+                        x:Name="FirstNameEntry"
+                        Placeholder="First Name"
                         TextColor="White" />
-                </HorizontalStackLayout>
-            </StackLayout>
+
+                    <Entry
+                        x:Name="LastNameEntry"
+                        Placeholder="Last Name"
+                        TextColor="White" />
+
+                    <Entry
+                        x:Name="UsernameEntry"
+                        MaxLength="9"
+                        Placeholder="NETID"
+                        TextColor="White" />
+
+                    <Entry
+                        x:Name="AddStudentUTDIDEntry"
+                        MaxLength="10"
+                        Placeholder="UTDID"
+                        TextColor="White" />
+
+                    <!--  Action Buttons  -->
+                    <HorizontalStackLayout
+                        Margin="0,20,0,20"
+                        HorizontalOptions="Center"
+                        Spacing="10">
+                        <Button
+                            BackgroundColor="Green"
+                            Clicked="OnSubmitStudentClicked"
+                            Text="Submit"
+                            TextColor="White" />
+                        <Button
+                            BackgroundColor="Gray"
+                            Clicked="OnCancelClicked"
+                            Text="Cancel"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </StackLayout>
+            </ScrollView>
         </Frame>
+
 
         <Frame
             x:Name="DeleteStudentPopup"
@@ -182,7 +205,7 @@
                     FontSize="20"
                     HorizontalOptions="Center"
                     Text="Delete Student"
-                    TextColor="Black" />
+                    TextColor="White" />
 
                 <Entry
                     x:Name="DeleteUTDIDEntry"
@@ -208,7 +231,7 @@
         <Frame
             x:Name="ConfirmDeletePopUp"
             Padding="15"
-            BackgroundColor="White"
+            BackgroundColor="#333"
             BorderColor="Red"
             CornerRadius="12"
             HeightRequest="150"
@@ -220,7 +243,7 @@
                     FontSize="20"
                     HorizontalOptions="Center"
                     Text="Are you sure you want to delete this course? This cannot be undone."
-                    TextColor="Black" />
+                    TextColor="White" />
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                     <Button

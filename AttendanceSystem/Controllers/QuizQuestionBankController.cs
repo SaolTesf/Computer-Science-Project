@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// Dinagaran Senthilkumar
+// QuizQUestionBAnk file that handles HTTP requests related to question records.  I added the links to help me test it on postman easier
+
 namespace AttendanceSystem.Controllers
 {
     [ApiController]
@@ -78,7 +81,6 @@ namespace AttendanceSystem.Controllers
             return Ok(bankNames);
 
         }
-
         [HttpGet("GetBankIdByName")]
         public async Task<IActionResult> GetBankIdByName([FromQuery] string bankName)
         {

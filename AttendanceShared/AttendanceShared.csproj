@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Syncfusion.Maui.Buttons" Version="29.1.41" />
+  </ItemGroup>
+
 </Project>

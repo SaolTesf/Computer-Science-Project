@@ -18,6 +18,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
   public DbSet<QuizResponse> QuizResponses { get; set; } = null!;
   public DbSet<Student> Students { get; set; } = null!;
   public DbSet<CourseEnrollment> CourseEnrollments { get; set; } = null!;
+  public DbSet<SelectedQuizQuestion> SelectedQuizQuestions { get; set; } = null!;
+  public DbSet<SessionQuestion> SessionQuestions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -109,6 +111,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
        
     });
 
+    modelBuilder.Entity<SessionQuestion>(e => {
+      e.ToTable("SessionQuestion");
+      e.HasKey(e => e.SessionQuestionID);
+      e.Property(e => e.SessionQuestionID).ValueGeneratedOnAdd();
+      e.Property(e => e.QuestionID).IsRequired();
+      e.Property(e => e.SessionID).IsRequired();
+      e.HasOne(e => e.ClassSession)
+        .WithMany(cs => cs.SessionQuestions)
+        .HasForeignKey(e => e.SessionID)
+        .OnDelete(DeleteBehavior.Cascade);
+      e.HasOne(e => e.QuizQuestion)
+        .WithMany(q => q.SessionQuestions)
+        .HasForeignKey(e => e.QuestionID)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      base.OnModelCreating(modelBuilder);
+    });
+
     // Configure QuizQuestionBank entity
     modelBuilder.Entity<QuizQuestionBank>(entity =>
     {
@@ -132,8 +152,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.Property(e => e.QuestionText).IsRequired();
       entity.Property(e => e.Option1).IsRequired();
       entity.Property(e => e.Option2).IsRequired();
-      // Option3 and Option4 are optional
-      entity.HasOne(e => e.QuizQuestionBank)
+      entity.Property(e => e.Answer).IsRequired();
+        // Option3 and Option4 are optional
+        entity.HasOne(e => e.QuizQuestionBank)
                     .WithMany(qb => qb.QuizQuestions)
                     .HasForeignKey(e => e.QuestionBankID)
                     .OnDelete(DeleteBehavior.Cascade);

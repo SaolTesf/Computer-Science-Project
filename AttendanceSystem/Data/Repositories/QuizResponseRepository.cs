@@ -3,10 +3,11 @@ using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+// // Dinagaran Senthilkumar
+// // This is basically the QuizResponseRepository.cs file that implements the IQuizResponseRepository interface.
 namespace AttendanceSystem.Data.Repositories
 {
-    // Implements IQuizResponseRepository using EF Core.
+    
     public class QuizResponseRepository : IQuizResponseRepository
     {
         private readonly AppDbContext _context;

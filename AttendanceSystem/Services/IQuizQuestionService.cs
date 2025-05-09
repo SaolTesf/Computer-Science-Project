@@ -3,7 +3,8 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+// Dinagaran Senthilkumar
+// Interface defining CRUD operations for QuizQuestion.
 namespace AttendanceSystem.Services
 {
     public interface IQuizQuestionService
@@ -15,5 +16,6 @@ namespace AttendanceSystem.Services
         Task DeleteQuestionAsync(int questionId);   // Delete a quiz question by ID
 
         Task<List<QuizQuestion>> GetQuestionsByBankIdAsync(int bankId);
+        Task<int?> GetQuestionIdByTextAsync(string questionText);
     }
 }

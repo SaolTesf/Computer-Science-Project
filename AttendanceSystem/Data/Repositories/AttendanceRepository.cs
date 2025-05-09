@@ -84,4 +84,20 @@ public class AttendanceRepository : IAttendanceRepository
             .ToListAsync();
     }
 
+    public async Task<int?> GetAttendanceIdBySessionAndUtdIdAsync(int sessionId, string utdId)
+    {
+        return await _context.Attendances
+            .Where(a => a.SessionID == sessionId && a.UTDID == utdId)
+            .Select(a => a.AttendanceID)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<int?> GetAttendanceIdByIpAndSessionAsync(string ipAddress, int sessionId)
+    {
+        var attendance = await _context.Attendances
+            .FirstOrDefaultAsync(a => a.IPAddress == ipAddress && a.SessionID == sessionId);
+
+        return attendance?.AttendanceID;
+    }
+
 }
