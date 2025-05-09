@@ -1,3 +1,9 @@
+/*
+Dinagaran Senthilkumar
+This is the AttendanceRepository.cs file that implements the IAttendanceRepository interface.
+This file is responsible for managing attendance records in the Attendance System API.
+*/
+
 using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
 

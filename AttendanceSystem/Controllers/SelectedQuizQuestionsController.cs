@@ -1,4 +1,8 @@
-﻿using AttendanceSystem.Models;
+﻿/*
+This file is the controller for managing selected quiz questions in the Attendance System API.
+*/
+
+using AttendanceSystem.Models;
 using AttendanceSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 

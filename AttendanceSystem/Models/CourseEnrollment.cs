@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+CourseEnrollment model for the Attendance System API.
+*/
+
 using System.ComponentModel.DataAnnotations;
 
 namespace AttendanceSystem.Models;

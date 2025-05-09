@@ -16,40 +16,37 @@
             CornerRadius="10"
             HasShadow="True"
             MaximumWidthRequest="450">
-            <Grid RowDefinitions="*,*,4*">
-                <Image
-                    Grid.Row="0"
-                    Aspect="AspectFill"
-                    HorizontalOptions="FillAndExpand"
-                    MaximumHeightRequest="150"
-                    Source="login_background.png"
-                    VerticalOptions="FillAndExpand" />
-
-                <Image
-                    Grid.Row="0"
-                    HeightRequest="100"
-                    HorizontalOptions="Center"
-                    Source="utdlogo.png"
-                    VerticalOptions="Center"
-                    WidthRequest="350" />
-
-                <BoxView
-                    Grid.Row="0"
-                    HeightRequest="50"
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="End">
-                    <BoxView.Background>
-                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
-                            <GradientStop Offset="0" Color="White" />
-                            <GradientStop Offset="1" Color="Transparent" />
-                        </LinearGradientBrush>
-                    </BoxView.Background>
-                </BoxView>
-
-                <StackLayout
-                    Grid.Row="1"
-                    Padding="20"
-                    Spacing="20">
+            <VerticalStackLayout Spacing="20" Padding="20">
+                <!-- Transparent background layer for touch passthrough -->
+                <Grid HeightRequest="150">
+                    <Image
+                        Source="login_background.png"
+                        Aspect="AspectFill"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        InputTransparent="True" />
+                    <Image
+                        Source="utdlogo.png"
+                        HeightRequest="100"
+                        WidthRequest="350"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        InputTransparent="True" />
+                    <BoxView
+                        HeightRequest="50"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="End"
+                        InputTransparent="True">
+                        <BoxView.Background>
+                            <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                                <GradientStop Offset="0" Color="White" />
+                                <GradientStop Offset="1" Color="Transparent" />
+                            </LinearGradientBrush>
+                        </BoxView.Background>
+                    </BoxView>
+                </Grid>
+                <!-- Original input controls -->
+                <StackLayout Spacing="20">
                     <Label
                         Margin="0,0,0,10"
                         FontAttributes="Bold"
@@ -107,7 +104,7 @@
                         HorizontalOptions="Center"
                         TextColor="Red" />
                 </StackLayout>
-            </Grid>
+            </VerticalStackLayout>
         </Frame>
     </StackLayout>
 </ContentPage>

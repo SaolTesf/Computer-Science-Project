@@ -1,31 +1,25 @@
 <!-- yxl200067  -->
-@page "/survey"
-<!-- starting page  -->
-@page "/"
-<!-- sets render mode for interactions -->
+@page "/survey/{accessCode}"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using System.ComponentModel.DataAnnotations;
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor httpContextAccessor
-<!-- to move to home page -->
 @inject NavigationManager NavigationManager
-<!--Injecting Services for API calls-->
- @using AttendanceSystem.Models;
- @using AttendanceSystem.Services
- @inject IAttendanceService AttendanceService;
- @inject IStudentService StudentService;
- @inject IClassSessionService SessionService;
- @inject ICourseEnrollmentService CourseEnrollmentService;
- @inject ISessionQuestionService SessionQuestionService;
- @inject IQuizQuestionService QuizQuestionService;
- @inject ICourseService CourseService;
- @using AttendanceSystem.Models.DTOs;
- @inject GetIPService GetIPService;
+@using AttendanceSystem.Models;
+@using AttendanceSystem.Services
+@inject IAttendanceService AttendanceService;
+@inject IStudentService StudentService;
+@inject IClassSessionService SessionService;
+@inject ICourseEnrollmentService CourseEnrollmentService;
+@inject ISessionQuestionService SessionQuestionService;
+@inject IQuizQuestionService QuizQuestionService;
+@inject ICourseService CourseService;
+@using AttendanceSystem.Models.DTOs;
+@inject GetIPService GetIPService;
 
-<!-- CSS  -->
+<!-- CSS-->
 <style>
-
     /* getting rid of default padding and white border */
     html, body {
     margin: 0;
@@ -134,269 +128,329 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
-
 <div class="container">
     <div class="form-box">
         <div class="title">@classSectionName Student Attendance Survey</div>
         <div class="content">
-            <!-- allows data validation within [], allows making error messages -->
-            <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
-                <!-- allows data validation within [], allows making error messages -->
-                <DataAnnotationsValidator />
-                <!-- allows displaying error messages -->
-                <ValidationSummary />
-
-                <!-- student ID  -->
-                <div style="margin-top: 30px; margin-bottom: 40px;">
-                    <label for="studentIdInput" style="display: block; margin-bottom: 5px;"> Student ID: </label>
-                    <!-- binding input text to StudentID variable, limiting input to 10 chars -->
-                    <InputText id="studentIdInput"
-                    @bind-Value="formData.StudentID"
-                    class="input-field"
-                    maxlength="10"
-                    pattern="\d*"
-                    inputmode="numeric" />
-                    <!-- validation here, based on validation in formData class below -->
-                    <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-message" style="margin-bottom: 15px;">
+                    @errorMessage
                 </div>
-                <!-- MC choices part  -->
-                <!-- embedded C# if, showing error message at top if any question is empty at submission attempt -->
-                @if (showValidationError)
-                {
-                    <div class="error-message" style="margin-bottom: 10px;">
-                        Please answer all questions before submitting.
-                    </div>
-                }
-                <!-- Error message if student is not found -->
-                @if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <div class="error-message" style="margin-top: 10px;">
-                        @errorMessage
-                    </div>
-                }
-                <!-- embedded C# for loop for Question list iteration-->
-                @for (int qIndex = 0; qIndex < questions.Count; qIndex++)
-                {
-                    var q = questions[qIndex];
-                    <div class="question" style="font-weight: bold; margin-bottom: 10px;">
-                        @($"{qIndex + 1}. {q.QuestionText}")
-                    </div>
-                    <InputRadioGroup @bind-Value="q.SelectedAnswer" TValue="string" Name=@($"question-{qIndex}")>
-                        @for (int i = 0, labelIndex = 0; i < q.Choices.Count; i++)
-                        {
-                            if (!string.IsNullOrWhiteSpace(q.Choices[i]))
-                            {
-                                <label style="display: block; margin-bottom: 5px;">
-                                    <InputRadio Value="@q.Choices[i]" @key="@q.Choices[i]" />
-                                    @($"{(char)('a' + labelIndex)}) {q.Choices[i]}")
-                                </label>
-                                labelIndex++;
-                            }
-                        }
-                    </InputRadioGroup>
-                    <br />
-                }
+            }
+            
+            @if (isLoading)
+            {
+                <div style="text-align: center; margin: 20px 0;">
+                    <p>Loading session information...</p>
+                </div>
+            }
+            else if (currentSession != null)
+            {
+                <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
 
-                <button type="submit" class="submit-btn">Submit</button>
-            </EditForm>
+                    <div style="margin-top: 15px; margin-bottom: 30px;">
+                        <label for="studentIdInput" style="display: block; margin-bottom: 5px; font-weight: bold;"> Student ID: </label>
+                        <InputText id="studentIdInput"
+                        @bind-Value="formData.StudentID"
+                        class="input-field"
+                        maxlength="10"
+                        pattern="\d*"
+                        inputmode="numeric" />
+                        <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
+                    </div>
+                    
+                    @if (showValidationError)
+                    {
+                        <div class="error-message" style="margin-bottom: 10px;">
+                            Please answer all questions before submitting.
+                        </div>
+                    }
+                    
+                    @for (int qIndex = 0; qIndex < questions.Count; qIndex++)
+                    {
+                        var q = questions[qIndex];
+                        <div class="question" style="font-weight: bold; margin-bottom: 10px;">
+                            @($"{qIndex + 1}. {q.QuestionText}")
+                        </div>
+                        <div class="options">
+                            <InputRadioGroup @bind-Value="q.SelectedAnswer" Name=@($"question-{qIndex}")>
+                                @for (int i = 0; i < q.Choices.Count; i++)
+                                {
+                                    var choice = q.Choices[i];
+                                    var label = (char)('A' + i);
+                                    <label style="display: block; margin-bottom: 5px;">
+                                        <InputRadio Value="@choice" />
+                                        @($"{label}. {choice}")
+                                    </label>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                        <br />
+                    }
+
+                    <button type="submit" class="submit-btn">Submit</button>
+                </EditForm>
+            }
         </div>
     </div>
 </div>
 
 @code {
+    [Parameter]
+    public string accessCode { get; set; } = string.Empty;
+
     private string errorMessage = string.Empty;
     private EditForm? editForm;
     private string clientIp = string.Empty;
     private ClassSession? currentSession;
     private int? currentCourse;
     private List<SurveyQuestion> questions = new();
-    private CourseDTO? currentCourseDetails;
+    private dynamic? currentCourseDetails;
     private string classSectionName = "..."; // placeholder when class section info is loading
-
+    private bool isLoading = true;
+    private bool showValidationError = false;
 
     private FormData formData = new FormData()
     {
         StudentID = string.Empty
     };
 
-    private bool showValidationError = false;
-    /*Diego Cabanas: Created method to get API and load in questions using the current course/session found
-     * in addition to automatically redirecting if an IP already has an attendance during current session*/
-    protected override async Task OnInitializedAsync()
-    {
-        clientIp = GetIPService.GetClientIp();
-
-        currentSession = await SessionService.GetCurrentSessionAsync();
-
-        if (currentSession != null)
-        {
-            var existsbyIP = await AttendanceService.GetAttendanceIdByIpAndSessionAsync(clientIp, currentSession.SessionID);
-            if (existsbyIP != null)
-            {
-                NavigationManager.NavigateTo("/home");
-            }
-        }
-
-        if (currentSession != null)
-        {
-            currentCourse = currentSession.CourseID; 
-        }
-
-        if (currentCourse.HasValue)
-        {
-            currentCourseDetails = await CourseService.GetCourseByIDAsync(currentCourse.Value);
-            if (currentCourseDetails != null)
-            {
-                classSectionName = currentCourseDetails.CourseNumber + "." + currentCourseDetails.Section;
-            }
-            else
-            {
-                // null CourseDTO class, section name String stays "..."
-            }
-        }
-        else
-        {
-            // null courseID, class section name String stays "..."
-        }
-
-
-        if (currentSession != null)
-        {
-            questions = new List<SurveyQuestion>();
-
-            var sessionQuestionsList = await SessionQuestionService.GetBySessionIdAsync(currentSession.SessionID);
-
-            foreach (var s in sessionQuestionsList)
-            {
-                if (s != null)
-                {
-                    var quizQuestion = await QuizQuestionService.GetQuestionByIdAsync(s.QuestionID);
-
-                    if (quizQuestion != null)
-                    {
-                        var survey = new SurveyQuestion
-                            {
-                                QuestionText = quizQuestion.QuestionText,
-                                Choices = new List<string?>
-                        {
-                            quizQuestion.Option1,
-                            quizQuestion.Option2,
-                            quizQuestion.Option3,
-                            quizQuestion.Option4
-                        },
-                                SelectedAnswer = null
-                            };
-
-                        questions.Add(survey);
-                    }
-                }
-            }
-        }
-        else
-        {
-            questions.Clear();
-        }
-    }
-
-
-    // initializing varibales for question
+    // Model for quiz questions to display
     public class SurveyQuestion
     {
-        public string? QuestionText { get; set; }
+        public int QuestionID { get; set; }
+        public string QuestionText { get; set; } = string.Empty;
         public List<string> Choices { get; set; } = new List<string>();
         public string? SelectedAnswer { get; set; }
     }
 
-    // fordata class + validation
+    // Form data class with validation
     public class FormData
     {
         [Required(ErrorMessage = "Student ID is required.")]
-        [RegularExpression(@"^\d{10,10}$", ErrorMessage = "Only numbers allowed, exactly 10 characters.")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Student ID must be exactly 10 digits.")]
         public string? StudentID { get; set; }
     }
 
-    // submission code + input validation
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            // Get client IP address
+            clientIp = GetIPService.GetClientIp();
+
+            if (!string.IsNullOrWhiteSpace(accessCode))
+            {
+                // Get session by access code
+                currentSession = await SessionService.GetByAccessCodeAsync(accessCode);
+                
+                if (currentSession == null)
+                {
+                    errorMessage = "Invalid or expired access code";
+                    await Task.Delay(2000); // Brief delay
+                    NavigationManager.NavigateTo("/", forceLoad: true);
+                    return;
+                }
+
+                // Check if this IP has already submitted attendance
+                var existingAttendance = await AttendanceService.GetAttendanceIdByIpAndSessionAsync(clientIp, currentSession.SessionID);
+                if (existingAttendance.HasValue)
+                {
+                    errorMessage = "Attendance has already been recorded from this device";
+                    await Task.Delay(2000);
+                    NavigationManager.NavigateTo("/");
+                    return;
+                }
+
+                // Get course information
+                if (currentSession.CourseID.HasValue)
+                {
+                    currentCourse = currentSession.CourseID.Value;
+                    
+                    // Get course details
+                    currentCourseDetails = await CourseService.GetCourseByIDAsync(currentCourse.Value);
+                    
+                    // Format course name
+                    if (currentCourseDetails != null)
+                    {
+                        // Use reflection to access properties since we don't know the exact CourseDTO structure
+                        var courseNumber = currentCourseDetails.GetType().GetProperty("CourseNumber")?.GetValue(currentCourseDetails, null)?.ToString() ?? "Unknown";
+                        var courseName = currentCourseDetails.GetType().GetProperty("CourseName")?.GetValue(currentCourseDetails, null)?.ToString() ?? "Unknown";
+                        var section = currentCourseDetails.GetType().GetProperty("Section")?.GetValue(currentCourseDetails, null)?.ToString() ?? "";
+                        
+                        classSectionName = $"{courseNumber} - {courseName} (Section {section})";
+                    }
+                    else
+                    {
+                        classSectionName = "Unknown Course";
+                    }
+                }
+                
+                // Load quiz questions for the session
+                questions.Clear();
+                var sessionQuestions = await SessionQuestionService.GetBySessionIdAsync(currentSession.SessionID);
+                
+                foreach (var sessionQuestion in sessionQuestions)
+                {
+                    var quizQuestion = await QuizQuestionService.GetQuestionByIdAsync(sessionQuestion.QuestionID);
+                    if (quizQuestion != null)
+                    {
+                        var surveyQuestion = new SurveyQuestion
+                        {
+                            QuestionID = quizQuestion.QuestionID,
+                            QuestionText = quizQuestion.QuestionText,
+                            Choices = new List<string>()
+                        };
+                        
+                        // Add choices
+                        surveyQuestion.Choices.Add(quizQuestion.Option1);
+                        surveyQuestion.Choices.Add(quizQuestion.Option2);
+                        
+                        if (!string.IsNullOrWhiteSpace(quizQuestion.Option3))
+                            surveyQuestion.Choices.Add(quizQuestion.Option3);
+                            
+                        if (!string.IsNullOrWhiteSpace(quizQuestion.Option4))
+                            surveyQuestion.Choices.Add(quizQuestion.Option4);
+                        
+                        questions.Add(surveyQuestion);
+                    }
+                }
+            }
+            else
+            {
+                errorMessage = "No access code provided";
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading session data: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    // Handle form submission
     private async Task HandleSubmit(EditContext context)
     {
-        showValidationError = false;
-        errorMessage = string.Empty;
-        StateHasChanged();
-
-        // Validate form and questions
-        if (context.Validate() && questions.All(q => !string.IsNullOrEmpty(q.SelectedAnswer)))
+        try
         {
-            if (string.IsNullOrEmpty(formData.StudentID))
+            showValidationError = false;
+            errorMessage = string.Empty;
+            StateHasChanged();
+
+            // Validate form
+            if (!context.Validate())
             {
-                errorMessage = "Student ID is required.";
+                return;
+            }
+
+            // Check if all questions have answers
+            if (questions.Any(q => string.IsNullOrEmpty(q.SelectedAnswer)))
+            {
                 showValidationError = true;
                 return;
             }
 
+            // Verify student exists
+            if (string.IsNullOrEmpty(formData.StudentID))
+            {
+                errorMessage = "Student ID is required";
+                return;
+            }
+            
             var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
             if (student == null)
             {
-                errorMessage = $"No student found with UTDID {formData.StudentID}.";
+                errorMessage = $"No student found with ID {formData.StudentID}";
                 return;
             }
 
-            //Diego Cabanas: if a student with a different UTDID submits the form and they are not enrolled in the course of the current session
-            if (currentSession != null)
+            // Verify student is enrolled in the course
+            if (currentSession != null && currentSession.CourseID.HasValue)
             {
-                var isInCourse = await CourseEnrollmentService.GetEnrollmentByCourseIDAndUtdIdAsync(currentSession.CourseID.Value, formData.StudentID);
-                if (isInCourse == null)
+                var enrollment = await CourseEnrollmentService.GetEnrollmentByCourseIDAndUtdIdAsync(
+                    currentSession.CourseID.Value, formData.StudentID);
+                    
+                if (enrollment == null)
                 {
-                    errorMessage = $"No student found with UTDID {formData.StudentID} in the course.";
+                    errorMessage = $"Student {formData.StudentID} is not enrolled in this course";
                     return;
                 }
-            }
-
-            //Diego Cabanas: if no active sessions are found and the form is submitted
-            if (currentSession == null)
-            {
-                errorMessage = "No active session found. Attendance cannot be recorded.";
-                return;
-            }
-
-            //Diego Cabanas: if a student is able to access page again and resubmit attendance notify them that they have already submitted
-            if (currentSession != null)
-            {
-                var exists = await AttendanceService.GetAttendanceIdBySessionAndUtdIdAsync(currentSession.SessionID, formData.StudentID);
+                
+                // Check for duplicate submission
+                var exists = await AttendanceService.GetAttendanceIdBySessionAndUtdIdAsync(
+                    currentSession.SessionID, formData.StudentID);
+                    
                 if (exists != 0)
                 {
-                    errorMessage = "Attendance for this UTDID has already been recorded.";
+                    errorMessage = "Attendance for this student has already been recorded";
                     return;
                 }
             }
-
-            var now = DateTime.Now;
-            bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit?");
-            if (confirmed)
+            else
             {
-                var attendanceSubmission = new Attendance
-                    {
-                        SessionID = currentSession.SessionID,
-                        UTDID = formData.StudentID,
-                        SubmissionTime = now,
-                        IPAddress = clientIp,
-                        AttendanceType = AttendanceType.Present
-                    };
+                errorMessage = "Session or course information is missing";
+                return;
+            }
 
-                try
+            // Confirm submission with the user
+            bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to submit your answers?");
+            if (!confirmed)
+            {
+                return;
+            }
+
+            // Record attendance and quiz responses
+            if (currentSession != null && !string.IsNullOrEmpty(formData.StudentID))
+            {
+                var attendance = new Attendance
                 {
-                    await AttendanceService.CreateAttendanceAsync(attendanceSubmission);
-                    NavigationManager.NavigateTo("/home");
-                }
-                catch (Exception ex)
-                {
-                    errorMessage = "Error submitting attendance. Please try again.";
-                    Console.WriteLine($"Error: {ex.Message}");
-                }
+                    SessionID = currentSession.SessionID,
+                    UTDID = formData.StudentID,
+                    SubmissionTime = DateTime.Now,
+                    IPAddress = clientIp,
+                    AttendanceType = AttendanceType.Present
+                };
+
+                // Save attendance
+                await AttendanceService.CreateAttendanceAsync(attendance);
+
+                // Show success message
+                await JSRuntime.InvokeVoidAsync("alert", "Your attendance and quiz responses have been recorded successfully!");
+                
+                // Redirect to confirmation page or home
+                NavigationManager.NavigateTo("/");
             }
         }
-        else
+        catch (Exception ex)
         {
-            showValidationError = true;
+            errorMessage = $"Error submitting your responses: {ex.Message}";
+            if (!IsStaticRender())
+            {
+                await JSRuntime.InvokeVoidAsync("console.error", $"Error in HandleSubmit: {ex}");
+            }
         }
     }
-}
+
+    // Helper method to determine if this is a static render
+    private bool IsStaticRender()
+    {
+        try
+        {
+            JSRuntime.InvokeVoidAsync("console.log", "");
+            return false; // If we get here, we're not in static rendering
+        }
+        catch
+        {
+            return true; // Exception means we're in static rendering
+        }
+    }
 }

@@ -65,7 +65,10 @@ namespace AttendanceSystem.Data.Repositories
                 .FirstOrDefaultAsync();
         }
 
-
-
+        public async Task<ClassSession?> GetByAccessCodeAsync(string accessCode)
+        {
+            return await _context.ClassSessions
+                .FirstOrDefaultAsync(cs => cs.AccessCode == accessCode);
+        }
     }
 }

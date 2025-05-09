@@ -1,3 +1,9 @@
+/*
+Saol Tesfaghebriel
+SessionQuestion service for the Attendance System API.
+This service handles the business logic for managing session questions.
+*/
+
 using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories;
 using System.Collections.Generic;
