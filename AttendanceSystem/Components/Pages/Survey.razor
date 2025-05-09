@@ -1,11 +1,15 @@
-<!-- yxl200067  -->
+<!-- Yoojin Lee yxl200067  -->
+<!-- starting page  -->
 @page "/survey/{accessCode}"
+<!-- sets render mode for interactions -->
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using System.ComponentModel.DataAnnotations;
 @inject IJSRuntime JSRuntime
 @inject IHttpContextAccessor httpContextAccessor
+<!-- to move to home page -->
 @inject NavigationManager NavigationManager
+<!--Injecting Services for API calls-->
 @using AttendanceSystem.Models;
 @using AttendanceSystem.Services
 @inject IAttendanceService AttendanceService;
@@ -130,6 +134,7 @@
 
 <div class="container">
     <div class="form-box">
+        <!-- title  dynamically includes the section name -->
         <div class="title">@classSectionName Student Attendance Survey</div>
         <div class="content">
             @if (!string.IsNullOrEmpty(errorMessage))
@@ -139,6 +144,7 @@
                 </div>
             }
             
+            <!-- loading text while session data is fetching -->
             @if (isLoading)
             {
                 <div style="text-align: center; margin: 20px 0;">
@@ -147,28 +153,36 @@
             }
             else if (currentSession != null)
             {
+                <!-- allows data validation within [], allows making error messages -->
                 <EditForm Model="@formData" OnSubmit="@HandleSubmit" @ref="editForm" FormName="SurveyForm">
+                    <!-- allows data validation within [], allows making error messages -->
                     <DataAnnotationsValidator />
+                    <!-- allows displaying error messages -->
                     <ValidationSummary />
 
+                    <!-- student ID  -->
                     <div style="margin-top: 15px; margin-bottom: 30px;">
                         <label for="studentIdInput" style="display: block; margin-bottom: 5px; font-weight: bold;"> Student ID: </label>
+                        <!-- binding input text to StudentID variable, limiting input to 10 chars -->
                         <InputText id="studentIdInput"
                         @bind-Value="formData.StudentID"
                         class="input-field"
                         maxlength="10"
                         pattern="\d*"
                         inputmode="numeric" />
+                        <!-- validation here, based on validation in formData class below -->
                         <ValidationMessage For="@(() => formData.StudentID)" class="error-message" />
                     </div>
                     
+                    <!-- MC choices part  -->
+                    <!-- embedded C# if, showing error message at top if any question is empty at submission attempt -->
                     @if (showValidationError)
                     {
                         <div class="error-message" style="margin-bottom: 10px;">
                             Please answer all questions before submitting.
                         </div>
                     }
-                    
+                    <!-- embedded C# for loop for Question list iteration-->
                     @for (int qIndex = 0; qIndex < questions.Count; qIndex++)
                     {
                         var q = questions[qIndex];
@@ -176,6 +190,7 @@
                             @($"{qIndex + 1}. {q.QuestionText}")
                         </div>
                         <div class="options">
+                            <!-- answer choices as radio buttons -->
                             <InputRadioGroup @bind-Value="q.SelectedAnswer" Name=@($"question-{qIndex}")>
                                 @for (int i = 0; i < q.Choices.Count; i++)
                                 {
@@ -200,6 +215,7 @@
 
 @code {
     [Parameter]
+    // parameters for UI messages and for API data
     public string accessCode { get; set; } = string.Empty;
 
     private string errorMessage = string.Empty;
@@ -296,6 +312,7 @@
                 
                 foreach (var sessionQuestion in sessionQuestions)
                 {
+                    // Fetch full question details by question ID
                     var quizQuestion = await QuizQuestionService.GetQuestionByIdAsync(sessionQuestion.QuestionID);
                     if (quizQuestion != null)
                     {
@@ -322,6 +339,7 @@
             }
             else
             {
+                // No access code, redirect
                 errorMessage = "No access code provided";
                 NavigationManager.NavigateTo("/");
             }
@@ -366,6 +384,7 @@
                 return;
             }
             
+            // Attempt to locate student using ID
             var student = await StudentService.GetStudentByUTDIdAsync(formData.StudentID);
             if (student == null)
             {
