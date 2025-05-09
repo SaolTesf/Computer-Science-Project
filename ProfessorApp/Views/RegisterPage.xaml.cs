@@ -93,6 +93,8 @@ namespace ProfessorApp.Views
                 statusLabel.Text = $"{ex.Message}";
             }
         }
+
+        // fires when login button is clicked
         private async void GoToLogin(object sender, EventArgs e)
         {
             await Navigation.PopAsync();

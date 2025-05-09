@@ -1,4 +1,5 @@
 /*
+Saol Tesfaghebriel
 AppDbContext class that represents the database context for the attendance system, including the Professor entity configuration.
 */
 

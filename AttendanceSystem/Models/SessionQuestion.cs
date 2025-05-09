@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+SessionQuestion model for the Attendance System API.
+*/
+
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 

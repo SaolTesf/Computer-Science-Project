@@ -1,3 +1,8 @@
+/*
+Saol Tesfaghebriel
+This is the repository for managing session questions in the Attendance System API.
+*/
+
 using AttendanceSystem.Data;
 using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;

@@ -6,6 +6,7 @@ namespace AttendanceSystem.Data.Repositories;
 
 public interface IAttendanceRepository
 {
+    // CRUD operations for Attendance
     Task<IEnumerable<Attendance>> GetAllAttendancesAsync();
     Task<Attendance?> GetAttendanceByIdAsync(int id);
     Task<IEnumerable<Attendance>> GetPresentAttendancesAsync();

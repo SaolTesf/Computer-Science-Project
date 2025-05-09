@@ -153,6 +153,7 @@ namespace ProfessorApp.Pages
             }
         }
 
+        // This method is called when the user clicks the confirm button to change attendance type
         private async void OnConfirmChangeAttendanceClicked(object sender, EventArgs e)   
         {
             if (_selectedRecord == null) return;

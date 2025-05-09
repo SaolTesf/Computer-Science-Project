@@ -1,4 +1,5 @@
 ﻿/*
+Saol Tesfaghebriel
 This file allows us to share DTOs between the Attendance API and professor App
 */
 
@@ -10,6 +11,7 @@ public enum AttendanceType {
     Unexcused
 }
 
+/* Registration and Login DTOs */
 public class RegisterDTO
 {
     public string ID { get; set; } = null!;
