@@ -7,6 +7,9 @@ using System.Diagnostics;
 using AttendanceShared.DTOs;
 using Microsoft.EntityFrameworkCore;
 
+// Dinagaran Senthilkumar
+// ClassSessionController.cs file that handles HTTP requests related to class session records.  I added the links to help me test it on postman easeir
+
 namespace AttendanceSystem.Controllers
 {
     [ApiController]
