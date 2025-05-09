@@ -79,12 +79,6 @@
                                         Text="Password"
                                         TextColor="White" />
                                     <Label Text="{Binding Password}" TextColor="White" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="16"
-                                        Text="Quiz"
-                                        TextColor="White" />
-                                    <Label Text="{Binding Quiz}" TextColor="White" />
                                 </StackLayout>
                             </Frame>
                         </DataTemplate>
