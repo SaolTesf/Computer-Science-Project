@@ -78,7 +78,6 @@ namespace ProfessorApp.Pages
                         {
                             Date = session.SessionDateTime.ToString("D"),
                             Duration = session.QuizStartTime.ToString("h:mm tt") + " - " + session.QuizEndTime.ToString("h:mm tt"),
-                            Password = session.Password,
                             SessionID = session.SessionID,
                             SessionNumber = sessionNumber
                         };

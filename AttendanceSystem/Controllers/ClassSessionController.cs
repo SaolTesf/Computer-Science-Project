@@ -54,7 +54,6 @@ namespace AttendanceSystem.Controllers
                 SessionDateTime = e.SessionDateTime,
                 QuizStartTime = e.QuizStartTime,
                 QuizEndTime = e.QuizEndTime,
-                Password = e.Password,
                 AccessCode = e.AccessCode
             }).ToList();
             return Ok(dto);

@@ -57,7 +57,6 @@ namespace ProfessorApp.Pages
                     {
                         Date = session.SessionDateTime.ToString("D"),
                         Duration = session.QuizStartTime.ToString("h:mm tt") + " - " + session.QuizEndTime.ToString("h:mm tt"),
-                        Password = session.Password,
                         SessionID = session.SessionID,
                         SessionNumber = sessionNumber,
                         AccessCode = session.AccessCode
@@ -88,14 +87,6 @@ namespace ProfessorApp.Pages
             var date = SessionDate.Date;
             var start = StartTime.Time;
             var end = EndTime.Time;
-            var password = Password.Text?.Trim();
-
-            if (string.IsNullOrEmpty(password))
-            {
-                statusLabel.TextColor = Colors.Red;
-                statusLabel.Text = "You must set a password.";
-                return;
-            }
 
             // convert start and end to DateTime format
             DateTime quizStart = date + start;
@@ -108,7 +99,6 @@ namespace ProfessorApp.Pages
                 SessionDateTime = date,
                 QuizStartTime = quizStart,
                 QuizEndTime = quizEnd,
-                Password = password,
                 AccessCode = GenerateUniqueAccessCode()
             };
 
@@ -126,7 +116,6 @@ namespace ProfessorApp.Pages
                 // on success
                 statusLabel.TextColor = Colors.Green;
                 await DisplayAlert("Success", "Session added successfully.", "OK");
-                Password.Text = string.Empty;
                 // reset fields and close window (disabled because reselecting them can be tedious)
                 // StartTime.Time = default;
                 // EndTime.Time = default;
@@ -145,7 +134,6 @@ namespace ProfessorApp.Pages
         private void OnCancelSessionClicked(object sender, EventArgs e)
         {
             //Hide the form and reset fields
-            Password.Text = string.Empty;
             StartTime.Time = default;
             EndTime.Time = default;
             AddSessionPopup.IsVisible = false;
@@ -169,7 +157,6 @@ namespace ProfessorApp.Pages
                     NewSessionDate.Date = session.SessionDateTime;
                     NewStartTime.Time = session.QuizStartTime.TimeOfDay;
                     NewEndTime.Time = session.QuizEndTime.TimeOfDay;
-                    NewPassword.Text = session.Password;
                     _sessionId = sessionID;
                 }
             }
@@ -181,14 +168,6 @@ namespace ProfessorApp.Pages
             var date = NewSessionDate.Date;
             var start = NewStartTime.Time;
             var end = NewEndTime.Time;
-            var password = NewPassword.Text?.Trim();
-
-            if (string.IsNullOrEmpty(password))
-            {
-                updateStatusLabel.TextColor = Colors.Red;
-                updateStatusLabel.Text = "You must set a password.";
-                return;
-            }
 
             DateTime quizStart = date + start;
             DateTime quizEnd = date + end;
@@ -205,7 +184,6 @@ namespace ProfessorApp.Pages
                     SessionDateTime = date,
                     QuizStartTime = quizStart,
                     QuizEndTime = quizEnd,
-                    Password = password,
                     AccessCode = oldSession.AccessCode
                 };
 

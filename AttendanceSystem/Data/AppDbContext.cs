@@ -90,7 +90,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.Property(e => e.SessionID).ValueGeneratedOnAdd();
       entity.Property(e => e.CourseID).IsRequired();
       entity.Property(e => e.SessionDateTime).IsRequired();
-      entity.Property(e => e.Password).HasMaxLength(255).IsRequired();
       entity.Property(e => e.QuizStartTime).IsRequired();
       entity.Property(e => e.QuizEndTime).IsRequired();
       entity.HasOne(e => e.Course)

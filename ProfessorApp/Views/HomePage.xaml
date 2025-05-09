@@ -73,12 +73,6 @@
                                         TextColor="White" />
                                     <Label Text="{Binding Date}" TextColor="White" />
                                     <Label Text="{Binding Duration}" TextColor="White" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="16"
-                                        Text="Password"
-                                        TextColor="White" />
-                                    <Label Text="{Binding Password}" TextColor="White" />
                                 </StackLayout>
                             </Frame>
                         </DataTemplate>

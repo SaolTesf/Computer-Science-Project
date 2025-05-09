@@ -41,12 +41,6 @@
                                         TextColor="White" />
                                     <Label Text="{Binding Date}" TextColor="White" />
                                     <Label Text="{Binding Duration}" TextColor="White" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="16"
-                                        Text="Password"
-                                        TextColor="White" />
-                                    <Label Text="{Binding Password}" TextColor="White" />
                                     <StackLayout Orientation="Horizontal" Spacing="10">
                                         <Label Text="{Binding AccessCode}" TextColor="LightBlue" />
                                         <Button
@@ -126,13 +120,7 @@
                         Text="Quiz End Time"
                         TextColor="White" />
                     <TimePicker x:Name="EndTime" TextColor="White" />
-
-                    <Entry
-                        x:Name="Password"
-                        MaxLength="255"
-                        Placeholder="Password"
-                        TextColor="White" />
-
+                    
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
                         <Button
                             BackgroundColor="Green"
@@ -196,12 +184,6 @@
                         Text="Quiz End Time"
                         TextColor="White" />
                     <TimePicker x:Name="NewEndTime" TextColor="White" />
-
-                    <Entry
-                        x:Name="NewPassword"
-                        MaxLength="255"
-                        Placeholder="Password"
-                        TextColor="White" />
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
                         <Button

@@ -94,7 +94,6 @@ public class ClassSessionDTO{
     public int SessionID { get; set; }
     public int? CourseID { get; set; }
     public DateTime SessionDateTime { get; set; }
-    public string Password { get; set; } = string.Empty;
     public DateTime QuizStartTime { get; set; }
     public DateTime QuizEndTime { get; set; }
     public string AccessCode { get; set; } = string.Empty;
@@ -109,7 +108,6 @@ public class SessionInfoDTO {
 public class ClassSessionFormatDTO
 {
     public string Date { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
     public string Duration { get; set; } = string.Empty;
     public int SessionID { get; set; }
     public string SessionNumber { get; set; } = string.Empty;

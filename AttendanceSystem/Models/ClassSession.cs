@@ -19,10 +19,6 @@ namespace AttendanceSystem.Models
         public DateTime SessionDateTime { get; set; }
 
         [Required]
-        [StringLength(255)]
-        public string Password { get; set; } = string.Empty;
-
-        [Required]
         public DateTime QuizStartTime { get; set; }
 
         [Required]
