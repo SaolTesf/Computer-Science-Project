@@ -3,7 +3,8 @@ using AttendanceSystem.Models; // For Course model
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+//Dinagaran Senthilkumar
+// This is basically the CourseRepository.cs file that implements the ICourseRepository interface.
 namespace AttendanceSystem.Data.Repositories
 {
     // Implements ICourseRepository using EF Core.

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+//Dinagaran Senthilkumar
+// Course model representing a course in the attendance system.
 namespace AttendanceSystem.Models
 {
     public class Course

@@ -1,10 +1,12 @@
 using AttendanceSystem.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+// Dinagaran Senthilkumar
 
+// Interface defining CRUD operations for QuizQuestionBank.
 namespace AttendanceSystem.Data.Repositories
 {
-    // Interface defining CRUD operations for QuizQuestionBank.
+   
     public interface IQuizQuestionBankRepository
     {
         Task<IEnumerable<QuizQuestionBank>> GetAllBanksAsync(); // Retrieve all quiz banks.

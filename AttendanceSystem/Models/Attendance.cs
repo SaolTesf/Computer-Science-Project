@@ -1,7 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
+// Dinagaran Senthilkumar
+// Model representing attendance records for students in a class session.
 namespace AttendanceSystem.Models
 {
     public enum AttendanceType

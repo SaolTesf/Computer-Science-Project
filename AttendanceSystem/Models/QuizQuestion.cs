@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
+//Dinagaran Senthilkumar
+// QuizQuestion model representing a question in a quiz.
 namespace AttendanceSystem.Models
 {
     public class QuizQuestion

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
+// Dinagaran Senthilkumar
+// QuizResponse model representing a student's response to a quiz question.
 namespace AttendanceSystem.Models
 {
     public class QuizResponse
