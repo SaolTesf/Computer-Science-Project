@@ -237,32 +237,31 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //Diego Cabanas created function to get IP and check if they have already submitted with the ip, redirect to home if they have
+        clientIp = GetIPService.GetClientIp();
+        currentSession = await SessionService.GetByAccessCodeAsync(accessCode);
+
+        // Check if this IP has already submitted attendance
+        if (currentSession != null)
+        {
+            var existsbyIP = await AttendanceService.GetAttendanceIdByIpAndSessionAsync(clientIp, currentSession.SessionID);
+            if (existsbyIP != null)
+            {
+                NavigationManager.NavigateTo("/home");
+            }
+        }
         try
         {
+
             isLoading = true;
-            // Get client IP address
-            clientIp = GetIPService.GetClientIp();
 
             if (!string.IsNullOrWhiteSpace(accessCode))
-            {
-                // Get session by access code
-                currentSession = await SessionService.GetByAccessCodeAsync(accessCode);
-                
+            {           
                 if (currentSession == null)
                 {
                     errorMessage = "Invalid or expired access code";
                     await Task.Delay(2000); // Brief delay
                     NavigationManager.NavigateTo("/", forceLoad: true);
-                    return;
-                }
-
-                // Check if this IP has already submitted attendance
-                var existingAttendance = await AttendanceService.GetAttendanceIdByIpAndSessionAsync(clientIp, currentSession.SessionID);
-                if (existingAttendance.HasValue)
-                {
-                    errorMessage = "Attendance has already been recorded from this device";
-                    await Task.Delay(2000);
-                    NavigationManager.NavigateTo("/");
                     return;
                 }
 
@@ -421,13 +420,10 @@
                 };
 
                 // Save attendance
-                await AttendanceService.CreateAttendanceAsync(attendance);
+                await AttendanceService.CreateAttendanceAsync(attendance);         
 
-                // Show success message
-                await JSRuntime.InvokeVoidAsync("alert", "Your attendance and quiz responses have been recorded successfully!");
-                
                 // Redirect to confirmation page or home
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/home", forceLoad: true);
             }
         }
         catch (Exception ex)

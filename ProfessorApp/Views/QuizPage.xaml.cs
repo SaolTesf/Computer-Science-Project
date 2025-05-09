@@ -516,7 +516,5 @@ namespace ProfessorApp.Pages
                 await DisplayAlert("Error", $"An error occurred while loading questions: {ex.Message}", "OK");
             }
         }
-
-
     }
 }
