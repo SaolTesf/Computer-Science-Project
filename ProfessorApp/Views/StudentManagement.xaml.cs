@@ -292,7 +292,7 @@ namespace ProfessorApp.Pages
         }
 
         //Method to delete a student by UTDID
-        private async void OnDeleteStudentClicked(object sender, EventArgs e)
+        private void OnDeleteStudentClicked(object sender, EventArgs e)
         {
             //Toggle the Delete Student form visibility
             DeleteStudentPopup.IsVisible = !DeleteStudentPopup.IsVisible;

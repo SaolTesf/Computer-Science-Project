@@ -104,6 +104,9 @@
 	  <MauiXaml Update="Views\CoursePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\QuestionsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\SessionManagement.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
