@@ -92,5 +92,12 @@ public class AttendanceRepository : IAttendanceRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<int?> GetAttendanceIdByIpAndSessionAsync(string ipAddress, int sessionId)
+    {
+        var attendance = await _context.Attendances
+            .FirstOrDefaultAsync(a => a.IPAddress == ipAddress && a.SessionID == sessionId);
+
+        return attendance?.AttendanceID;
+    }
 
 }

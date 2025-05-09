@@ -1,3 +1,8 @@
+/*
+ * Sawyer Kamman, Saol Tesfaghebriel
+ * Accesses the database to let the user enter the app if they input valid login information
+ */
+
 using ProfessorApp.Pages;
 using ProfessorApp.Services;
 

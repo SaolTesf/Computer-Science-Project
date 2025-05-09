@@ -84,6 +84,11 @@ namespace AttendanceSystem.Services
             return await _attendanceRepository.GetAttendanceIdBySessionAndUtdIdAsync(sessionId, utdId);
         }
 
+        public async Task<int?> GetAttendanceIdByIpAndSessionAsync(string ipAddress, int sessionId)
+        {
+            return await _attendanceRepository.GetAttendanceIdByIpAndSessionAsync(ipAddress, sessionId);
+        }
+
 
     }
 }

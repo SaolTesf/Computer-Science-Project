@@ -253,11 +253,21 @@ namespace ProfessorApp.Services
         public async Task<List<ClassSessionDTO>?> GetSessionBySessionDateTimeAsync(DateTime sessionDateTime)
              => await _httpClient.GetFromJsonAsync<List<ClassSessionDTO>>($"api/classsession/datetime/{sessionDateTime:yyyy-MM-dd}");
 
+        // get course session by the session ID
+        public async Task<ClassSessionDTO?> GetSessionByIDAsync(int? sessionID)
+            => await _httpClient.GetFromJsonAsync<ClassSessionDTO>($"api/classsession/{sessionID}");
 
         // add a class session
         public async Task<bool> AddClassSessionAsync(ClassSessionDTO dto)
         {
             var response = await _httpClient.PostAsJsonAsync("api/classsession", dto);
+            return response.IsSuccessStatusCode;
+        }
+
+        // update a class session
+        public async Task<bool> UpdateClassSessionAsync(ClassSessionDTO dto)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/classsession/{dto.SessionID}", dto);
             return response.IsSuccessStatusCode;
         }
 

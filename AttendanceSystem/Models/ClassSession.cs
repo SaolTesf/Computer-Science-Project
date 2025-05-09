@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+//Dinagaran Senthilkumar
+// This class represents a class session in the attendance system.
 
 namespace AttendanceSystem.Models
 {

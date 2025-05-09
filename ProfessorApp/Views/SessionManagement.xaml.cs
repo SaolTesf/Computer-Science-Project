@@ -1,6 +1,6 @@
 /*
  Sawyer Kamman
-Add or remove class sessions
+Add, update, or remove class sessions
  */
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
@@ -13,6 +13,7 @@ namespace ProfessorApp.Pages
     {
         private readonly ClientService _clientService;
         private readonly int? _courseId;
+        private int _sessionId = -1;
         private bool isStartTimeChangingProgrammatically = false;
         private bool isEndTimeChangingProgrammatically = false;
 
@@ -25,6 +26,7 @@ namespace ProfessorApp.Pages
             EndTime.PropertyChanged += EndTime_PropertyChanged;
         }
 
+        // on refresh, load sessions and quizzes
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -82,6 +84,7 @@ namespace ProfessorApp.Pages
         // Submit session data to database
         private async void OnSubmitSessionClicked(object sender, EventArgs e)
         {
+            // get fields
             var date = SessionDate.Date;
             var start = StartTime.Time;
             var end = EndTime.Time;
@@ -94,6 +97,7 @@ namespace ProfessorApp.Pages
                 return;
             }
 
+            // convert start and end to DateTime format
             DateTime quizStart = date + start;
             DateTime quizEnd = date + end;
 
@@ -108,15 +112,18 @@ namespace ProfessorApp.Pages
                 AccessCode = GenerateUniqueAccessCode()
             };
 
+            // try to submit info to clientservice
             try
             {
                 var response = await _clientService.AddClassSessionAsync(session);
+                // failed to add
                 if (!response)
                 {
                     statusLabel.TextColor = Colors.Red;
                     statusLabel.Text = "Failed to add session.";
                     return;
                 }
+                // on success
                 statusLabel.TextColor = Colors.Green;
                 await DisplayAlert("Success", "Session added successfully.", "OK");
                 Password.Text = string.Empty;
@@ -128,6 +135,7 @@ namespace ProfessorApp.Pages
             }
             catch (Exception ex)
             {
+                // display exception if there is one for some reason
                 statusLabel.TextColor = Colors.Red;
                 statusLabel.Text = $"{ex.Message}";
             }

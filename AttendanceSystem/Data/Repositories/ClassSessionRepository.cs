@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+// Dinagaran Senthilkumar
+// This is basically the ClassSessionRepository.cs file that implements the IClassSessionRepository interface.
 
 namespace AttendanceSystem.Data.Repositories
 {

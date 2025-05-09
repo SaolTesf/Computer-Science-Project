@@ -1,10 +1,11 @@
 using AttendanceSystem.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+// Dinagaran Senthilkumar
+// Interface defining CRUD operations for QuizResponse.
 namespace AttendanceSystem.Data.Repositories
 {
-    // Interface defining CRUD operations for QuizResponse.
+   
     public interface IQuizResponseRepository
     {
         Task<IEnumerable<QuizResponse>> GetAllResponsesAsync(); // Retrieve all quiz responses.

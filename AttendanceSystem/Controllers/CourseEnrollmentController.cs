@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+// Dinagaran Senthilkumar
+// QuiZReponseController.cs file that handles HTTP requests related to class session records.  I added the links to help me test it on postman easeir
 namespace AttendanceSystem.Controllers
 {
     [ApiController]
@@ -53,7 +55,7 @@ namespace AttendanceSystem.Controllers
             await _service.UnenrollStudentAsync(enrollmentId);
             return NoContent();
         }
-
+        // api/courseenrollment/course/{courseID}/student/{utdId}/id
         [HttpGet("course/{courseID}/student/{utdId}/id")]
         public async Task<ActionResult<int?>> GetEnrollmentByCourseIDAndUtdIdAsync(int courseID, string utdId)
         {

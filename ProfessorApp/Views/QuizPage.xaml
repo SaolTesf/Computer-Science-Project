@@ -19,26 +19,43 @@
                     Margin="0,30,0,30"
                     BackgroundColor="DarkOrange"
                     Clicked="OnAddBankClicked"
-                    FontAttributes="Bold"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
                     Text="Add Question Bank"
-                    TextColor="Black"
-                    WidthRequest="500" />
+                    TextColor="White"
+                    WidthRequest="500">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="G" />
+                    </Button.ImageSource>
+                </Button>
 
                 <Button
                     Margin="0,-25,0,15"
                     BackgroundColor="Red"
                     Clicked="OnDeleteBankClicked"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
                     Text="Delete Question Bank"
                     TextColor="White"
-                    WidthRequest="400" />
+                    WidthRequest="400">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="E" />
+                    </Button.ImageSource>
+                </Button>
 
                 <Button
                     Margin="0,30,0,30"
                     BackgroundColor="DarkOrange"
                     Clicked="OnAddQuestionClicked"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
                     Text="Add Question"
                     TextColor="White"
-                    WidthRequest="500" />
+                    WidthRequest="500">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="H" />
+                    </Button.ImageSource>
+                </Button>
 
                 <Label
                     FontSize="20"
@@ -67,9 +84,15 @@
                     Margin="0,30,0,30"
                     BackgroundColor="Green"
                     Clicked="OnCreateQuizClicked"
+                    ContentLayout="Left, 10"
+                    FontSize="17"
                     Text="Create Quiz"
                     TextColor="White"
-                    WidthRequest="500" />
+                    WidthRequest="500">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="J" />
+                    </Button.ImageSource>
+                </Button>
             </VerticalStackLayout>
         </ScrollView>
 
@@ -296,7 +319,7 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalOptions="Center"
-                        Text="Add Question" />
+                        Text="Add Quiz" />
                     <DatePicker
                         x:Name="SessionDate"
                         Date="{Binding SelectedDate, Mode=TwoWay}"
@@ -304,7 +327,7 @@
 
                     <Picker
                         x:Name="SessionPicker"
-                        Title="Select a Quiz"
+                        Title="Select a Session"
                         BackgroundColor="DarkOrange"
                         ItemDisplayBinding="{Binding QuizStartTime, StringFormat='{0:g}'}"
                         ItemsSource="{Binding FilteredSessionList}"

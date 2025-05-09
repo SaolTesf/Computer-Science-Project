@@ -4,7 +4,8 @@ using AttendanceSystem.Data.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AttendanceSystem.Models.DTOs;
-
+// Dinagaran Senthilkumar
+// Interface defining CRUD operations for Course.
 namespace AttendanceSystem.Services
 {
     public interface ICourseService
