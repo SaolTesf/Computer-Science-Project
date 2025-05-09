@@ -1,6 +1,14 @@
 @page "/"
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Web
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.JSInterop
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <style>
     .container { display:flex;justify-content:center;align-items:center;height:100vh;background:#f0f0f0; }
@@ -18,21 +26,110 @@
     <div class="content">
       <input @bind="accessCode" @onkeydown="HandleKeyPress" class="input-field" maxlength="36" placeholder="Access Code" />
       <button type="button" class="submit-btn" @onclick="OnSubmit">Go</button>
+      @if (!string.IsNullOrEmpty(errorMessage))
+      {
+          <div style="color:red; margin-top:10px;">@errorMessage</div>
+      }
     </div>
   </div>
 </div>
 
 @code {
     private string accessCode = string.Empty;
-    private void OnSubmit()
+    private string errorMessage = string.Empty;
+
+    protected override Task OnInitializedAsync()
     {
-        if (!string.IsNullOrWhiteSpace(accessCode))
-            NavigationManager.NavigateTo($"/survey/{accessCode}");
+        // No async operations needed here
+        return Task.CompletedTask;
     }
 
-    private void HandleKeyPress(KeyboardEventArgs e)
+    private bool firstRender = true;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (this.firstRender)
+        {
+            this.firstRender = false;
+            try
+            {
+                // Only perform JS interop in OnAfterRenderAsync
+                await JSRuntime.InvokeVoidAsync("console.log", "Index page initialized");
+            }
+            catch
+            {
+                // Handle potential JS interop errors silently
+            }
+        }
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
-            OnSubmit();
+            await OnSubmit();
+    }
+
+    private async Task OnSubmit()
+    {
+        try
+        {
+            // Set a visible feedback immediately to confirm the button click
+            errorMessage = "Processing...";
+            StateHasChanged();
+            
+            // Only log if the component is fully rendered (not during static rendering)
+            if (!IsStaticRender())
+            {
+                await JSRuntime.InvokeVoidAsync("console.log", $"OnSubmit clicked with code: {accessCode}");
+            }
+            
+            if (string.IsNullOrWhiteSpace(accessCode))
+            {
+                errorMessage = "Please enter an access code";
+                StateHasChanged();
+                return;
+            }
+            
+            // Trim the access code to remove any whitespace
+            accessCode = accessCode.Trim();
+            
+            errorMessage = $"Navigating to: /survey/{accessCode}";
+            StateHasChanged();
+            
+            // Only log if the component is fully rendered (not during static rendering)
+            if (!IsStaticRender())
+            {
+                await JSRuntime.InvokeVoidAsync("console.log", $"Navigating to: /survey/{accessCode}");
+            }
+            
+            NavigationManager.NavigateTo($"/survey/{accessCode}", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+            
+            // Only log if the component is fully rendered (not during static rendering)
+            if (!IsStaticRender())
+            {
+                await JSRuntime.InvokeVoidAsync("console.log", $"Error in OnSubmit: {ex}");
+            }
+            
+            StateHasChanged();
+        }
+    }
+    
+    // Helper method to determine if this is a static render
+    private bool IsStaticRender()
+    {
+        try
+        {
+            // This will throw during prerendering
+            JSRuntime.InvokeVoidAsync("console.log", "");
+            return false; // If we get here, we're not in static rendering
+        }
+        catch
+        {
+            return true; // Exception means we're in static rendering
+        }
     }
 }
