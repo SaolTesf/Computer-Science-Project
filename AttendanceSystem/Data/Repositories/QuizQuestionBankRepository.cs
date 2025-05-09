@@ -3,7 +3,8 @@ using AttendanceSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+//Dinagaran Senthilkumar
+// This is basically the QuizQuestionBankRepository.cs file that implements the IQuizQuestionBankRepository interface.
 namespace AttendanceSystem.Data.Repositories
 {
     // Implements IQuizQuestionBankRepository using EF Core.

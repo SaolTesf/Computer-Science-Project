@@ -2,7 +2,8 @@ using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories; // Assumes IQuizResponseRepository exists
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+// Dinagaran Senthilkumar
+// Service class for managing quiz responses.
 namespace AttendanceSystem.Services
 {
     public class QuizResponseService : IQuizResponseService

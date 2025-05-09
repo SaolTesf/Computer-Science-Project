@@ -1,10 +1,12 @@
 using AttendanceSystem.Models; // Import Course model
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+//Dinagaran Senthilkumar
+// Interface defining CRUD operations for QuizQuestionBank.
 namespace AttendanceSystem.Data.Repositories
 {
-    // Interface defining CRUD operations for Course.
+
+  
     public interface ICourseRepository
     {
         Task<IEnumerable<Course>> GetAllCoursesAsync(); // Retrieve all courses.

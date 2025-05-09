@@ -3,7 +3,8 @@ using AttendanceSystem.Data.Repositories; // Assumes IQuizQuestionBankRepository
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
+// Dinagaran Senthilkumar
+// This is the QuizQuestionBankService.cs file that implements the IQuizQuestionBankService interface.
 namespace AttendanceSystem.Services
 {
     public class QuizQuestionBankService : IQuizQuestionBankService
