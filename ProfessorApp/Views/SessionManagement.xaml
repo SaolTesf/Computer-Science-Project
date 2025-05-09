@@ -71,7 +71,7 @@
                                         CommandParameter="{Binding SessionID}"
                                         FontAttributes="Bold"
                                         Text="Update Session"
-                                        TextColor="DarkGreen" />
+                                        TextColor="White" />
                                 </StackLayout>
                             </Frame>
                         </DataTemplate>
@@ -197,7 +197,7 @@
                         HorizontalOptions="Center"
                         Text="Update Session"
                         TextColor="White" />
-                    
+
                     <Label
                         FontAttributes="Bold"
                         FontSize="15"

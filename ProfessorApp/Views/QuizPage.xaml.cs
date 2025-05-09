@@ -3,12 +3,8 @@
  which are mapped to the specific course the page was accessed from,
 it also allows the user to pick what questions they want to use 
 for a specific quiz on a specific session*/
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AttendanceShared.DTOs;
 using ProfessorApp.Services;
-using Microsoft.Maui.Controls;
-using System.Linq;
 using System.Collections.ObjectModel;
 
 namespace ProfessorApp.Pages
@@ -23,7 +19,7 @@ namespace ProfessorApp.Pages
         private readonly ClientService _clientService;
         public ObservableCollection<string> BankList { get; set; } = new ObservableCollection<string>();
         public string? SelectedBank { get; set; }
-        public ClassSessionDTO SelectedSession { get; set; } = new ClassSessionDTO();
+        public ClassSessionDTO? SelectedSession { get; set; } = new ClassSessionDTO();
         public List<ClassSessionDTO> ClassSessionList { get; set; } = new List<ClassSessionDTO>();
         public List<QuestionWithSelection> QuestionTextList { get; set; } = new List<QuestionWithSelection>();
         public ObservableCollection<QuestionWithSelection> AllQuestionsList { get; set; } = new ObservableCollection<QuestionWithSelection>();
@@ -55,7 +51,7 @@ namespace ProfessorApp.Pages
             }
         }
 
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
             base.OnAppearing();
             //Reset the picker and checkbox
@@ -63,7 +59,7 @@ namespace ProfessorApp.Pages
             SelectedDate = DateTime.Today;
             FilterSessionsByDate();
             QuestionCollectionView.IsVisible = false;
-            LoadAllQuestionsForCourseAsync();
+            await LoadAllQuestionsForCourseAsync();
         }
         //Method to load/refresh the banks on the pickers
         private async void LoadBankNamesAsync()
@@ -81,17 +77,22 @@ namespace ProfessorApp.Pages
             //Fetch banks
             var bankNames = await _clientService.GetQuizBanksByCourseIdAsync((int)_courseID);
             BankList.Clear();
-            foreach (var bankName in bankNames)
+            if (bankNames != null)
             {
-                BankList.Add(bankName.BankName);
+                foreach (var bankName in bankNames)
+                {
+                    BankList.Add(bankName.BankName);
+                }
             }
 
             //Fetch sessions
             var sessions = await _clientService.GetSessionsByCourseIDAsync((int)_courseID);
-            foreach (var session in sessions)
-            {
-                ClassSessionList.Add(session);
-                FilteredSessionList.Add(session); 
+            if (sessions != null) { 
+                foreach (var session in sessions)
+                {
+                    ClassSessionList.Add(session);
+                    FilteredSessionList.Add(session); 
+                }
             }
 
             // Notify UI of changes
@@ -178,7 +179,7 @@ namespace ProfessorApp.Pages
             //Toggle the Delete Bank form visibility
             DeleteBankPopup.IsVisible = !DeleteBankPopup.IsVisible;
         }
-        private async void OnSubmitDeleteBankClicked(object sender, EventArgs e)
+        private void OnSubmitDeleteBankClicked(object sender, EventArgs e)
         {
             DeleteConfirmationPopup.IsVisible = true;
         }
@@ -265,7 +266,7 @@ namespace ProfessorApp.Pages
                 parsed = parsedAnswer;
 
                 //Check if the selected answer option is filled
-                string selectedOptionText = parsed switch
+                string? selectedOptionText = parsed switch
                 {
                     1 => option1,
                     2 => option2,
@@ -351,9 +352,9 @@ namespace ProfessorApp.Pages
         }
 
         //Method to notify that there has been a change in the pickers
-        private void OnBankPickerSelectedIndexChanged(object sender, EventArgs e)
+        private async void OnBankPickerSelectedIndexChanged(object sender, EventArgs e)
         {
-            OnSelectedBankChangedAsync();
+            await OnSelectedBankChangedAsync();
         }
 
         //Method to help load the questions to the checkboxes
@@ -363,21 +364,18 @@ namespace ProfessorApp.Pages
             {
                 var bankId = await _clientService.GetQuestionBankIdByNameAsync(SelectedBank);
 
-                if (bankId != null)
-                {
-                    //Fetch questions based on the bank ID
-                    var questions = await _clientService.GetQuestionsByBankIdAsync(bankId);
-                    QuestionCollectionView.IsVisible = true;
+                //Fetch questions based on the bank ID
+                var questions = await _clientService.GetQuestionsByBankIdAsync(bankId);
+                QuestionCollectionView.IsVisible = true;
 
-                    //Map the questions to a list of QuestionWithSelection 
-                    QuestionTextList = questions?.Select(q => new QuestionWithSelection
-                    {
-                        QuestionText = q.QuestionText,
-                        //Initially all checkboxes are unchecked
-                        IsChecked = false
-                    }).ToList() ?? new List<QuestionWithSelection>();
-                    OnPropertyChanged(nameof(QuestionTextList));
-                }
+                //Map the questions to a list of QuestionWithSelection 
+                QuestionTextList = questions?.Select(q => new QuestionWithSelection
+                {
+                    QuestionText = q.QuestionText,
+                    //Initially all checkboxes are unchecked
+                    IsChecked = false
+                }).ToList() ?? new List<QuestionWithSelection>();
+                OnPropertyChanged(nameof(QuestionTextList));
             }
         }
         //Method to notify that the picker for the session was changed
@@ -443,30 +441,32 @@ namespace ProfessorApp.Pages
             // If no questions are selected, show an alert
             if (selectedQuestions.Count == 0)
             {
-                DisplayAlert("No Selection", "Please select at least one question.", "OK");
+                await DisplayAlert("No Selection", "Please select at least one question.", "OK");
                 return;
             }
 
             //Join the selected question texts into a string for display
             string selectedQuestionTexts = string.Join("\n", selectedQuestions.Select(q => q.QuestionText));
-            DisplayAlert("Selected Questions", selectedQuestionTexts, "OK");
+            await DisplayAlert("Selected Questions", selectedQuestionTexts, "OK");
 
             //Process each selected question
             foreach (var question in selectedQuestions)
             {
                 int questionId = await _clientService.GetQuestionIdByTextAsync(question.QuestionText) ?? 0;
 
-                var sessQuestion = new SessionQuestionDTO
-                {
-                    SessionID = SelectedSession.SessionID,
-                    QuestionID = questionId, 
-                };
+                if (SelectedSession != null) { 
+                    var sessQuestion = new SessionQuestionDTO
+                    {
+                        SessionID = SelectedSession.SessionID,
+                        QuestionID = questionId, 
+                    };
 
-                //Add the session question via the service
-                await _clientService.CreateSessionQuestionAsync(sessQuestion);
+                    //Add the session question via the service
+                    await _clientService.CreateSessionQuestionAsync(sessQuestion);
 
-                //Optionally, reset the IsChecked flag after processing
-                question.IsChecked = false;
+                    //Optionally, reset the IsChecked flag after processing
+                    question.IsChecked = false;
+                }
             }
 
             //Reset UI elements after submission

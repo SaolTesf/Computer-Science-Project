@@ -21,7 +21,7 @@ namespace ProfessorApp.Pages
     {
         private readonly ClientService _clientService;
         private readonly int? _courseId;
-        private AttendanceViewModel _selectedRecord;
+        private AttendanceViewModel? _selectedRecord { get; set; } = null;
         private AttendanceType _selectedAttendanceType;
 
         private List<AttendanceViewModel> _allRecords = new();
@@ -143,7 +143,7 @@ namespace ProfessorApp.Pages
             public string AttendanceType { get; set; } = string.Empty;
         }
         /*Diego Cabanas: Code to change the picker and save selection for using the button to change attendance type for a student*/
-        private async void OnChangeAttendanceClicked(object sender, EventArgs e)
+        private void OnChangeAttendanceClicked(object sender, EventArgs e)
         {
             if (sender is Button button && button.BindingContext is AttendanceViewModel record)
             {

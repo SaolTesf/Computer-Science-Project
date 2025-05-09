@@ -1,7 +1,5 @@
 using AttendanceSystem.Models;
 using AttendanceSystem.Data.Repositories; // Assumes IQuizQuestionRepository exists
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace AttendanceSystem.Services
 {
