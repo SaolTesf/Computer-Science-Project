@@ -33,11 +33,17 @@
                 <Button
                     BackgroundColor="DarkOrange"
                     Clicked="GoToCoursePage"
+                    ContentLayout="Left, 10"
                     FontAttributes="Bold"
+                    FontSize="17"
                     MaximumWidthRequest="600"
                     Text="Courses"
-                    TextColor="DarkGreen" />
-
+                    TextColor="White">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="ProjectFonts" Glyph="I" />
+                    </Button.ImageSource>
+                </Button>
+                <!--  Diego Cabanas: Created CollectionView to show the sessions happening on the current day  -->
                 <Label
                     x:Name="Sessions"
                     Margin="0,20,0,10"
@@ -49,7 +55,7 @@
                     VerticalOptions="Start" />
                 <CollectionView
                     x:Name="SessionCollectionView"
-                    HeightRequest="700"
+                    MaximumHeightRequest="500"
                     SelectionMode="None"
                     WidthRequest="600">
                     <CollectionView.ItemTemplate>

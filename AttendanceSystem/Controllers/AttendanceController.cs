@@ -128,5 +128,17 @@ namespace AttendanceSystem.Controllers
 
             return Ok(attendanceId.Value);
         }
+
+        [HttpGet("check-by-ip-session")]
+        public async Task<ActionResult<int?>> GetAttendanceIdByIpAndSession([FromQuery] string ipAddress, [FromQuery] int sessionId)
+        {
+            var attendanceId = await _attendanceService.GetAttendanceIdByIpAndSessionAsync(ipAddress, sessionId);
+
+            if (!attendanceId.HasValue)
+                return NotFound("No attendance record found for that IP and session.");
+
+            return Ok(attendanceId.Value);
+        }
+
     }
 }
