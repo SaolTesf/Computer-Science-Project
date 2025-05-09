@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 // Dinagaran Senthilkumar
-// QuizQuestionController.cs file that handles HTTP requests related to question records.  I added the links to help me test it on postman easeir
+// QuizQuestionController.cs file that handles HTTP requests related to question records.  I added the links to help me test it on postman easier
 namespace AttendanceSystem.Controllers
 {
     [ApiController]

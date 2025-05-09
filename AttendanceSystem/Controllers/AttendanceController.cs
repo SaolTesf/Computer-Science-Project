@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 // Dinagaran Senthilkumar
-// AttendanceController.s file that handles HTTP requests related to attendance records.  I added the links to help me test it on postman easeir
+// AttendanceController.s file that handles HTTP requests related to attendance records.  I added the links to help me test it on postman easier
 
 namespace AttendanceSystem.Controllers
 {

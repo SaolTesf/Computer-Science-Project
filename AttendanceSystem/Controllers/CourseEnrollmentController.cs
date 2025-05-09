@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 // Dinagaran Senthilkumar
-// QuiZReponseController.cs file that handles HTTP requests related to class session records.  I added the links to help me test it on postman easeir
+// QuiZReponseController.cs file that handles HTTP requests related to class session records.  I added the links to help me test it on postman easier
 namespace AttendanceSystem.Controllers
 {
     [ApiController]
