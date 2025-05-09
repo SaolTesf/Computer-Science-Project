@@ -92,17 +92,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
       entity.Property(e => e.Password).HasMaxLength(255).IsRequired();
       entity.Property(e => e.QuizStartTime).IsRequired();
       entity.Property(e => e.QuizEndTime).IsRequired();
-      entity.Property(e => e.QuestionBankID).IsRequired();
       entity.HasOne(e => e.Course)
                     .WithMany(c => c.ClassSessions)
                     .HasForeignKey(e => e.CourseID)
                     .OnDelete(DeleteBehavior.Cascade);
-
-      // map QuizQuestionBank to ClassSession               
-      entity.HasOne(e => e.QuizQuestionBank)
-        .WithMany(qb => qb.ClassSessions)
-        .HasForeignKey(e => e.QuestionBankID)
-        .OnDelete(DeleteBehavior.Cascade);
 
       entity.HasOne(e => e.Course)
             .WithMany(c => c.ClassSessions)

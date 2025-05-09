@@ -52,7 +52,6 @@ namespace AttendanceSystem.Controllers
                 QuizStartTime = e.QuizStartTime,
                 QuizEndTime = e.QuizEndTime,
                 Password = e.Password,
-                QuestionBankID = e.QuestionBankID,
                 AccessCode = e.AccessCode
             }).ToList();
             return Ok(dto);

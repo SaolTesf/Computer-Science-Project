@@ -95,7 +95,6 @@ public class ClassSessionDTO{
     public string Password { get; set; } = string.Empty;
     public DateTime QuizStartTime { get; set; }
     public DateTime QuizEndTime { get; set; }
-    public int QuestionBankID { get; set; }
     public string AccessCode { get; set; } = string.Empty;
 }
 
@@ -103,7 +102,6 @@ public class ClassSessionDTO{
 public class SessionInfoDTO {
     public string AccessCode { get; set; } = string.Empty;
     public string CourseTitle { get; set; } = string.Empty; // e.g. CS4485.001 – Computer Science Project
-    public string QuizBankName { get; set; } = string.Empty;
 }
 
 public class ClassSessionFormatDTO
@@ -111,7 +109,6 @@ public class ClassSessionFormatDTO
     public string Date { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string Duration { get; set; } = string.Empty;
-    public string Quiz { get; set; } = string.Empty;
     public int SessionID { get; set; }
     public string SessionNumber { get; set; } = string.Empty;
     public string AccessCode { get; set; } = string.Empty;

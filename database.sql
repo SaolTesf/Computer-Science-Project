@@ -51,7 +51,6 @@ CREATE TABLE ClassSession (
     Password VARCHAR(255) NOT NULL,
     QuizStartTime DATETIME NOT NULL,
     QuizEndTime DATETIME NOT NULL,
-    QuestionBankID INT NOT NULL,
     CourseID INT NOT NULL,
     AccessCode VARCHAR(36) NOT NULL DEFAULT (UUID()) UNIQUE, -- this value is automatically generated and will be used as the access code for the session (EX: http://localhost:5225/123e4567-e89b-12d3-a456-426614174000)
     FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
@@ -157,12 +156,12 @@ VALUES
     (5, 4, 'Sample question 1 for Final Review?', 'Option A', 'Option B', 'Option C', 'Option D', 3);
 
 -- Insert ClassSessions (depends on Course and QuizQuestionBank)
-INSERT INTO ClassSession (SessionID, SessionDateTime, Password, QuizStartTime, QuizEndTime, QuestionBankID, CourseID)
+INSERT INTO ClassSession (SessionID, SessionDateTime, Password, QuizStartTime, QuizEndTime, CourseID)
 VALUES
-    (1, '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-05-24 10:45:00', 1, 1),
-    (2, '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-05-31 10:45:00', 2, 1),
-    (3, '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-05-02 14:45:00', 3, 2),
-    (4, '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-05-04 15:45:00', 4, 3);
+    (1, '2025-03-24 10:00:00', 'password123', '2025-03-24 10:30:00', '2025-05-24 10:45:00', 1),
+    (2, '2025-03-31 10:00:00', 'password456', '2025-03-31 10:30:00', '2025-05-31 10:45:00', 1),
+    (3, '2025-04-02 14:00:00', 'password789', '2025-04-02 14:30:00', '2025-05-02 14:45:00', 2),
+    (4, '2025-04-04 15:00:00', 'passwordabc', '2025-04-04 15:30:00', '2025-05-04 15:45:00', 3);
 
 -- Insert Attendance (depends on ClassSession and Student)
 INSERT INTO Attendance (AttendanceID, SessionID, UTDID, SubmissionTime, IPAddress, AttendanceType)

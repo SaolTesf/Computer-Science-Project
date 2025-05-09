@@ -48,23 +48,19 @@ namespace ProfessorApp.Pages
                 var sortedSessions = sessions.OrderBy(session => session.SessionDateTime).ToList();
                 for (int i = 0; i < sortedSessions.Count; i++) {
                     ClassSessionDTO session = sortedSessions[i];
-                    QuizQuestionBankDTO? quiz = await _clientService.GetQuizQuestionBankByIDAsync(session.QuestionBankID);
-                    
-                    if (quiz != null) {
-                        // create formatted sessions
-                        string sessionNumber = "Session " + (i + 1);
-                        var format = new ClassSessionFormatDTO
-                        {
-                            Date = session.SessionDateTime.ToString("D"),
-                            Duration = session.QuizStartTime.ToString("h:mm tt") + " - " + session.QuizEndTime.ToString("h:mm tt"),
-                            Password = session.Password,
-                            Quiz = quiz.BankName,
-                            SessionID = session.SessionID,
-                            SessionNumber = sessionNumber,
-                            AccessCode = session.AccessCode
-                        };
-                        formattedSessions.Add(format);
-                    }
+                    // create formatted sessions
+                    // also, assign a session number based on date order
+                    string sessionNumber = "Session " + (i + 1);
+                    var format = new ClassSessionFormatDTO
+                    {
+                        Date = session.SessionDateTime.ToString("D"),
+                        Duration = session.QuizStartTime.ToString("h:mm tt") + " - " + session.QuizEndTime.ToString("h:mm tt"),
+                        Password = session.Password,
+                        SessionID = session.SessionID,
+                        SessionNumber = sessionNumber,
+                        AccessCode = session.AccessCode
+                    };
+                    formattedSessions.Add(format);
                 }
             }
             SessionCollectionView.ItemsSource = formattedSessions;
@@ -74,19 +70,6 @@ namespace ProfessorApp.Pages
         private async Task LoadQuizzesAsync()
         {
             var quizzes = await _clientService.GetAllQuizQuestionBanksAsync();
-            QuizPicker.ItemsSource = quizzes;
-        }
-
-        private async void OnRemoveSessionClicked(object sender, EventArgs e)
-        {
-            if (sender is Button btn && btn.CommandParameter is int sessionID)
-            {
-                var success = await _clientService.RemoveClassSessionAsync(sessionID);
-                if (success)
-                    OnAppearing();
-                else
-                    await DisplayAlert("Error", "Failed to remove session.", "OK");
-            }
         }
 
         // Open the "add session" pop up when the button is clicked
@@ -103,14 +86,6 @@ namespace ProfessorApp.Pages
             var start = StartTime.Time;
             var end = EndTime.Time;
             var password = Password.Text?.Trim();
-            var quiz = QuizPicker.SelectedItem as QuizQuestionBankDTO;
-
-            if (quiz == null)
-            {
-                statusLabel.TextColor = Colors.Red;
-                statusLabel.Text = "You must select a quiz.";
-                return;
-            }
 
             if (string.IsNullOrEmpty(password))
             {
@@ -121,8 +96,8 @@ namespace ProfessorApp.Pages
 
             DateTime quizStart = date + start;
             DateTime quizEnd = date + end;
-            int quizID = quiz.QuestionBankID;
 
+            // make DTO out of info
             var session = new ClassSessionDTO
             {
                 CourseID = _courseId,
@@ -130,7 +105,6 @@ namespace ProfessorApp.Pages
                 QuizStartTime = quizStart,
                 QuizEndTime = quizEnd,
                 Password = password,
-                QuestionBankID = quizID,
                 AccessCode = GenerateUniqueAccessCode()
             };
 
@@ -146,10 +120,10 @@ namespace ProfessorApp.Pages
                 statusLabel.TextColor = Colors.Green;
                 await DisplayAlert("Success", "Session added successfully.", "OK");
                 Password.Text = string.Empty;
-                QuizPicker.SelectedIndex = -1;
-                StartTime.Time = default;
-                EndTime.Time = default;
-                AddSessionPopup.IsVisible = false;
+                // reset fields and close window (disabled because reselecting them can be tedious)
+                // StartTime.Time = default;
+                // EndTime.Time = default;
+                // AddSessionPopup.IsVisible = false;
                 OnAppearing();
             }
             catch (Exception ex)
@@ -164,11 +138,111 @@ namespace ProfessorApp.Pages
         {
             //Hide the form and reset fields
             Password.Text = string.Empty;
-            QuizPicker.SelectedIndex = -1;
             StartTime.Time = default;
             EndTime.Time = default;
             AddSessionPopup.IsVisible = false;
             OnAppearing();
+        }
+
+        // Open the "add session" pop up when the button is clicked
+        private async void OnUpdateSessionClicked(object sender, EventArgs e)
+        {
+            // Toggle the add session form visibility
+            UpdateSessionPopup.IsVisible = !UpdateSessionPopup.IsVisible;
+            // tries to get associated sessionID
+            if (sender is Button btn && btn.CommandParameter is int sessionID)
+            {
+                // get quizzes (for new picker)
+                var quizzes = await _clientService.GetAllQuizQuestionBanksAsync();
+                // get associated session from database
+                var session = await _clientService.GetSessionByIDAsync(sessionID);
+                if (session != null && quizzes != null)
+                {
+                    NewSessionDate.Date = session.SessionDateTime;
+                    NewStartTime.Time = session.QuizStartTime.TimeOfDay;
+                    NewEndTime.Time = session.QuizEndTime.TimeOfDay;
+                    NewPassword.Text = session.Password;
+                    _sessionId = sessionID;
+                }
+            }
+        }
+
+        // Submit updated session data to database, basically same logic as session creation
+        private async void OnSubmitUpdateSessionClicked(object sender, EventArgs e)
+        {
+            var date = NewSessionDate.Date;
+            var start = NewStartTime.Time;
+            var end = NewEndTime.Time;
+            var password = NewPassword.Text?.Trim();
+
+            if (string.IsNullOrEmpty(password))
+            {
+                updateStatusLabel.TextColor = Colors.Red;
+                updateStatusLabel.Text = "You must set a password.";
+                return;
+            }
+
+            DateTime quizStart = date + start;
+            DateTime quizEnd = date + end;
+            // get original session
+            var oldSession = await _clientService.GetSessionByIDAsync(_sessionId);
+
+            if (oldSession != null)
+            {
+                // make new DTO using old session ID and access code
+                var session = new ClassSessionDTO
+                {
+                    SessionID = _sessionId,
+                    CourseID = _courseId,
+                    SessionDateTime = date,
+                    QuizStartTime = quizStart,
+                    QuizEndTime = quizEnd,
+                    Password = password,
+                    AccessCode = oldSession.AccessCode
+                };
+
+                try
+                {
+                    var response = await _clientService.UpdateClassSessionAsync(session);
+                    if (!response)
+                    {
+                        updateStatusLabel.TextColor = Colors.Red;
+                        updateStatusLabel.Text = "Failed to update session.";
+                        return;
+                    }
+                    statusLabel.TextColor = Colors.Green;
+                    await DisplayAlert("Success", "Session updated successfully.", "OK");
+                    UpdateSessionPopup.IsVisible = false;
+                    _sessionId = -1;
+                    OnAppearing();
+                }
+                catch (Exception ex)
+                {
+                    updateStatusLabel.TextColor = Colors.Red;
+                    updateStatusLabel.Text = $"{ex.Message}";
+                }
+            }
+        }
+
+        // Cancel adding student button
+        private void OnCancelUpdateSessionClicked(object sender, EventArgs e)
+        {
+            // Hide the form
+            UpdateSessionPopup.IsVisible = false;
+            _sessionId = -1;
+            OnAppearing();
+        }
+
+        // attempt to remove a course session, via _sessionID (which should be the one being edited by update pop up)
+        private async void OnRemoveSessionClicked(object sender, EventArgs e) {
+
+            // Hide the form
+            UpdateSessionPopup.IsVisible = false;
+            var success = await _clientService.RemoveClassSessionAsync(_sessionId);
+            if (success)
+                OnAppearing();
+            else
+                await DisplayAlert("Error", "Failed to remove session.", "OK");
         }
 
         private void StartTime_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

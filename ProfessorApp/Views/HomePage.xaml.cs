@@ -68,10 +68,9 @@ namespace ProfessorApp.Pages
                 for (int i = 0; i < filteredSessions.Count; i++)
                 {
                     ClassSessionDTO session = filteredSessions[i];
-                    QuizQuestionBankDTO? quiz = await _clientService.GetQuizQuestionBankByIDAsync(session.QuestionBankID);
                     CourseDTO? course = professorCourses.FirstOrDefault(c => c.CourseID == session.CourseID);
 
-                    if (quiz != null && course != null)
+                    if (course != null)
                     {
                         //Create formatted sessions
                         string sessionNumber = "Session " + (i + 1);
@@ -80,7 +79,6 @@ namespace ProfessorApp.Pages
                             Date = session.SessionDateTime.ToString("D"),
                             Duration = session.QuizStartTime.ToString("h:mm tt") + " - " + session.QuizEndTime.ToString("h:mm tt"),
                             Password = session.Password,
-                            Quiz = quiz.BankName,
                             SessionID = session.SessionID,
                             SessionNumber = sessionNumber
                         };

@@ -25,16 +25,10 @@ namespace AttendanceSystem.Models
 
         [Required]
         public DateTime QuizEndTime { get; set; }
-
-        [Required]
-        public int QuestionBankID { get; set; } // Foreign key to QuizQuestionBank
         
         [Required]
         [StringLength(36)]
         public string AccessCode { get; set; } = string.Empty;
-
-        [JsonIgnore]
-        public QuizQuestionBank? QuizQuestionBank { get; set; } = null!;
 
         // Navigation property to the associated Course
         [JsonIgnore]

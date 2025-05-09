@@ -22,8 +22,5 @@ namespace AttendanceSystem.Models
 
         // Navigation property to QuizQuestions in this bank
         public ICollection<QuizQuestion> QuizQuestions { get; set; } = new List<QuizQuestion>();
-
-        // Navigation property to ClassSessions that use this bank
-        public ICollection<ClassSession> ClassSessions { get; set; } = new List<ClassSession>();
     }
 }
