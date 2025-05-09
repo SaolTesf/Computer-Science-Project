@@ -4,7 +4,8 @@ using AttendanceSystem.Data.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
+// Dinagaran Senthilkumar
+// Interface defining CRUD operations for ClassSession.
 namespace AttendanceSystem.Services
 {
     public interface IClassSessionService

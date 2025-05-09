@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
+// Dinagaran Senthilkumar
+// QuizQuestionBank model representing a bank of quiz questions.
 namespace AttendanceSystem.Models
 {
     public class QuizQuestionBank
