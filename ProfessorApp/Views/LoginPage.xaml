@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="#769576">
+    <!--  Diego Cabanas: Created UI designed by Yoojin  -->
     <StackLayout
         Padding="10"
         Spacing="20"
