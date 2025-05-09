@@ -319,7 +319,7 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalOptions="Center"
-                        Text="Add Question" />
+                        Text="Add Quiz" />
                     <DatePicker
                         x:Name="SessionDate"
                         Date="{Binding SelectedDate, Mode=TwoWay}"
@@ -327,7 +327,7 @@
 
                     <Picker
                         x:Name="SessionPicker"
-                        Title="Select a Quiz"
+                        Title="Select a Session"
                         BackgroundColor="DarkOrange"
                         ItemDisplayBinding="{Binding QuizStartTime, StringFormat='{0:g}'}"
                         ItemsSource="{Binding FilteredSessionList}"

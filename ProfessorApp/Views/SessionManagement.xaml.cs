@@ -26,6 +26,7 @@ namespace ProfessorApp.Pages
             EndTime.PropertyChanged += EndTime_PropertyChanged;
         }
 
+        // on refresh, load sessions and quizzes
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -115,6 +116,7 @@ namespace ProfessorApp.Pages
             // convert start and end to DateTime format
             DateTime quizStart = date + start;
             DateTime quizEnd = date + end;
+
             int quizID = quiz.QuestionBankID;
 
             // make DTO out of info
