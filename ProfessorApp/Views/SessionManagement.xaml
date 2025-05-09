@@ -47,11 +47,6 @@
                                         Text="Password"
                                         TextColor="White" />
                                     <Label Text="{Binding Password}" TextColor="White" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="16"
-                                        Text="Quiz"
-                                        TextColor="White" />
                                     <StackLayout Orientation="Horizontal" Spacing="10">
                                         <Label Text="{Binding AccessCode}" TextColor="LightBlue" />
                                         <Button
