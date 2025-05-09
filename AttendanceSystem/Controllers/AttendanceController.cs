@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// Dinagaran Senthilkumar
+// AttendanceController.s file that handles HTTP requests related to attendance records.  I added the links to help me test it on postman easeir
+
 namespace AttendanceSystem.Controllers
 {
     [ApiController]
@@ -101,7 +104,7 @@ namespace AttendanceSystem.Controllers
             var attendances = await _attendanceService.GetByCourseIDAsync(courseID);
             return Ok(attendances);
         }
-
+        // GET: api/attendance/course/GetByUtdId/{utdId}
         [HttpGet("GetByUtdId/{utdId}")]
         public async Task<IActionResult> GetAttendanceByUtdId(string utdId)
         {
@@ -112,7 +115,7 @@ namespace AttendanceSystem.Controllers
             }
             return Ok(attendanceRecords);
         }
-
+        // GET: api/attendance/course/session/{sessionId}/student/{utdId}/id
         [HttpGet("session/{sessionId}/student/{utdId}/id")]
         public async Task<ActionResult<int>> GetAttendanceIdBySessionAndUtdId(int sessionId, string utdId)
         {
